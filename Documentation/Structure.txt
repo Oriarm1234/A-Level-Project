@@ -1,0 +1,130 @@
+Analysis:
+
+    Problem Identification: 
+        My ideas for the game and what the final product will contain
+
+    Stakeholders:
+        Investors And Players
+
+    Research:
+        Just do general research into different algorithms, target audience, and similar games.
+        Maybe go into more detailed research for algorithms i plan on using and the type of game i want to develop.
+        Do research into the software i may use in the process of making the game as well.
+        Create a questionaire for potential players and investors and gather information.
+
+    Essential Features:
+        Go into detail of the main features my game will consist of,
+        describe the process of how i may go around implementing them as well as their...
+        complexity and difficulty to program.
+    
+    Limitations:
+        Talk about the Limitations of the software im using and the programming language im using.
+        As well as talk about time constraints and the scope of my project.
+
+    Solution Requirements:
+        What is my final goal for the project, what are the bare, minimum requirements for it to be enjoyable
+        and complex enough.
+
+    Success Criteria:
+        Talk about what i will do in order to evaluate the success of my product
+        such as contacting those who did the questionaire to play my game and provide feedback.
+
+Design:
+
+    Decompose Problem:
+        Break the game down into its parts, potentially create a graphic to show,
+        the different layers of complexity with the the top layer being generic like ["Screen", "Audio"] etc.
+        with lower layers getting more complex the further down, decomposing the layer above.
+        e.g. "Screen" being split into ["Informational Components", "Game World", "Buttons/Interactable"]
+	
+	After the graphic i should choose a number of nodes for example ["Screen>Informational Components", "Screen>Game World>Map Generation", ...]
+	and describe what they are, and their relation to the game.
+
+    Define Structure:
+	Define the structure of the game, processes it will go through and the order in which it does so.
+	e.g. RUN > Define Variables > Main Loop > Get user events > ...
+
+	I could create a graphic as well for this, and then explain different stages afterwards.
+
+    Algorithms:
+	At this point i will describe what algorithms i will need to use, and provide some example code and explain how they would work.
+	For example i could describe the A* search algorithm and how it could be implemented into the game.
+	Or how i could use the wave function collapse algorithm to create structures or even terrain.
+
+    Usability Features:
+	Describe what i could do to make menus easy to use and navigate, as well as how easy the game is to pick up the controls.
+	I could also talk about the steps i take to make it easier to get feedback on the game and how it could be made better in the future.
+
+    Variables, Classes, Validation:
+	Explain variables that i may use and their purpose.
+	How i could structure classes, what classes will be made and what they were made for.
+	As well as how i could go about validating user input/data.
+
+    Iterative Developement Test Data:
+	Create a table on what features would need testing iteratively, desired results, and what could have gone wrong if a test fails.
+
+    Post Developement Test Data:
+	What needs testing once developement is done and a final version is produced, as well as the desired result for each test, how its being tested etc.
+
+Developing The Coded Solution:
+	
+    Developement Evidence And Prototyping:
+	Provide evidence of code, describe each part, any errors occured as well as show prototypes of the game. Should also explain the process it took to get to
+	this point of code. 
+	i should make sure as well to explain algorithms used, how they were implemented and any issues or changes that happened.
+
+	In this stage i dont have to sure all the code, only explain it in the order it was developed and explain the major bits of code
+	
+    Code Modules:
+	Upload photos of every file, all code has to be shown and should be labeled with the file it came from.
+	No in-depth explanations needed at this point, could have a sentence or two per file.
+
+    Variable Naming And Structure:
+	Explain how i named vairables (camel-case, snake-case, etc.)
+	Reasoning behind the case i chose and any exceptions where i named variables outside of the case < has to have a good reason.
+
+    Validation:
+	Explain the different validation checks used, how they were implemented and why they were needed at the points they were implemented.
+	Provide photos of validation code, only 1 needed per type of validation, more could be given if i want to.
+
+    Reviewed:
+	Get stakeholders/players to review my project, so i can make it better and also collect opinions on it and its playability.
+
+Testing- Developemental:
+    
+    Testing Evidence:	
+	Describe the process i went through to test the program as well as provide photos of the game being tested.
+    
+    Failed Tests:
+	Talk about the failed tests, what went wrong and the process of me fixing it. Photos should accompany each description.
+
+Testing- Evaluate:
+    Final Testing Evidence:
+	At this point the game should be done and playable and released to investors/players so they can test the game, provide final feedback
+	and rate the gameplay.
+	I would ask them to send photos of them playing it, along with (hopefully) a detailed review of the game.
+	
+	Once ive got these reviews i could show photos of one or two and discuss the main positive and negative points, and how i could
+	make the game better in any future updates according to their feedback. 
+	I could get better feedback if i make a questionare and sned them that instead of asking for free form feedback.
+	This way i could get the information i want/need, as well as any of their additional thoughts.
+
+Evaluation:
+    Evaluate Success Criteria:
+	Go over the reviews by investors/players and discuss the success criteria and if i believe that
+	the game achieved it or not by the responses.
+
+	Iterate through each main feature i discussed having in my project and evaluate if the project contains those features
+	and how good they turned out, as well as discuss how i could make these features better.
+	
+    Evaluate Usability Features:
+	Discuss if my program is easily useable and intuitive and check if meets my usability criteria mentioned earlier on in the documentation.
+	I should discuss how i could make it better in the future, so players dont need to already have a knowledge of the game to pick it up.
+	Photos should be included of different menus and such so i can explain them and also talk
+	about how players found it.
+
+    Opinion:
+	Discuss how i feel the game turned out and try to "sell" it to the examiner.
+    
+    Project Appendixes:
+	Reference sources that i have read into to help with the project. 
