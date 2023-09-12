@@ -1,0 +1,1 @@
+The buttons hitboxes on the menu didnt line up with the images due to me not offsetting the hitboxes position whenever it got updated.
