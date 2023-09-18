@@ -2,10 +2,12 @@ import pygame
 
 class Element:
 
-    def __init__(self, name, image, pos, parent=None):
+    def __init__(self, name, image, pos, parent=None, image_name="", isInteractive=False):
         self.Image = image
         self.BaseImage = image.copy()
         self.Name  = name
+
+        self._interactive = isInteractive
         
 
         self.get_offset_x = lambda:0
@@ -14,7 +16,12 @@ class Element:
         self._parent = parent
         self.Parent  = parent
 
-        self.updateFunction = lambda object: False
+        self.pressed = None
+        self.released = None
+        self.held_down = None
+        self.image_name = image_name
+        
+        self.update_function = lambda self, screen, *args, **kwargs: False
         
         
 
@@ -52,15 +59,25 @@ class Element:
     def Parent(self):
         return self._parent
     
+    @property
+    def Interactive(self):
+        return self._interactive
+    
+    @Interactive.setter
+    def Interactive(self, value):
+
+        if self._parent is not None:
+            self._parent.setElementInteractive(self, value)
+
+        return value
+    
     @Parent.setter
     def Parent(self, newParent):
-        if self._parent != None:
-            try:
-                self._parent.removeElement(self)
-            except:
-                pass
-            self._parent.appendElement(self)
-            self._parent = newParent
+        if self._parent is not None:
+            self._parent.removeElement(self)
+        if newParent is not None:
+            newParent.appendElement(self)
+        self._parent = newParent
     
     def update_hitbox(self):
         self.Hitbox.x = self._x + self.get_offset_x()
@@ -69,14 +86,6 @@ class Element:
 
         
     
-    def pressed(self, *args, **kwargs):
-        pass
-
-    def released(self, *args, **kwargs):
-        pass
-
-    def held_down(self, *args, **kwargs):
-        pass
 
     def update(self, *args, **kwargs):
         self.updateFunction(self)
@@ -162,10 +171,16 @@ class Element:
         self.update_hitbox()
         self._alignMode = "BottomRight"
 
-    def update(self, update_function = lambda object:False, screen = None):
-        update_function(self)
+    @staticmethod
+    def post_update(self, screen, *args, **kwargs):
+        pass
 
-        self.draw(screen)
+    def update(self, screen, *args, **kwargs):
+        self.update_function(self, screen, *args, **kwargs)
+
+        self.post_update(self, screen, *args, **kwargs)
+        
+        self.draw(screen, *args, **kwargs)
 
     def move_forwards(self, amount):
         if self.Parent != None and self in self.Parent.Elements:

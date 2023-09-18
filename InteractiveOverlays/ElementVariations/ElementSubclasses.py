@@ -81,7 +81,7 @@ class Text(Element):
         self.Hitbox.x, self.Hitbox.y = self.x + self.get_offset_x(), self.y + self.get_offset_y()
     
 
-    def draw(self, screen=None):
+    def draw(self, screen=None, *args, **kwargs):
         if screen != None:
 
             screen.blit(self.RenderedText, (self.x + self.get_offset_x(), self.y + self.get_offset_y()))
@@ -89,73 +89,16 @@ class Text(Element):
 
 class StillImage(Element):
 
-    def __init__(self, name, image, pos, parent=None):
-        super().__init__(name, image, pos, parent)
+    def __init__(self, name, image, pos, parent=None, image_name=""):
+        super().__init__(name, image, pos, parent, image_name=image_name)
     
-    def draw(self, screen=None):
+    def draw(self, screen=None, *args, **kwargs):
         if screen != None:
             screen.blit(self.Image, (self.x + self.get_offset_x(), self.y + self.get_offset_y()))
 
-class Animation(Element):
-
-    def __init__(self, name, pos, parent=None):
-        super().__init__(name, None, pos, parent)
-
-        self.Images = []
-        self.FPS = 0
-        self.CurrentFrame = None
-        self.CurrentFrameIndex = 0
-        self.LastFrameChange = None
-        self.paused = False
-
-    def addImage(self, image:(pygame.Surface), index:(None|int)=None):
-        """
-        Add an image to the animation.
-
-        if index is None, then the image will be added to the end of the animation.
-        
-        Else, the image will be inserted into the animation at the given index
-        """
-
-        if image is not pygame.Surface:
-            raise ValueError("Image must be of type pygame.Surface")
-        
-        if index is not None and type(index) != int:
-            raise ValueError("Index must be an integer value or of type None")
 
 
-        if index is not None:
-            self.Images.append(image)
-        else:
-            self.Images.insert(index, image)
-
-    def removeImage(self, image:(None|pygame.Surface)=None, index:(None|int)=None):
-        """
-        Remove an image from the animation.
-        
-        If an image is not passed, but an index is provided, the image will be removed by deleting the index.
-        If an index is not provided, then the image will be removed through the list.remove method.
-        
-        if neither are provided, nothing will be removed."""
 
 
-        if image is None and type(index) == int:
-            del self.Images[index]
 
-        elif index is None and type(image) == pygame.Surface:
-            self.Images.remove(image)
-        
-    
-    def update(self, currentTime, screen=None):
-        if len(self.Images) != 0:
-            if currentTime - self.LastFrameChanged > 1/self.FPS:
-                self.CurrentFrameIndex = (self.CurrentFrameIndex + 1) % len(self.Images)-1
-            if not self.paused:
-                self.CurrentFrame = self.Images[self.CurrentFrameIndex]
 
-        self.draw(screen)
-            
-
-    def draw(self, screen=None):
-        if screen != None and self.CurrentFrame != None:
-            screen.blit(self.CurrentFrame, (self.x + self.get_offset_x(), self.y + self.get_offset_y()))

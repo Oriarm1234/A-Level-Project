@@ -1,64 +1,145 @@
-import threading
-import time
+import pygame
+from InteractiveOverlays import *
+from OverlayDefinitions import *
+import json
+settings = json.load(open("Settings.json", "r"))
 
-class Event:
-  def __init__(self,name):
-    self._flag = False
-    self.name = name
+settings['brightness'] = brightness = settings.get('brightness', 100)
 
-  def set(self, percentage):
-    self._flag = percentage == 100
-    self._percentage = percentage
+brightnessLayer = pygame.Surface((1060, 600), pygame.SRCALPHA)
+brightnessLayer.fill((0,0,0, 200 - brightness*2))
 
-  def is_set(self):
-    return self._flag
+overlayManager = OverlayManager("OverlayManager",
+                                (1060,600),
+                                (0,0),
+                                [pygame.SRCALPHA],
+                                [])
 
-  def percentage(self):
-    return self._percentage
+def preDraw(self, *args, **kwargs):
+    self._screen.fill((0,0,0,0))
 
-def load_files(event):
-  # Load game files in the background
-  percentage = 0
-  a = [1,2,3,4,5,6,7,8,9,10]
-  for file in a:
-    percentage += 10
-    event.set(percentage)
-    time.sleep(0.4)
-    # Do something with the file
+def preUpdate(overlayManager, *args, **kwargs):
+    mousePressed = kwargs.get('mousePressed', [False, False, False, False, False])
+    keysPressed = kwargs.get('keysPressed', [])
 
-def generate_terrain(event):
-  # Generate terrain in the background
-  percentage = 0
-  
-  a = [1,2,3,4,5,6,7,8,9,10]
-  for point in a:
-    percentage += 10
-    event.set(percentage)
-    time.sleep(0.2)
-    # Do something with the point
-
-def play_animation(*events):
-  # Play animation on the screen
-  # Wait for the two threads to finish
-  is_set = all(list(event.is_set() for event in events))
-  while not is_set:
-    is_set = all(list(event.is_set() for event in events))
-    message = ", ".join(f"{event.name}: {event.percentage()}%" for event in events)
-    print(message)
+    if mousePressed[0] and not overlayManager.getStateEvent("mousePressed-0"):
+        overlayManager.setStateEvent("mousePressed-0", True)
+        mousePos = kwargs.get('mousePos', (0,0))
 
 
-if __name__ == "__main__":
-  # Create two threads
 
-  load_files_event = Event("load_files")
-  generate_terrain_event = Event("gen_terrain")
+        overlays = overlayManager.getVisibleOverlays()
 
-  load_files_thread = threading.Thread(target=load_files,args=[load_files_event])
-  generate_terrain_thread = threading.Thread(target=generate_terrain,args=[generate_terrain_event])
+        for overlay in overlays:
 
-  # Start the threads
-  load_files_thread.start()
-  generate_terrain_thread.start()
+            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive = True)
+            
+            pressed = False
 
-  # Play the animation
-  play_animation(load_files_event,generate_terrain_event)
+            for element in elements[::-1]:
+                if element.image_name == "button.png":
+                    size = element.Hitbox.w, element.Hitbox.h
+                    element.BaseImage = pygame.image.load("pressed_button.png")
+                    element.resize_image(*size)
+
+                
+
+        
+        
+    elif not mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
+        overlayManager.setStateEvent("mousePressed-0", False)
+        mousePos = kwargs.get('mousePos', (0,0))
+
+
+
+        overlays = overlayManager.getVisibleOverlays()
+
+        for overlay in overlays:
+
+            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive = True)
+            
+            pressed = False
+
+            for element in elements[::-1]:
+                if element.image_name == "button.png":
+                    size = element.Hitbox.w, element.Hitbox.h
+                    element.BaseImage = pygame.image.load("button.png")
+                    element.resize_image(*size)
+                if element.pressed != None:
+                    
+                    element.pressed(mousePos)
+                    pressed = True
+                    break
+
+            if pressed: break
+
+
+    if keysPressed != []:
+        if keysPressed[pygame.K_ESCAPE] and not overlayManager.getStateEvent("k_escape"):
+            overlayManager.setStateEvent("k_escape",True)
+            visibleOverlays = overlayManager.getVisibleOverlays()
+            mainMenu = overlayManager.getOverlayByName("MainMenu")
+            if mainMenu in visibleOverlays:
+                pygame.quit()
+                quit()
+            else:
+                for overlay in visibleOverlays:
+                    if overlay.Name in ["HelpMenu","LoadGameMenu","SettingsMenu", "NewGameMenu"]:
+                        for overlay in visibleOverlays:
+                            overlayManager.SetOverlayVisible(overlay, False)
+                        overlayManager.SetOverlayVisible(mainMenu, True)
+                        break
+        elif not keysPressed[pygame.K_ESCAPE]:
+            overlayManager.setStateEvent("k_escape", False)
+                        
+
+    
+
+            
+
+overlayManager.preDraw = preDraw
+overlayManager.preUpdate = preUpdate
+
+
+
+overlayManager.appendOverlay(mainMenu)
+overlayManager.appendOverlay(newGameMenu)
+overlayManager.appendOverlay(settingsMenu)
+overlayManager.appendOverlay(helpMenu)
+overlayManager.appendOverlay(loadGameMenu)
+
+
+
+
+
+
+
+
+
+screen = pygame.display.set_mode((1060, 600))
+screen.fill((255,255,255))
+
+overlayManager.SetOverlayVisible(mainMenu)
+
+while True:
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+
+        
+        
+
+    overlayManager.update(keysPressed = pygame.key.get_pressed(),
+                          keysFocused = pygame.key.get_focused(),
+                          mousePressed = pygame.mouse.get_pressed(),
+                          mouseFocused = pygame.mouse.get_focused(),
+                          mousePos = pygame.mouse.get_pos(),
+                          mouseRel = pygame.mouse.get_rel())
+
+    screen.fill((255,255,255))
+    screen.blit(overlayManager.Screen, (0,0))
+
+    screen.blit(brightnessLayer, (0,0))
+    pygame.display.update()
