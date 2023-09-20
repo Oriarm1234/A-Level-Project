@@ -78,13 +78,13 @@ class Text(Element):
         
         self.RenderedText = self.FontObject.render(self._text, True, self._color)
         self.Hitbox = self.RenderedText.get_rect()
-        self.Hitbox.x, self.Hitbox.y = self.x + self.get_offset_x(), self.y + self.get_offset_y()
+        self.Hitbox.x, self.Hitbox.y = self.x, self.y
     
 
     def draw(self, screen=None, *args, **kwargs):
         if screen != None:
 
-            screen.blit(self.RenderedText, (self.x + self.get_offset_x(), self.y + self.get_offset_y()))
+            screen.blit(self.RenderedText, (self.x, self.y))
 
 
 class StillImage(Element):
@@ -94,9 +94,117 @@ class StillImage(Element):
     
     def draw(self, screen=None, *args, **kwargs):
         if screen != None:
-            screen.blit(self.Image, (self.x + self.get_offset_x(), self.y + self.get_offset_y()))
+            screen.blit(self.Image, (self.x, self.y))
 
 
+
+class Rectangle(Element):
+
+    def __init__(self, 
+                 name, 
+                 pos, 
+                 size, 
+                 parent=None, 
+                 colour = (0,0,0), 
+                 borderThickness = 0,
+                 borderRadius = -1,
+                 borderTopLeftRadius = -1,
+                 borderTopRightRadius = -1,
+                 borderBottomLeftRadius = -1,
+                 borderBottomRightRadius = -1):
+        
+        Hitbox = pygame.Rect(*pos, *size)
+
+        super().__init__(name, None, pos, parent, Hitbox=Hitbox)
+
+        
+        self.Colour = colour
+
+        self.BorderThickness = borderThickness
+        self.BorderRadius = borderRadius
+        self.BorderTopLeftRadius = borderTopLeftRadius
+        self.BorderTopRightRadius = borderTopRightRadius
+        self.BorderBottomLeftRadius = borderBottomLeftRadius
+        self.BorderBottomRightRadius = borderBottomRightRadius
+
+    def draw(self, screen=None, *args, **kwargs):
+        if screen is not None:
+            pygame.draw.rect(screen, 
+                             self.Colour, 
+                             self.Hitbox, 
+                             self.BorderThickness,
+                             self.BorderRadius,
+                             self.BorderTopLeftRadius,
+                             self.BorderTopRightRadius,
+                             self.BorderBottomLeftRadius,
+                             self.BorderBottomRightRadius)
+        
+
+
+class Circle(Element):
+
+    def __init__(self, 
+                 name, 
+                 pos, 
+                 parent=None, 
+                 colour = (0,0,0), 
+                 borderThickness = 0,
+                 radius = 5):
+        
+        Hitbox = pygame.Rect(*pos, radius*2, radius*2)
+        self.Radius = radius
+
+        super().__init__(name, None, pos, parent, Hitbox=Hitbox)
+
+        self.Colour = colour
+
+        self.BorderThickness = borderThickness
+        
+
+    def update_hitbox(self):
+        if self.Hitbox is not None:
+            self.Hitbox.x = self.x
+            self.Hitbox.y = self.y
+
+
+
+    def draw(self, screen=None, *args, **kwargs):
+        if screen is not None:
+            pygame.draw.circle(screen,
+                               self.Colour,
+                               (self.x + self.Radius, self.y + self.Radius),
+                               self.Radius,
+                               self.BorderThickness)
+            
+            
+            
+#TODO: All these basic shapes should be implemented!
+
+class Line(Element):
+
+    def __init__(self, 
+                 name, 
+                 pos, 
+                 size, 
+                 parent=None, 
+                 colour = (0,0,0), 
+                 borderThickness = 0,
+                 radius = 5):
+        super().__init__(name, None, pos, parent)
+
+        self.Hitbox = pygame.Rect(*pos, *size)
+        self.Colour = colour
+
+        self.BorderThickness = borderThickness
+        self.Radius = radius
+
+    def draw(self, screen=None, *args, **kwargs):
+        if screen is not None:
+            pygame.draw.line(
+                screen,
+                self.Colour.green,
+                self.pos
+            )
 
 
 
@@ -111,25 +219,32 @@ class Group(Element):
     @property
     def Elements(self):
         return list(self._elements.values())
+        
 
     def append_element(self, element):
-        if element not in [None, *self._elements]:
+        if element not in [None, *list(self._elements.values())] and element.Name not in self._elements:
             self._elements[element.Name] = element
         
     def remove_element(self, element):
-        if element in self._elements:
+        if element.Name in self._elements:
             del self._elements[element.Name]
+        elif element in list(self._elements.values()):
+            index = list(self._elements.values()).index(element)
+            name = list(self._elements.keys())[index]
+            del self._elements[name]
 
     def IsElementAtPos(self, x, y, onlyInteractive=False):
 
-        SortedElements = sorted(self._elements[["allElements", "interactive"][onlyInteractive]], key=lambda Element:Element.Hitbox.collidepoint(x,y))
+        SortedElements = sorted(filter(lambda Element: (not onlyInteractive) + Element._interactive, self.Elements),
+                                 key=lambda Element:Element.Hitbox.collidepoint(x,y))
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x,y):
             return True
         return False
     
     def GetElementAtPos(self, x, y, onlyInteractive=False):
-        SortedElements = sorted(self._elements[["allElements", "interactive"][onlyInteractive]], key=lambda Element:Element.Hitbox.collidepoint(x,y))
+        SortedElements = sorted(filter(lambda Element: (not onlyInteractive) + Element._interactive, self.Elements), 
+                                key=lambda Element:Element.Hitbox.collidepoint(x,y))
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x,y):
             return SortedElements[0]
@@ -137,14 +252,11 @@ class Group(Element):
     
     def GetElementsAtPos(self, x, y, onlyInteractive=False):
 
-        return list(filter(lambda Element: Element.Hitbox.collidepoint(x,y), self._elements[["allElements", "interactive"][onlyInteractive]]))
+        return list(filter(lambda Element: Element.Hitbox.collidepoint(x,y), 
+                           filter(lambda Element: (not onlyInteractive) + Element._interactive, self.Elements)))
 
             
     def intereacted_at_pos(self, pos):
         pass
 
-    def draw(self):
-        pass
 
-    def update(self):
-        pass

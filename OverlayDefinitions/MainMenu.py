@@ -115,14 +115,14 @@ QuitButton.resize_image_by_amount(40,20)
 
 Spacing = 16
 
-LoadGameLabel.y = NewGameButton.Hitbox.h + NewGameButton.y + Spacing
-LoadGameButton.y = NewGameButton.Hitbox.h + NewGameButton.y + Spacing
-SettingsLabel.y = LoadGameButton.Hitbox.h + LoadGameButton.y + Spacing
-SettingsButton.y = LoadGameButton.Hitbox.h + LoadGameButton.y + Spacing
-HelpLabel.y =  SettingsButton.Hitbox.h + SettingsButton.y + Spacing
-HelpButton.y = SettingsButton.Hitbox.h + SettingsButton.y + Spacing
-QuitLabel.y =  HelpButton.Hitbox.h + HelpButton.y + Spacing
-QuitButton.y = HelpButton.Hitbox.h + HelpButton.y + Spacing
+LoadGameLabel.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
+LoadGameButton.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
+SettingsLabel.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
+SettingsButton.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
+HelpLabel.y =  SettingsButton.Hitbox.h + SettingsButton._y + Spacing
+HelpButton.y = SettingsButton.Hitbox.h + SettingsButton._y + Spacing
+QuitLabel.y =  HelpButton.Hitbox.h + HelpButton._y + Spacing
+QuitButton.y = HelpButton.Hitbox.h + HelpButton._y + Spacing
 
 MainMenuLabel = Text(
     "Main Menu", 

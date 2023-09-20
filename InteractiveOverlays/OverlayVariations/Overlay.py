@@ -37,7 +37,7 @@ class Overlay:
     def Visible(self): return self._visible
 
     @property
-    def Pos(self): return self._pos
+    def Pos(self): return self._pos[0] + self.get_offset_x(), self.pos[1] + self.get_offset_y()
 
     @property
     def Parent(self): return self._parent
@@ -91,9 +91,8 @@ class Overlay:
     
     @Pos.setter
     def Pos(self, value):
-        self._hitbox.x = value[0]
-        self._hitbox.y = value[1]
         self._pos = value
+        self.update_hitbox()
 
     
 

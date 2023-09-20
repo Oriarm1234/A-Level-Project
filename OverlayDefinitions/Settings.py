@@ -22,3 +22,5 @@ SettingsLabel = Text(
 
 SettingsLabel.align_to_center()
 SettingsLabel.set_underline(True)
+
+

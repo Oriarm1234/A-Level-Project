@@ -2,9 +2,9 @@ import pygame
 
 class Element:
 
-    def __init__(self, name, image, pos, parent=None, image_name="", isInteractive=False):
+    def __init__(self, name, image, pos, parent=None, image_name="", isInteractive=False, Hitbox=None):
         self.Image = image
-        self.BaseImage = image.copy()
+        self.BaseImage = image.copy() if image is not None else None
         self.Name  = name
 
         self._interactive = isInteractive
@@ -23,12 +23,13 @@ class Element:
         
         self.update_function = lambda self, screen, *args, **kwargs: False
         
-        
 
         if image != None:
             self.Hitbox:pygame.Rect
             self.Hitbox = self.Image.get_rect()
             self.Hitbox.x,self.Hitbox.y = pos
+        else:
+            self.Hitbox = Hitbox
 
         self._x, self._y = pos
         self.x,self.y = pos
@@ -37,22 +38,24 @@ class Element:
 
     @property
     def x(self):
-        return self._x
+        return self._x + self.get_offset_x()
     
     @property
     def y(self):
-        return self._y
+        return self._y+self.get_offset_y()
     
     @x.setter
     def x(self, value):
         self._x = value
-        self.Hitbox.x = value + self.get_offset_x()
+        if self.Hitbox is not None:
+            self.update_hitbox()
         return value
     
     @y.setter
     def y(self, value):
         self._y = value
-        self.Hitbox.y = value + self.get_offset_y()
+        if self.Hitbox is not None:
+            self.update_hitbox()
         return value
     
     @property
@@ -80,8 +83,9 @@ class Element:
         self._parent = newParent
     
     def update_hitbox(self):
-        self.Hitbox.x = self._x + self.get_offset_x()
-        self.Hitbox.y = self._y + self.get_offset_y()
+        if self.Hitbox is not None:
+            self.Hitbox.x = self._x + self.get_offset_x()
+            self.Hitbox.y = self._y + self.get_offset_y()
 
 
         
@@ -118,58 +122,67 @@ class Element:
         return self._alignMode
 
     def align_to_center(self):
-        self.get_offset_x = lambda: -self.Hitbox.w/2
-        self.get_offset_y = lambda: -self.Hitbox.h/2
-        self.update_hitbox()
-        self._alignMode = "Center"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w/2
+            self.get_offset_y = lambda: -self.Hitbox.h/2
+            self.update_hitbox()
+            self._alignMode = "Center"
 
     def align_to_top_left(self):
-        self.get_offset_x = lambda: -self.Hitbox.w
-        self.get_offset_y = lambda: -self.Hitbox.h
-        self.update_hitbox()
-        self._alignMode = "TopLeft"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w
+            self.get_offset_y = lambda: -self.Hitbox.h
+            self.update_hitbox()
+            self._alignMode = "TopLeft"
     
     def align_to_top_middle(self):
-        self.get_offset_x = lambda: -self.Hitbox.w/2
-        self.get_offset_y = lambda: -self.Hitbox.h
-        self.update_hitbox()
-        self._alignMode = "TopMiddle"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w/2
+            self.get_offset_y = lambda: -self.Hitbox.h
+            self.update_hitbox()
+            self._alignMode = "TopMiddle"
     
     def align_to_top_right(self):
-        self.get_offset_x = lambda: 0
-        self.get_offset_y = lambda: -self.Hitbox.h
-        self.update_hitbox()
-        self._alignMode = "TopRight"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: 0
+            self.get_offset_y = lambda: -self.Hitbox.h
+            self.update_hitbox()
+            self._alignMode = "TopRight"
     
     def align_to_middle_right(self):
-        self.get_offset_x = lambda: 0
-        self.get_offset_y = lambda: -self.Hitbox.h/2
-        self.update_hitbox()
-        self._alignMode = "MiddleRight"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: 0
+            self.get_offset_y = lambda: -self.Hitbox.h/2
+            self.update_hitbox()
+            self._alignMode = "MiddleRight"
 
     def align_to_middle_left(self):
-        self.get_offset_x = lambda: -self.Hitbox.w
-        self.get_offset_y = lambda: -self.Hitbox.h/2
-        self.update_hitbox()
-        self._alignMode = "MiddleLeft"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w
+            self.get_offset_y = lambda: -self.Hitbox.h/2
+            self.update_hitbox()
+            self._alignMode = "MiddleLeft"
     
     def align_to_bottom_left(self):
-        self.get_offset_x = lambda: -self.Hitbox.w
-        self.get_offset_y = lambda: 0
-        self.update_hitbox()
-        self._alignMode = "BottomLeft"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w
+            self.get_offset_y = lambda: 0
+            self.update_hitbox()
+            self._alignMode = "BottomLeft"
     
     def align_to_bottom_middle(self):
-        self.get_offset_x = lambda: -self.Hitbox.w/2
-        self.get_offset_y = lambda: 0
-        self.update_hitbox()
-        self._alignMode = "BottomMiddle"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: -self.Hitbox.w/2
+            self.get_offset_y = lambda: 0
+            self.update_hitbox()
+            self._alignMode = "BottomMiddle"
     
     def align_to_bottom_right(self):
-        self.get_offset_x = lambda: 0
-        self.get_offset_y = lambda: 0
-        self.update_hitbox()
-        self._alignMode = "BottomRight"
+        if self.Hitbox is not None:
+            self.get_offset_x = lambda: 0
+            self.get_offset_y = lambda: 0
+            self.update_hitbox()
+            self._alignMode = "BottomRight"
 
     @staticmethod
     def post_update(self, screen, *args, **kwargs):
