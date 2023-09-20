@@ -34,17 +34,20 @@ def preUpdate(overlayManager, *args, **kwargs):
 
             elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive = True)
             
-            pressed = False
+            if elements != []:
 
-            for element in elements[::-1]:
+                element = elements[-1]
+
+                overlay.Highlighted = element
                 if element.image_name == "button.png":
                     size = element.Hitbox.w, element.Hitbox.h
                     element.BaseImage = pygame.image.load("pressed_button.png")
                     element.resize_image(*size)
 
+
                 
 
-        
+
         
     elif not mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
         overlayManager.setStateEvent("mousePressed-0", False)
@@ -56,11 +59,11 @@ def preUpdate(overlayManager, *args, **kwargs):
 
         for overlay in overlays:
 
-            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive = True)
             
-            pressed = False
+            if overlay.Highlighted != None:
+                element = overlay.Highlighted
+                overlay.Highlighted = None
 
-            for element in elements[::-1]:
                 if element.image_name == "button.png":
                     size = element.Hitbox.w, element.Hitbox.h
                     element.BaseImage = pygame.image.load("button.png")
@@ -70,8 +73,6 @@ def preUpdate(overlayManager, *args, **kwargs):
                     element.pressed(mousePos)
                     pressed = True
                     break
-
-            if pressed: break
 
 
     if keysPressed != []:
