@@ -102,3 +102,49 @@ class StillImage(Element):
 
 
 
+class Group(Element):
+    def __init__(self, name, pos, parent=None):
+        super().__init__(name, None, pos, parent)
+
+        self._elements = {}
+
+    @property
+    def Elements(self):
+        return list(self._elements.values())
+
+    def append_element(self, element):
+        if element not in [None, *self._elements]:
+            self._elements[element.Name] = element
+        
+    def remove_element(self, element):
+        if element in self._elements:
+            del self._elements[element.Name]
+
+    def IsElementAtPos(self, x, y, onlyInteractive=False):
+
+        SortedElements = sorted(self._elements[["allElements", "interactive"][onlyInteractive]], key=lambda Element:Element.Hitbox.collidepoint(x,y))
+
+        if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x,y):
+            return True
+        return False
+    
+    def GetElementAtPos(self, x, y, onlyInteractive=False):
+        SortedElements = sorted(self._elements[["allElements", "interactive"][onlyInteractive]], key=lambda Element:Element.Hitbox.collidepoint(x,y))
+
+        if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x,y):
+            return SortedElements[0]
+        return None
+    
+    def GetElementsAtPos(self, x, y, onlyInteractive=False):
+
+        return list(filter(lambda Element: Element.Hitbox.collidepoint(x,y), self._elements[["allElements", "interactive"][onlyInteractive]]))
+
+            
+    def intereacted_at_pos(self, pos):
+        pass
+
+    def draw(self):
+        pass
+
+    def update(self):
+        pass
