@@ -2,7 +2,7 @@ from InteractiveOverlays import *
 import pygame
 newGameMenu = Overlay(("NewGameMenu"),
                       (1060,600),
-                      [0,0],
+                      (0,0),
                       None,
                       [pygame.SRCALPHA],
                       [])
@@ -28,23 +28,25 @@ SaveSlots = []
 
 for i in range(5):
     SaveSlotButton = StillImage(
-        "SaveSlotButton-"+str(i+1),
+        f"SaveSlotButton-{str(i + 1)}",
         pygame.image.load("button.png"),
-        (530,200),
+        (530, 200),
         newGameMenu,
-        image_name="button.png")
+        image_name="button.png",
+    )
 
     SaveSlotLabel = Text(
-        "Save Slot "+str(i+1), 
-        "copperplategothic", 
-        32, 
-        (0,0,0), 
-        (530,200), 
-        "SaveSlotLabel-"+str(i+1),
-        newGameMenu)
-    
+        f"Save Slot {str(i + 1)}",
+        "copperplategothic",
+        32,
+        (0, 0, 0),
+        (530, 200),
+        f"SaveSlotLabel-{str(i + 1)}",
+        newGameMenu,
+    )
+
     SaveSlots.append((SaveSlotButton, SaveSlotLabel))
-    
+
     SaveSlotButton.align_to_center()
     SaveSlotLabel.align_to_center()
 

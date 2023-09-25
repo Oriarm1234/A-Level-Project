@@ -2,40 +2,37 @@ import pygame
 from InteractiveOverlays import *
 from OverlayDefinitions import *
 import json
+
 settings = json.load(open("Settings.json", "r"))
 
-settings['brightness'] = brightness = settings.get('brightness', 100)
+settings["brightness"] = brightness = settings.get("brightness", 100)
 
 brightnessLayer = pygame.Surface((1060, 600), pygame.SRCALPHA)
-brightnessLayer.fill((0,0,0, 200 - brightness*2))
+brightnessLayer.fill((0, 0, 0, 200 - brightness * 2))
 
-overlayManager = OverlayManager("OverlayManager",
-                                (1060,600),
-                                (0,0),
-                                [pygame.SRCALPHA],
-                                [])
+overlayManager = OverlayManager(
+    "OverlayManager", (1060, 600), (0, 0), [pygame.SRCALPHA], []
+)
+
 
 def preDraw(self, *args, **kwargs):
-    self._screen.fill((0,0,0,0))
+    self._screen.fill((0, 0, 0, 0))
+
 
 def preUpdate(overlayManager, *args, **kwargs):
-    mousePressed = kwargs.get('mousePressed', [False, False, False, False, False])
-    keysPressed = kwargs.get('keysPressed', [])
+    mousePressed = kwargs.get("mousePressed", [False, False, False, False, False])
+    keysPressed = kwargs.get("keysPressed", [])
 
     if mousePressed[0] and not overlayManager.getStateEvent("mousePressed-0"):
         overlayManager.setStateEvent("mousePressed-0", True)
-        mousePos = kwargs.get('mousePos', (0,0))
-
-
+        mousePos = kwargs.get("mousePos", (0, 0))
 
         overlays = overlayManager.getVisibleOverlays()
 
         for overlay in overlays:
+            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive=True)
 
-            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive = True)
-            
             if elements != []:
-
                 element = elements[-1]
 
                 overlay.Highlighted = element
@@ -44,22 +41,13 @@ def preUpdate(overlayManager, *args, **kwargs):
                     element.BaseImage = pygame.image.load("pressed_button.png")
                     element.resize_image(*size)
 
-
-                
-
-
-        
     elif not mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
         overlayManager.setStateEvent("mousePressed-0", False)
-        mousePos = kwargs.get('mousePos', (0,0))
-
-
+        mousePos = kwargs.get("mousePos", (0, 0))
 
         overlays = overlayManager.getVisibleOverlays()
 
         for overlay in overlays:
-
-            
             if overlay.Highlighted != None:
                 element = overlay.Highlighted
                 overlay.Highlighted = None
@@ -69,15 +57,15 @@ def preUpdate(overlayManager, *args, **kwargs):
                     element.BaseImage = pygame.image.load("button.png")
                     element.resize_image(*size)
                 if element.pressed != None:
-                    
                     element.pressed(mousePos)
                     pressed = True
                     break
 
-
     if keysPressed != []:
-        if keysPressed[pygame.K_ESCAPE] and not overlayManager.getStateEvent("k_escape"):
-            overlayManager.setStateEvent("k_escape",True)
+        if keysPressed[pygame.K_ESCAPE] and not overlayManager.getStateEvent(
+            "k_escape"
+        ):
+            overlayManager.setStateEvent("k_escape", True)
             visibleOverlays = overlayManager.getVisibleOverlays()
             mainMenu = overlayManager.getOverlayByName("MainMenu")
             if mainMenu in visibleOverlays:
@@ -85,22 +73,22 @@ def preUpdate(overlayManager, *args, **kwargs):
                 quit()
             else:
                 for overlay in visibleOverlays:
-                    if overlay.Name in ["HelpMenu","LoadGameMenu","SettingsMenu", "NewGameMenu"]:
+                    if overlay.Name in [
+                        "HelpMenu",
+                        "LoadGameMenu",
+                        "SettingsMenu",
+                        "NewGameMenu",
+                    ]:
                         for overlay in visibleOverlays:
                             overlayManager.SetOverlayVisible(overlay, False)
                         overlayManager.SetOverlayVisible(mainMenu, True)
                         break
         elif not keysPressed[pygame.K_ESCAPE]:
             overlayManager.setStateEvent("k_escape", False)
-                        
 
-    
-
-            
 
 overlayManager.preDraw = preDraw
 overlayManager.preUpdate = preUpdate
-
 
 
 overlayManager.appendOverlay(mainMenu)
@@ -110,15 +98,8 @@ overlayManager.appendOverlay(helpMenu)
 overlayManager.appendOverlay(loadGameMenu)
 
 
-
-
-
-
-
-
-
 screen = pygame.display.set_mode((1060, 600))
-screen.fill((255,255,255))
+screen.fill((255, 255, 255))
 
 overlayManager.SetOverlayVisible(mainMenu)
 
@@ -129,18 +110,17 @@ while True:
             pygame.quit()
             quit()
 
-        
-        
+    overlayManager.update(
+        keysPressed=pygame.key.get_pressed(),
+        keysFocused=pygame.key.get_focused(),
+        mousePressed=pygame.mouse.get_pressed(),
+        mouseFocused=pygame.mouse.get_focused(),
+        mousePos=pygame.mouse.get_pos(),
+        mouseRel=pygame.mouse.get_rel(),
+    )
 
-    overlayManager.update(keysPressed = pygame.key.get_pressed(),
-                          keysFocused = pygame.key.get_focused(),
-                          mousePressed = pygame.mouse.get_pressed(),
-                          mouseFocused = pygame.mouse.get_focused(),
-                          mousePos = pygame.mouse.get_pos(),
-                          mouseRel = pygame.mouse.get_rel())
+    screen.fill((255, 255, 255))
+    screen.blit(overlayManager.Screen, (0, 0))
 
-    screen.fill((255,255,255))
-    screen.blit(overlayManager.Screen, (0,0))
-
-    screen.blit(brightnessLayer, (0,0))
+    screen.blit(brightnessLayer, (0, 0))
     pygame.display.update()

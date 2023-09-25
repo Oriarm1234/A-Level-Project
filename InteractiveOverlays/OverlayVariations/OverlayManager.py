@@ -2,18 +2,18 @@ import pygame
 
 
 class OverlayManager:
-
-    def __init__(self, 
-                 Name:str, 
-                 Size:list[int], 
-                 Pos:list[int],
-                 ScreenFlags:list[int] = [],
-                 Overlays:list = [],
-                 Colour:list[int] = (0,0,0,0)):
-        
+    def __init__(
+        self,
+        Name: str,
+        Size: tuple[int, int],
+        Pos: tuple[int, int],
+        ScreenFlags: list[int] = [],
+        Overlays: list = [],
+        Colour: tuple[int, int, int, int] = (0, 0, 0, 0),
+    ):
         self._overlays = Overlays
         self._screen = pygame.Surface(Size, *ScreenFlags)
-        self._screen.fill((0,0,0,0))
+        self._screen.fill((0, 0, 0, 0))
 
         self._hitbox = self._screen.get_rect()
         self._name = Name
@@ -24,30 +24,32 @@ class OverlayManager:
 
         self.held_down = {}
 
+    @property
+    def Size(self):
+        return self._size
 
     @property
-    def Size(self): return self._size
+    def ScreenFlags(self):
+        return self._screen_flags
 
     @property
-    def ScreenFlags(self): return self._screen_flags
+    def Name(self):
+        return self._name
 
     @property
-    def Name(self): return self._name
+    def Overlays(self):
+        return self._overlays
 
     @property
-    def Overlays(self): return self._overlays
-
-    @property
-    def Screen(self): return self._screen
-
+    def Screen(self):
+        return self._screen
 
     def getStateEvent(self, event):
         return self.held_down.get(event, False)
-    
+
     def setStateEvent(self, event, state):
         self.held_down[event] = state
         return state
-
 
     def appendOverlay(self, overlay):
         if overlay._parent is not None:
@@ -66,56 +68,55 @@ class OverlayManager:
         self._overlays.insert(index, overlay)
         overlay._parent = self
 
-
     def moveOverlayForward(self, overlay, amount):
         if overlay in self.Overlays:
             index = self._overlays.index(overlay)
 
-            self.insertOverlay(overlay, max(index+amount, 0))
-        
+            self.insertOverlay(overlay, max(index + amount, 0))
 
     def moveOverlayBackward(self, overlay, amount):
         if overlay in self._overlays:
             index = self._overlays.index(overlay)
-            
-            self.insertOverlay(overlay, max(index-amount, 0))
-        
+
+            self.insertOverlay(overlay, max(index - amount, 0))
+
     def IsOverlayAtPos(self, x, y):
+        SortedOverlays = list(
+            filter(
+                self._overlays, key=lambda Overlay: Overlay._hitbox.collidepoint(x, y)
+            ) # type: ignore
+        )
 
-        SortedOverlays = list(filter(self._overlays, key=lambda Overlay:Overlay._hitbox.collidepoint(x,y)))
-
-        if SortedOverlays != [] and SortedOverlays[0]._hitbox.collidepoint(x,y):
+        if SortedOverlays != [] and SortedOverlays[0]._hitbox.collidepoint(x, y):
             return True
         return False
-    
+
     def GetOverlayAtPos(self, x, y):
-        overlayAtPos = None
-        for Overlay in self._overlays[::-1]:
-            if Overlay._hitbox.collidepoint(x,y):
-                overlayAtPos = Overlay
-                break
+        return next(
+            (
+                Overlay
+                for Overlay in self._overlays[::-1]
+                if Overlay._hitbox.collidepoint(x, y)
+            ),
+            None,
+        )
 
-        return overlayAtPos
-    
     def GetOverlaysAtPos(self, x, y, shouldBeVisible=False):
+        return [
+            Overlay
+            for Overlay in self._overlays
+            if (Overlay._visible or not shouldBeVisible)
+            and Overlay._hitbox.collidepoint(x, y)
+        ]
 
-        overlaysAtPos = []
-        for Overlay in self._overlays:
-            if (Overlay._visible or not shouldBeVisible) and Overlay._hitbox.collidepoint(x,y):
-                overlaysAtPos.append(Overlay)
-
-        return overlaysAtPos
-    
     def getOverlayByName(self, name):
-        for Overlay in self._overlays:
-            if Overlay._name == name:
-                return Overlay
-            
-        return None
-    
+        return next(
+            (Overlay for Overlay in self._overlays if Overlay._name == name), None
+        )
+
     def getVisibleOverlays(self):
         return list(filter(lambda x: x._visible, self._overlays))
-    
+
     def SetOverlayVisible(self, Overlay, Visible=True):
         Overlay._visible = Visible
         self._visibleOverlay = Overlay
@@ -131,7 +132,7 @@ class OverlayManager:
     @staticmethod
     def preDraw(overlayManager, *args, **kwargs):
         pass
-    
+
     @staticmethod
     def postDraw(overlayManager, *args, **kwargs):
         pass
@@ -151,13 +152,11 @@ class OverlayManager:
     @staticmethod
     def postOverlayDraw(overlayManager, overlay, *args, **kwargs):
         pass
-    
-    
-    def update(self, *args, **kwargs):
 
+    def update(self, *args, **kwargs):
         overlays = self.getVisibleOverlays()
-    
-        self.preUpdate(self, *args, **kwargs)#
+
+        self.preUpdate(self, *args, **kwargs)  #
 
         for overlay in overlays:
             self.preOverlayUpdate(self, overlay, *args, **kwargs)
@@ -167,13 +166,10 @@ class OverlayManager:
         self.postUpdate(self, *args, **kwargs)
 
         self.preDraw(self, *args, **kwargs)
-        
+
         for overlay in overlays:
             self.preOverlayDraw(self, overlay, *args, **kwargs)
-            overlay.draw(screen = self._screen)
+            overlay.draw(screen=self._screen)
             self.postOverlayDraw(self, overlay, *args, **kwargs)
 
         self.postDraw(self, *args, **kwargs)
-        
-
-        
