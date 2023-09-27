@@ -170,7 +170,7 @@ AchievementsLabel.align_to_center()
 AchievementsLabel.set_underline(True)
 
 
-def NewGameButtonPressed(self, *args, **kwargs):
+def NewGameButtonReleased(self, *args, **kwargs):
    
     NewGameMenu = mainMenu._parent.getOverlayByName("NewGameMenu")
     
@@ -179,7 +179,7 @@ def NewGameButtonPressed(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(NewGameMenu, True)
 
-def LoadGameButtonPressed(self, *args, **kwargs):
+def LoadGameButtonReleased(self, *args, **kwargs):
    
     LoadGameMenu = mainMenu._parent.getOverlayByName("LoadGameMenu")
     
@@ -188,7 +188,7 @@ def LoadGameButtonPressed(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(LoadGameMenu, True)
 
-def SettingsButtonPressed(self, *args, **kwargs):
+def SettingsButtonReleased(self, *args, **kwargs):
    
     SettingsMenu = mainMenu._parent.getOverlayByName("SettingsMenu")
     
@@ -197,7 +197,7 @@ def SettingsButtonPressed(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(SettingsMenu, True)
 
-def HelpButtonPressed(self, *args, **kwargs):
+def HelpButtonReleased(self, *args, **kwargs):
    
     HelpMenu = mainMenu._parent.getOverlayByName("HelpMenu")
     
@@ -206,15 +206,15 @@ def HelpButtonPressed(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(HelpMenu, True)
 
-def QuitButtonPressed(self, *args, **kwargs):
+def QuitButtonReleased(self, *args, **kwargs):
     pygame.quit()
     quit()
 
-NewGameButton.pressed = NewGameButtonPressed
-LoadGameButton.pressed = LoadGameButtonPressed
-SettingsButton.pressed = SettingsButtonPressed
-HelpButton.pressed = HelpButtonPressed
-QuitButton.pressed = QuitButtonPressed
+NewGameButton.released = NewGameButtonReleased
+LoadGameButton.released = LoadGameButtonReleased
+SettingsButton.released = SettingsButtonReleased
+HelpButton.released = HelpButtonReleased
+QuitButton.released = QuitButtonReleased
 
 NewGameButton.Interactive = True
 LoadGameButton.Interactive = True

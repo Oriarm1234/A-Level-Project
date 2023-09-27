@@ -36,10 +36,18 @@ def preUpdate(overlayManager, *args, **kwargs):
                 element = elements[-1]
 
                 overlay.Highlighted = element
-                if element.image_name == "button.png":
-                    size = element.Hitbox.w, element.Hitbox.h
-                    element.BaseImage = pygame.image.load("pressed_button.png")
-                    element.resize_image(*size)
+                if element.pressed != None:
+                    element.pressed(element, mousePos)
+                    break
+                
+    elif mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
+        mousePos = kwargs.get("mousePos", (0, 0))
+
+        overlays = overlayManager.getVisibleOverlays()
+
+        for overlay in overlays:
+            if overlay.Highlighted != None and overlay.Highlighted.held_down != None:
+                overlay.Highlighted.held_down(overlay.Highlighted, mousePos)
 
     elif not mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
         overlayManager.setStateEvent("mousePressed-0", False)
@@ -52,13 +60,8 @@ def preUpdate(overlayManager, *args, **kwargs):
                 element = overlay.Highlighted
                 overlay.Highlighted = None
 
-                if element.image_name == "button.png":
-                    size = element.Hitbox.w, element.Hitbox.h
-                    element.BaseImage = pygame.image.load("button.png")
-                    element.resize_image(*size)
-                if element.pressed != None:
-                    element.pressed(mousePos)
-                    pressed = True
+                if element.released != None:
+                    element.released(element, mousePos)
                     break
 
     if keysPressed != []:
@@ -96,6 +99,7 @@ overlayManager.appendOverlay(newGameMenu)
 overlayManager.appendOverlay(settingsMenu)
 overlayManager.appendOverlay(helpMenu)
 overlayManager.appendOverlay(loadGameMenu)
+
 
 
 screen = pygame.display.set_mode((1060, 600))

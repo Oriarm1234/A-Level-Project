@@ -28,3 +28,23 @@ l = Line("testLine", (330, 299), (730, 299), settingsMenu, (0,0,0), 4)
 c = Circle("testCircle", (330,300), settingsMenu, (80,80,80),4, 8)
 r.align_to_center()
 c.align_to_center()
+
+slider = Group("Slider", (0,0), settingsMenu, (r,l,c))
+
+
+def slider_pressed(self, *args, **kwargs):
+    mousePos = args[0]
+    element = self._elements.get("testCircle", None)
+    if element is not None:
+        element.x = max(min(mousePos[0], self.x + self.width - element.Hitbox.w/2), self.x + element.Hitbox.w/2)
+    
+    for element in (element for element in settingsMenu._elements["allElements"] if element.Name == "sliderBox"):
+        settingsMenu.removeElement(element)
+        self.remove_element_by_name("sliderBox")
+    self._elements["sliderBox"] = Rectangle("sliderBox", (self.x, self.y),( self.width, self.height), settingsMenu, (255,0,0), 4)
+    
+    
+    
+slider.pressed = slider_pressed
+slider.held_down = slider_pressed
+slider.Interactive = True

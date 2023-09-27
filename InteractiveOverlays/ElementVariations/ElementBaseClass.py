@@ -2,6 +2,9 @@ import pygame
 
 
 class Element:
+    
+    __ClassName__ = "Element"
+    
     def __init__(
         self,
         name,

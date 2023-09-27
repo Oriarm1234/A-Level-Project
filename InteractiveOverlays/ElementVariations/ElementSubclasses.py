@@ -5,6 +5,7 @@ pygame.init()
 
 
 class Text(Element):
+    __ClassName__ = "Text"
     def __init__(
         self,
         text="",
@@ -109,6 +110,7 @@ class Text(Element):
 
 
 class StillImage(Element):
+    __ClassName__ = "StillImage"
     def __init__(self, name, image, pos, parent=None, image_name=""):
         super().__init__(name, image, pos, parent, image_name=image_name)
 
@@ -133,6 +135,7 @@ class StillImage(Element):
 
 
 class Rectangle(Element):
+    __ClassName__ = "Rectangle"
     def __init__(
         self,
         name,
@@ -205,6 +208,7 @@ class Rectangle(Element):
 
 
 class Circle(Element):
+    __ClassName__ = "Circle"
     def __init__(
         self,
         name: str,
@@ -261,6 +265,7 @@ class Circle(Element):
 
 
 class Line(Element):
+    __ClassName__ = "Line"
     def __init__(
         self,
         name,
@@ -306,10 +311,15 @@ class Line(Element):
 
 
 class Group(Element):
-    def __init__(self, name, pos, parent=None):
+    __ClassName__ = "Group"
+    def __init__(self, name, pos, parent=None, elements=[]):
+        self._elements = {}
         super().__init__(name, None, pos, parent)
 
-        self._elements = {}
+        
+        
+        for element in elements:
+            self.append_element(element)
 
     @property
     def Elements(self):
@@ -321,6 +331,8 @@ class Group(Element):
             and element.Name not in self._elements
         ):
             self._elements[element.Name] = element
+            self._x = min(element._x, self._x)
+            self._y = min(element._y, self._y)
 
     def remove_element(self, element):
         if element.Name in self._elements:
@@ -329,6 +341,11 @@ class Group(Element):
             index = list(self._elements.values()).index(element)
             name = list(self._elements.keys())[index]
             del self._elements[name]
+            
+    def remove_element_by_name(self, name):
+        if name in self._elements:
+            del self._elements[name]
+              
 
     def IsElementAtPos(self, x, y, onlyInteractive=False):
         SortedElements = sorted(
@@ -367,6 +384,64 @@ class Group(Element):
             )
         )
 
-    def intereacted_at_pos(self, pos):
-        pass
+    
+    @property
+    def x(self):
+        elements = self.Elements
+        if elements != []:
+            self._x = min(self.Elements, key = lambda element: element.x).x
+            return self._x
+        else:
+            return None  
+    
+    @property
+    def y(self):
+        elements = self.Elements
+        if elements != []:
+            self._y= min(self.Elements, key = lambda element: element.y).y
+            return self._y
+        else:
+            return None
+    
+    @x.setter
+    def x(self, value):
+        xPos = self.x
+        if xPos is not None:
+            for element in self.Elements:
+                element.x -= xPos + value
+            
+            self._x = value
+        return value 
+    
+    @y.setter
+    def y(self, value):
+        yPos = self.y
+        if yPos is not None:
+            for element in self.Elements:
+                element.y -= yPos + value
+            
+            self._y = value
+        return value 
+    
+    @property
+    def width(self):
+        elements = self.Elements
+        xPos = self.x
+        if elements != []:
+            biggestRight=max(self.Elements, key = lambda element: element.x + element.Hitbox.w)
+            return biggestRight.x + biggestRight.Hitbox.w - xPos
+        else:
+            return 0
+
+    @property
+    def height(self):
+        elements = self.Elements
+        yPos = self.y
+        if elements != []:
+            biggestDown = max(self.Elements, key = lambda element: element.y + element.Hitbox.h)
+            return biggestDown.y + biggestDown.Hitbox.h - yPos
+        else:
+            return 0
+        
+    
     

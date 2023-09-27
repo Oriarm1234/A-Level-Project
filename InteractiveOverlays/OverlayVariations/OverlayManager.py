@@ -2,6 +2,7 @@ import pygame
 
 
 class OverlayManager:
+    __ClassName__ = "OverlayManager"
     def __init__(
         self,
         Name: str,

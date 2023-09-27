@@ -4,6 +4,7 @@ from ..ElementVariations.ElementSubclasses import Text
 
 
 class Overlay:
+    __ClassName__ = "Overlay"
     def __init__(
         self,
         Name: str,
@@ -181,21 +182,33 @@ class Overlay:
             index = self._elements["allElements"].index(element)
 
             self.insertElement(element, max(index - amount, 0))
+            
+    def collidepoint(self, element, x, y):
+        if element.Hitbox is not None:
+            return element.Hitbox.collidepoint(x, y)
+        
+        elif element.__ClassName__ == "Group":
+            return pygame.Rect(element.x, element.y, element.width, element.height).collidepoint(x, y)
+        
+        return False
 
     def IsElementAtPos(self, x, y, onlyInteractive=False):
         SortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: Element.Hitbox.collidepoint(x, y),
+            key=lambda Element: self.collidepoints(Element, x, y),
         )
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
             return True
         return False
+    
+    
 
     def GetElementAtPos(self, x, y, onlyInteractive=False):
+         
         SortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: Element.Hitbox.collidepoint(x, y),
+            key=lambda Element: self.collidepoint(Element, x, y),
         )
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
@@ -205,7 +218,7 @@ class Overlay:
     def GetElementsAtPos(self, x, y, onlyInteractive=False):
         return list(
             filter(
-                lambda Element: Element.Hitbox.collidepoint(x, y),
+                lambda Element: self.collidepoint(Element, x, y),
                 self._elements[["allElements", "interactive"][onlyInteractive]],
             )
         )
