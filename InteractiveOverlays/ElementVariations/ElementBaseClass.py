@@ -1,4 +1,5 @@
 import pygame
+from copy import deepcopy
 
 
 class Element:
@@ -229,3 +230,5 @@ class Element:
             index = self.Parent.Elements.index(self)
 
             self.Parent.insertElement(self, max(index - amount, 0))
+            
+            

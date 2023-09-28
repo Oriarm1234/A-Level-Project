@@ -39,23 +39,6 @@ class Text(Element):
             self.update_text()
 
         return new_function
-    
-    def copy(self,
-            text=None,
-            font=None,
-            size=None,
-            color=None,
-            pos=None,
-            name=None,
-            parent=None):
-        
-        return Text(text or self._text,
-                    font or self._font,
-                    size or self._size,
-                    color or self._color,
-                    pos or (self._x, self._y),
-                    name or self.Name,
-                    parent or self._parent)
 
     @property
     def Color(self):
@@ -117,21 +100,6 @@ class StillImage(Element):
     def draw(self, screen=None, *args, **kwargs):
         if screen != None:
             screen.blit(self.Image, (self.x, self.y))
-    
-    def copy(self, 
-             name = None, 
-             image = None, 
-             pos = None, 
-             parent=None, 
-             image_name=None):
-        
-        return StillImage(
-            name or self.Name,
-            image or self.BaseImage,
-            pos or (self._x, self._y),
-            parent or self._parent,
-            image_name or self.image_name
-        )
 
 
 class Rectangle(Element):
@@ -176,35 +144,6 @@ class Rectangle(Element):
                 self.BorderBottomLeftRadius,
                 self.BorderBottomRightRadius,
             )
-            
-    def copy(
-        self,
-        name=None,
-        pos=None,
-        size=None,
-        parent=None,
-        colour=None,
-        borderThickness=None,
-        borderRadius=None,
-        borderTopLeftRadius=None,
-        borderTopRightRadius=None,
-        borderBottomLeftRadius=None,
-        borderBottomRightRadius=None,
-    ):
-        
-        return Rectangle(
-            name or self.Name,
-            pos or (self._x, self._y),
-            size or self.Hitbox[2:],
-            parent or self._parent,
-            colour or self.Colour,
-            borderThickness or self.BorderThickness,
-            borderRadius or self.BorderRadius,
-            borderTopLeftRadius or self.BorderTopLeftRadius,
-            borderTopRightRadius or self.BorderTopRightRadius,
-            borderBottomLeftRadius or self.BorderBottomLeftRadius,
-            borderBottomRightRadius or self.BorderBottomRightRadius
-        )
 
 
 class Circle(Element):
@@ -241,24 +180,6 @@ class Circle(Element):
                 self.Radius,
                 self.BorderThickness,
             )
-    
-    def copy(
-        self,
-        name: str,
-        pos: tuple[int, int],
-        parent=None,
-        colour: tuple[int, int, int] = (0, 0, 0),
-        borderThickness: int = 0,
-        radius: int = 5,):
-        
-        return Circle(
-            name or self.Name,
-            pos or (self._x, self._y),
-            parent or self._parent,
-            colour or self.Colour,
-            borderThickness or self.BorderThickness,
-            radius or self.Radius
-        )
 
 
 # TODO: All these basic shapes should be implemented!
@@ -289,25 +210,6 @@ class Line(Element):
     def draw(self, screen=None, *args, **kwargs):
         if screen is not None:
             pygame.draw.line(screen, self.Colour, (self._x, self._y), self.end_pos, self.Thickness)
-    
-    def copy(self,
-        name,
-        pos:tuple[int, int],
-        end_pos:tuple[int, int],
-        parent=None,
-        colour=(0, 0, 0),
-        thickness=1,
-        radius=5,):
-        
-        return Line(
-            name or self.Name,
-            pos or (self._x, self._y),
-            end_pos or self.end_pos,
-            parent or self._parent,
-            colour or self.Colour,
-            thickness or self.Thickness,
-            radius or self.Radius
-        )
 
 
 class Group(Element):
