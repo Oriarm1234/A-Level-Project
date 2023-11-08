@@ -1,4 +1,5 @@
 from InteractiveOverlays import *
+from OverlayDefinitions.ExtraElements import *
 import pygame
 settingsMenu = Overlay(("SettingsMenu"),
                       (1060,600),
@@ -23,38 +24,8 @@ SettingsLabel = Text(
 SettingsLabel.align_to_center()
 SettingsLabel.set_underline(True)
 
-print(SettingsLabel.__dict__ == SettingsLabel.copy().__dict__)
+arrow = pygame.image.load("Images\\dropdownarrow.png")
 
-r = Rectangle("background", (530,300), (420,21), settingsMenu, (100,100,100))
-l = Line("line", (330, 299), (730, 299), settingsMenu, (0,0,0), 4)
-c = Circle("circle", (330,300), settingsMenu, (80,80,80),4, 8)
-r.align_to_center()
-c.align_to_center()
-
-slider = Group("Slider", (0,0), settingsMenu, (r,l,c))
-
-
-def slider_pressed(self, *args, **kwargs):
-    mousePos = args[0]
-    element = self._elements.get("circle", None)
-    if element is not None:
-        element.x = max(min(mousePos[0], self.x + self.width - element.Hitbox.w/2), self.x + element.Hitbox.w/2)
-    
-    for element in (element for element in settingsMenu._elements["allElements"] if element.Name == "sliderBox"):
-        settingsMenu.removeElement(element)
-        self.remove_element_by_name("sliderBox")
-    self._elements["sliderBox"] = Rectangle("sliderBox", (self.x, self.y),( self.width, self.height), settingsMenu, (255,0,0), 4)
-    
-
-    
-slider.pressed = slider_pressed
-slider.held_down = slider_pressed
-slider.Interactive = True
-
-def Slider(
-    ):
-        newSlider = slider.copy()
-        for name in newSlider._elements:
-            newSlider._elements[name] = newSlider._elements[name].copy()
-        return newSlider
-    
+s1 = Slider((300,300), "sliderC", settingsMenu)
+s2 = Slider((300,400), "sliderD", settingsMenu)
+d1 = DropdownList("Dropper", pygame.transform.rotate(arrow, 180), (300,500), settingsMenu, "Images\\dropdownarrow.png", ["Hamburber", "chesburger","balls"], "calibri", 14, (20,20,20), True, (150,150,150), (180,180,180), 2, 2)

@@ -1,5 +1,5 @@
+from typing import Any
 import pygame
-from copy import deepcopy
 
 
 class Element:
@@ -15,6 +15,7 @@ class Element:
         image_name="",
         isInteractive=False,
         Hitbox=None,
+        Visible=True,
     ):
         self.Image = image
         self.BaseImage = image.copy() if image is not None else None
@@ -32,7 +33,8 @@ class Element:
         self.released = None
         self.held_down = None
         self.image_name = image_name
-
+        self._visible = Visible
+        
         self.update_function = lambda self, screen, *args, **kwargs: False
 
         
@@ -44,6 +46,15 @@ class Element:
 
         self._x, self._y = pos
         self.x, self.y = pos
+        
+    @property
+    def Visible(self):
+        return self._visible
+    
+    @Visible.setter
+    def Visible(self, value):
+        self._visible = value
+        return value
 
     @property
     def x(self):
@@ -232,3 +243,40 @@ class Element:
             self.Parent.insertElement(self, max(index - amount, 0))
             
             
+    def copy(self):
+        copy = type(self).__new__(type(self))
+        
+        for key in self.__dict__:
+            if "copy" in dir(self.__dict__[key]):
+                copy.__dict__[key] = self.__dict__[key].copy()
+                
+            else:
+                copy.__dict__[key] = self.__dict__[key]
+                
+            
+        
+        return copy
+    
+    
+class elementList(list):
+    def copy(self):
+        newList = elementList()
+        for element in self:
+            if "copy" in dir(element):
+                newList.append(element.copy())
+            else:
+                newList.append(element)
+        return newList
+    
+    
+                
+                
+class elementDict(dict):        
+    def copy(self):
+        newDict = elementDict()
+        for key in self:
+            if "copy" in dir(self[key]):
+                newDict[key] = self[key].copy()
+            else:
+                newDict[key] = self[key]
+        return newDict

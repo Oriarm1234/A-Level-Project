@@ -1,5 +1,5 @@
 import pygame
-from .ElementBaseClass import Element
+from .ElementBaseClass import *
 
 pygame.init()
 
@@ -88,7 +88,7 @@ class Text(Element):
         self.Hitbox.x, self.Hitbox.y = self.x, self.y
 
     def draw(self, screen=None, *args, **kwargs):
-        if screen != None:
+        if screen != None and self.Visible:
             screen.blit(self.RenderedText, (self.x, self.y))
 
 
@@ -98,7 +98,7 @@ class StillImage(Element):
         super().__init__(name, image, pos, parent, image_name=image_name)
 
     def draw(self, screen=None, *args, **kwargs):
-        if screen != None:
+        if screen != None and self.Visible:
             screen.blit(self.Image, (self.x, self.y))
 
 
@@ -132,7 +132,7 @@ class Rectangle(Element):
         self.BorderBottomRightRadius = borderBottomRightRadius
 
     def draw(self, screen=None, *args, **kwargs):
-        if screen is not None:
+        if screen is not None and self.Visible:
             pygame.draw.rect(
                 screen,
                 self.Colour,
@@ -172,7 +172,7 @@ class Circle(Element):
             self.Hitbox.y = self.y
 
     def draw(self, screen=None, *args, **kwargs):
-        if screen is not None:
+        if screen is not None and self.Visible:
             pygame.draw.circle(
                 screen,
                 self.Colour,
@@ -197,6 +197,7 @@ class Line(Element):
         thickness=1,
         radius=5,
     ):
+        self._endX, self._endY = (0,0)
         super().__init__(name, None, pos, parent)
 
         self.Hitbox = pygame.Rect(*pos, end_pos[0] - pos[0], end_pos[1] - pos[1])
@@ -204,28 +205,129 @@ class Line(Element):
 
         self.Thickness = thickness
         self.Radius = radius
-        self.end_pos = end_pos
+        self._endX, self._endY = end_pos
         
+        self.update_hitbox()
+        
+    def update_hitbox(self):
+        self.Hitbox.x = self.x
+        self.Hitbox.y = self.y
+        self.Hitbox.w = self._endX - self._x
+        self.Hitbox.h = self._endY - self._y
+        
+    @property
+    def startX(self):
+        return self._x
+
+    @property
+    def startY(self):
+        return self._y 
+        
+    @property
+    def endX(self):
+        return self._endX
+    
+    @property
+    def endY(self):
+        return self._endY 
+    
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y 
+    
+    @startX.setter
+    def startX(self, value):
+        self._x = value
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
+
+    @startY.setter
+    def startY(self, value):
+        self._y = value
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
+
+    @x.setter
+    def x(self, value):
+        width = self._endX - self._x
+        self._x = value
+        self._endX = value + width
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
+
+    @y.setter
+    def y(self, value):
+        height = self._endY - self._y
+        self._y = value
+        self._endY = value + height
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
+    
+    @endX.setter
+    def endX(self, value):
+        self._endX = value
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
+    
+    @endY.setter
+    def endY(self, value):
+        self._endY = value
+        if type(self.Hitbox) == pygame.Rect:
+            self.update_hitbox()
+        return value
 
     def draw(self, screen=None, *args, **kwargs):
-        if screen is not None:
-            pygame.draw.line(screen, self.Colour, (self._x, self._y), self.end_pos, self.Thickness)
+        if screen is not None and self.Visible:
+            pygame.draw.line(screen, self.Colour, (self._x, self._y), (self._endX, self._endY), self.Thickness)
 
 
 class Group(Element):
     __ClassName__ = "Group"
-    def __init__(self, name, pos, parent=None, elements=[]):
-        self._elements = {}
+    def __init__(self, name, pos, parent=None, elements=[], Visible=True):
+        self._elements = elementDict()
         super().__init__(name, None, pos, parent)
 
-        
+        self._visible = Visible
         
         for element in elements:
             self.append_element(element)
+            
+    @property
+    def Visible(self):
+        return self._visible
+    
+    @Visible.setter
+    def Visible(self, value):
+        self._visible = value
+        for element in self.Elements:
+            element.Visible = value
+        return value
+    
+    @property
+    def Parent(self):
+        return self._parent
+    
+    @Parent.setter
+    def Parent(self, newParent):
+        for element in [self, *self.Elements]:
+            if element._parent is not None:
+                element._parent.removeElement(element)
+            if newParent is not None:
+                newParent.appendElement(element)
+            element._parent = newParent
 
     @property
     def Elements(self):
-        return list(self._elements.values())
+        return elementList(self._elements.values())
 
     def append_element(self, element):
         if (
@@ -309,8 +411,9 @@ class Group(Element):
     def x(self, value):
         xPos = self.x
         if xPos is not None:
+            xPos = int(xPos)
             for element in self.Elements:
-                element.x -= xPos + value
+                element.x = element._x - xPos + value
             
             self._x = value
         return value 
@@ -319,8 +422,9 @@ class Group(Element):
     def y(self, value):
         yPos = self.y
         if yPos is not None:
+            yPos = int(yPos)
             for element in self.Elements:
-                element.y -= yPos + value
+                element.y = element._y - yPos + value
             
             self._y = value
         return value 
@@ -344,6 +448,3 @@ class Group(Element):
             return biggestDown.y + biggestDown.Hitbox.h - yPos
         else:
             return 0
-        
-    
-    

@@ -12,6 +12,22 @@ class OverlayManager:
         Overlays: list = [],
         Colour: tuple[int, int, int, int] = (0, 0, 0, 0),
     ):
+        """
+        Initializes an OverlayManager instance.
+
+        The constructor sets up internal state like overlays, screen, name, etc.
+        It also initializes a held_down dict for tracking pressed keys.
+
+        Args:
+        self: The OverlayManager instance being initialized.
+        Name (str): The name of the OverlayManager.
+        Size (tuple[int, int]): The size of the managed screen surface.
+        Pos (tuple[int, int]): The position of the OverlayManager.
+        ScreenFlags (list[int]): Optional flags for the managed screen surface.
+        Overlays (list): The initial list of managed overlays.
+        Colour (tuple[int, int, int, int]): The color to fill the screen surface with.
+        
+        """
         self._overlays = Overlays
         self._screen = pygame.Surface(Size, *ScreenFlags)
         self._screen.fill((0, 0, 0, 0))
@@ -155,6 +171,17 @@ class OverlayManager:
         pass
 
     def update(self, *args, **kwargs):
+        """Updates the OverlayManager by calling various pre/post update hooks and 
+        drawing all visible overlays.
+
+        Args:
+        self: The OverlayManager instance.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
+
+        Returns: 
+        None
+        """
         overlays = self.getVisibleOverlays()
 
         self.preUpdate(self, *args, **kwargs)  #

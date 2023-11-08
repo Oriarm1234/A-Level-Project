@@ -1,3 +1,5 @@
 {
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "editor.fontSize": 14,
+    "explorer.fileNesting.enabled": false
 }

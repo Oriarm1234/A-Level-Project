@@ -30,13 +30,14 @@ def preUpdate(overlayManager, *args, **kwargs):
         overlays = overlayManager.getVisibleOverlays()
 
         for overlay in overlays:
-            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive=True)
-
+            elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive=True, onlyVisible=True)
+            
             if elements != []:
                 element = elements[-1]
-
+                
                 overlay.Highlighted = element
                 if element.pressed != None:
+                    
                     element.pressed(element, mousePos)
                     break
                 
@@ -127,4 +128,12 @@ while True:
     screen.blit(overlayManager.Screen, (0, 0))
 
     screen.blit(brightnessLayer, (0, 0))
+    
+    dropMenu = settingsMenu._elements.get("Dropper",None)
+    print(settingsMenu._elements)
+    print(dropMenu)
+    if dropMenu is not None:
+        for element in dropMenu.Elements:
+            pygame.draw.rect(screen, (255,0,0), element.Hitbox, 4)
+    
     pygame.display.update()

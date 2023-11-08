@@ -1,7 +1,7 @@
 import pygame
 
 from ..ElementVariations.ElementSubclasses import Text
-
+from ..ElementVariations.ElementBaseClass import elementDict, elementList
 
 class Overlay:
     __ClassName__ = "Overlay"
@@ -12,11 +12,11 @@ class Overlay:
         Pos: tuple[int, int],
         Parent,
         ScreenFlags: list[int] = [],
-        Elements: list = [],
+        Elements: list = elementList(),
         Visible: bool = False,
         ScreenFill: tuple[int, int, int, int] = (0, 0, 0, 0),
     ):
-        self._elements = {"allElements": Elements, "interactive": []}
+        self._elements = {"allElements": Elements, "interactive": elementList()}
         self._screen = pygame.Surface(Size, *ScreenFlags)
         self._screen.fill(ScreenFill)
 
@@ -151,11 +151,15 @@ class Overlay:
             element._parent.removeElement(element)
         if element not in self._elements["allElements"]:
             self._elements["allElements"].append(element)
+        if element.Interactive:
+            self._elements["interactive"].append(element)
         element._parent = self
 
     def removeElement(self, element):
         if element in self._elements["allElements"]:
             self._elements["allElements"].remove(element)
+        if element in self._elements["interactive"]:
+            self._elements["interactive"].remove(element)
         element._parent = None
 
     def insertElement(self, element, index):
@@ -192,10 +196,10 @@ class Overlay:
         
         return False
 
-    def IsElementAtPos(self, x, y, onlyInteractive=False):
+    def IsElementAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
         SortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: self.collidepoints(Element, x, y),
+            key=lambda Element: self.collidepoints(Element, x, y) and (Element.Visible or onlyVisible),
         )
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
@@ -204,37 +208,24 @@ class Overlay:
     
     
 
-    def GetElementAtPos(self, x, y, onlyInteractive=False):
+    def GetElementAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
          
         SortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: self.collidepoint(Element, x, y),
+            key=lambda Element: self.collidepoint(Element, x, y) and (Element.Visible or onlyVisible),
         )
 
         if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
             return SortedElements[0]
         return None
 
-    def GetElementsAtPos(self, x, y, onlyInteractive=False):
+    def GetElementsAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
         return list(
             filter(
-                lambda Element: self.collidepoint(Element, x, y),
+                lambda Element: self.collidepoint(Element, x, y) and (Element.Visible or onlyVisible),
                 self._elements[["allElements", "interactive"][onlyInteractive]],
             )
         )
-        
-    def copy(self, Name="", Size=None, Pos=None, Parent=None, ScreenFlags=None, Elements=None, Visible=None, ScreenFill=(0,0,0,0)):
-        Copy = Overlay(
-            self._name+"_copy" if Name == "" else Name, 
-            self._size.copy() if Size == None else Size, 
-            self._pos.copy() if Pos == None else Pos, 
-            self._parent if Parent == None else Parent,
-            self._screen_flags.copy() if ScreenFlags is None else ScreenFlags,
-            self._elements.copy() if Elements is None else Elements,
-            self._visible if Visible == None else Visible,
-            ScreenFill)
-        
-        return Copy
 
     def preUpdate(self, *args, **kwargs):
         pass

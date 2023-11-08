@@ -170,6 +170,26 @@ AchievementsLabel.align_to_center()
 AchievementsLabel.set_underline(True)
 
 
+def ButtonPressedWrapper(function):
+    def ButtonPressed(self, *args, **kwargs):
+        result = function(self, *args, **kwargs)
+        self.tempIm = self.Image
+        self.BaseImage = pressedButtonImage
+        self.resize_image(*self.tempIm.get_size())
+        return result
+    return ButtonPressed
+
+def ButtonReleasedWrapper(function):
+    def ButtonReleased(self, *args, **kwargs):
+        result = function(self, *args, **kwargs)
+        self.BaseImage = self.tempIm
+        self.resize_image(*self.tempIm.get_size())
+        return result
+    return ButtonReleased
+
+
+
+@ButtonReleasedWrapper
 def NewGameButtonReleased(self, *args, **kwargs):
    
     NewGameMenu = mainMenu._parent.getOverlayByName("NewGameMenu")
@@ -179,6 +199,7 @@ def NewGameButtonReleased(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(NewGameMenu, True)
 
+@ButtonReleasedWrapper
 def LoadGameButtonReleased(self, *args, **kwargs):
    
     LoadGameMenu = mainMenu._parent.getOverlayByName("LoadGameMenu")
@@ -188,6 +209,7 @@ def LoadGameButtonReleased(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(LoadGameMenu, True)
 
+@ButtonReleasedWrapper
 def SettingsButtonReleased(self, *args, **kwargs):
    
     SettingsMenu = mainMenu._parent.getOverlayByName("SettingsMenu")
@@ -195,8 +217,9 @@ def SettingsButtonReleased(self, *args, **kwargs):
     if SettingsMenu != None:
         
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
-        mainMenu._parent.SetOverlayVisible(SettingsMenu, True)
+        mainMenu._parent.SetOverlayVisible(SettingsMenu, True) 
 
+@ButtonReleasedWrapper
 def HelpButtonReleased(self, *args, **kwargs):
    
     HelpMenu = mainMenu._parent.getOverlayByName("HelpMenu")
@@ -206,15 +229,26 @@ def HelpButtonReleased(self, *args, **kwargs):
         mainMenu._parent.SetOverlayVisible(mainMenu, False)
         mainMenu._parent.SetOverlayVisible(HelpMenu, True)
 
+@ButtonReleasedWrapper
 def QuitButtonReleased(self, *args, **kwargs):
     pygame.quit()
     quit()
+
+pressedButtonImage = pygame.image.load("pressed_button.png")
+
+
 
 NewGameButton.released = NewGameButtonReleased
 LoadGameButton.released = LoadGameButtonReleased
 SettingsButton.released = SettingsButtonReleased
 HelpButton.released = HelpButtonReleased
 QuitButton.released = QuitButtonReleased
+
+NewGameButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
+LoadGameButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
+HelpButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
+QuitButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
+SettingsButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
 
 NewGameButton.Interactive = True
 LoadGameButton.Interactive = True
