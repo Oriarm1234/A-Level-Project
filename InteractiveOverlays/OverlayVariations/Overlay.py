@@ -63,6 +63,15 @@ class Overlay:
     @property
     def InteractiveElements(self):
         return self._elements["interactive"]
+    
+    @property
+    def ElementsByName(self):
+        return dict(
+            map(
+            lambda element: [element.Name, element],
+            self._elements["allElements"]
+        )
+        )
 
     @property
     def Screen(self):
@@ -165,6 +174,8 @@ class Overlay:
     def insertElement(self, element, index):
         self.removeElement(element)
         self._elements["allElements"].insert(index, element)
+        if element.Interactive:
+            self._elements["interactive"].insert(index, element)
         element._parent = self
 
     def setElementInteractive(self, element, isInteractive):

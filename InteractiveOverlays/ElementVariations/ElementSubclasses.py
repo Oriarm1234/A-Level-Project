@@ -39,6 +39,9 @@ class Text(Element):
             self.update_text()
 
         return new_function
+    
+    def renderer(self, text):
+        return self.FontObject.render(text, True, self._color)
 
     @property
     def Color(self):

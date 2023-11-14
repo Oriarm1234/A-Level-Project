@@ -1,17 +1,18 @@
 from InteractiveOverlays import *
 
 
-def Slider(Pos, Name, Parent):
+def Slider(Pos, Name, Parent, MinVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
     r = Rectangle("background", (530,300), (420,21), None, (100,100,100))
     l = Line("line", (330, 299), (730, 299), None, (0,0,0), 4)
     c = Circle("circle", (330,300), None, (80,80,80),4, 8)
-    t = Text("0", "Calibri", 16, (0,0,0), (950, 300), "sliderText", None)
+    t = Text(str(MinVal), "Calibri", 16, (0,0,0), (950, 300), "sliderText", None)
     r.align_to_center()
     c.align_to_center()
     t.align_to_middle_right()
     t.x = r.x + r.Hitbox.w
     slider = Group("Slider", (0,0), None, (r,l,c,t))
     slider.percent = 0
+    slider.roundNDigits = roundNDigits
 
     def slider_pressed(self, *args, **kwargs):
         mousePos = args[0]
@@ -21,11 +22,19 @@ def Slider(Pos, Name, Parent):
         if element is not None and line is not None:
             element.x = max(min(mousePos[0], line.endX), line.x)
             
-            slider.percent =(element._x-line._x) / (line._endX-line._x)
+            self.percent =(element._x-line._x) / (line._endX-line._x)
 
             if text is not None:
                 
-                text.Text = str(int(slider.percent*100)/100)
+                text.Text = str(self.get_value(self))
+                slider.Value = self.get_value(self)
+                
+    def get_value(self, *args, **kwargs):
+        return round(MinVal + self.percent * (MaxVal-MinVal),self.roundNDigits)
+    
+    def set_value(self, value, *args, **kwargs):
+        percent = round((value-MinVal) / (MaxVal-MinVal),self.roundNDigits)
+        self.set_percent(self, percent)
         
     def get_percent(self, *args, **kwargs):
         return self.percent
@@ -42,7 +51,8 @@ def Slider(Pos, Name, Parent):
 
             if text is not None:
                 
-                text.Text = str(int(slider.percent*100)/100)
+                text.Text = str(self.get_value(self))
+                slider.Value = self.get_value(self)
             
 
         
@@ -51,9 +61,12 @@ def Slider(Pos, Name, Parent):
     slider._interactive = True
     slider.get_percent = get_percent
     slider.set_percent = set_percent
+    slider.get_value = get_value
+    slider.set_value = set_value
     slider.x, slider.y = Pos
     slider.Name = Name
     slider.Parent = Parent
+    slider.Value = slider.get_value(slider)
     
     return slider
     

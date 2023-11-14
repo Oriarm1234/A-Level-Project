@@ -32,6 +32,7 @@ class Element:
         self.pressed = None
         self.released = None
         self.held_down = None
+        self.other_element_pressed = None
         self.image_name = image_name
         self._visible = Visible
         
@@ -220,10 +221,16 @@ class Element:
             self._alignMode = "BottomRight"
 
     @staticmethod
+    def pre_update(object, screen, *args, **kwargs):
+        pass
+
+    @staticmethod
     def post_update(object, screen, *args, **kwargs):
         pass
 
     def update(self, screen, *args, **kwargs):
+        self.pre_update(self, screen, *args, **kwargs)
+        
         self.update_function(self, screen, *args, **kwargs)
 
         self.post_update(self, screen, *args, **kwargs)
@@ -241,6 +248,15 @@ class Element:
             index = self.Parent.Elements.index(self)
 
             self.Parent.insertElement(self, max(index - amount, 0))
+    
+    def bring_to_front(self):
+        if self.Parent != None and self in self.Parent.Elements:
+            self.Parent.insertElement(self, len(self.Parent.Elements))
+    
+    def send_to_back(self):
+        if self.Parent != None and self in self.Parent.Elements:
+            self.Parent.insertElement(self, 0)
+            
             
             
     def copy(self):

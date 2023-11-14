@@ -28,18 +28,30 @@ def preUpdate(overlayManager, *args, **kwargs):
         mousePos = kwargs.get("mousePos", (0, 0))
 
         overlays = overlayManager.getVisibleOverlays()
-
+        pressed=False
         for overlay in overlays:
             elements = overlay.GetElementsAtPos(*mousePos, onlyInteractive=True, onlyVisible=True)
             
             if elements != []:
                 element = elements[-1]
                 
-                overlay.Highlighted = element
-                if element.pressed != None:
+                if not pressed:
+                    overlay.Highlighted = element
+                    
+                if (not pressed) and element.pressed != None:
                     
                     element.pressed(element, mousePos)
-                    break
+                    pressed = True
+                
+        for overlay in overlays:
+            elements = overlay.Elements
+            
+            for element in elements:
+                if pressed and element.other_element_pressed is not None and element != overlay.Highlighted:
+                    element.other_element_pressed(element, mousePos, overlay.Highlighted)
+                    
+                
+                    
                 
     elif mousePressed[0] and overlayManager.getStateEvent("mousePressed-0"):
         mousePos = kwargs.get("mousePos", (0, 0))
@@ -122,6 +134,7 @@ while True:
         mouseFocused=pygame.mouse.get_focused(),
         mousePos=pygame.mouse.get_pos(),
         mouseRel=pygame.mouse.get_rel(),
+        events = events
     )
 
     screen.fill((255, 255, 255))
@@ -129,11 +142,6 @@ while True:
 
     screen.blit(brightnessLayer, (0, 0))
     
-    dropMenu = settingsMenu._elements.get("Dropper",None)
-    print(settingsMenu._elements)
-    print(dropMenu)
-    if dropMenu is not None:
-        for element in dropMenu.Elements:
-            pygame.draw.rect(screen, (255,0,0), element.Hitbox, 4)
+    #print(settingsMenu.ElementsByName.get("t1").pointerIndex)
     
-    pygame.display.update()
+    pygame.display.update() 
