@@ -53,5 +53,5 @@ for i in range(5):
     SaveSlotButton.Interactive = True
 
     if i>0:
-        SaveSlotButton.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0].y + Spacing
-        SaveSlotLabel.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0].y + Spacing
+        SaveSlotButton.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0]._y + Spacing
+        SaveSlotLabel.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0]._y + Spacing
