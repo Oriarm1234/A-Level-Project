@@ -340,6 +340,7 @@ class Group(Element):
             self._elements[element.Name] = element
             self._x = min(element._x, self._x)
             self._y = min(element._y, self._y)
+        element._parent = self.Parent
 
     def remove_element(self, element):
         if element.Name in self._elements:
