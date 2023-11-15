@@ -12,14 +12,14 @@ class Element:
         image,
         pos,
         parent=None,
-        image_name="",
+        imageName="",
         isInteractive=False,
-        Hitbox=None,
-        Visible=True,
+        hitbox=None,
+        visible=True,
     ):
-        self.Image = image
-        self.BaseImage = image.copy() if image is not None else None
-        self.Name = name
+        self.image = image
+        self.baseImage = image.copy() if image is not None else None
+        self.name = name
 
         self._interactive = isInteractive
 
@@ -27,33 +27,33 @@ class Element:
         self.get_offset_y = lambda: 0
 
         self._parent = parent
-        self.Parent = parent
+        self.parent = parent
 
         self.pressed = None
         self.released = None
         self.held_down = None
         self.other_element_pressed = None
-        self.image_name = image_name
-        self._visible = Visible
+        self.imageName = imageName
+        self._visible = visible
         
         self.update_function = lambda self, screen, *args, **kwargs: False
 
         
         
         if image != None:
-            self.Hitbox = self.Image.get_rect()
+            self.hitbox = self.image.get_rect()
         else:
-            self.Hitbox = Hitbox # type: ignore
+            self.hitbox = hitbox # type: ignore
 
         self._x, self._y = pos
         self.x, self.y = pos
         
     @property
-    def Visible(self):
+    def visible(self):
         return self._visible
     
-    @Visible.setter
-    def Visible(self, value):
+    @visible.setter
+    def visible(self, value):
         self._visible = value
         return value
 
@@ -68,152 +68,152 @@ class Element:
     @x.setter
     def x(self, value):
         self._x = value
-        if type(self.Hitbox) == pygame.Rect:
+        if type(self.hitbox) == pygame.Rect:
             self.update_hitbox()
         return value
 
     @y.setter
     def y(self, value):
         self._y = value
-        if type(self.Hitbox) == pygame.Rect:
+        if type(self.hitbox) == pygame.Rect:
             self.update_hitbox()
         return value
 
     @property
-    def Parent(self):
+    def parent(self):
         return self._parent
 
     @property
-    def Interactive(self):
+    def interactive(self):
         return self._interactive
 
-    @Interactive.setter
-    def Interactive(self, value):
+    @interactive.setter
+    def interactive(self, value):
         if self._parent is not None:
-            self._parent.setElementInteractive(self, value)
+            self._parent.set_element_nteractive(self, value)
 
         return value
 
-    @Parent.setter
-    def Parent(self, newParent):
+    @parent.setter
+    def parent(self, newParent):
         if self._parent is not None:
             self._parent.removeElement(self)
         if newParent is not None:
             newParent.appendElement(self)
-        self._parent = newParent
+        
 
     def update_hitbox(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox.x = self._x + self.get_offset_x()
-            self.Hitbox.y = self._y + self.get_offset_y()
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox.x = self._x + self.get_offset_x()
+            self.hitbox.y = self._y + self.get_offset_y()
 
     def draw(self, *args, **kwargs):
         pass
 
     def resize_image(self, width, height):
-        image = self.BaseImage if self.BaseImage is not None else self.Image
+        image = self.baseImage if self.baseImage is not None else self.image
 
-        self.Image = pygame.transform.scale(image, (width, height))
-        self.Hitbox = self.Image.get_rect()
+        self.image = pygame.transform.scale(image, (width, height))
+        self.hitbox = self.image.get_rect()
         self.update_hitbox()
 
     def resize_image_by_amount(self, width, height):
-        image = self.BaseImage if self.BaseImage is not None else self.Image
+        image = self.baseImage if self.baseImage is not None else self.image
 
-        if type(self.Hitbox) == pygame.Rect:
-            self.Image = pygame.transform.scale(
-                image, (self.Hitbox.w + width, self.Hitbox.h + height)
+        if type(self.hitbox) == pygame.Rect:
+            self.image = pygame.transform.scale(
+                image, (self.hitbox.w + width, self.hitbox.h + height)
             )
-            self.Hitbox = self.Image.get_rect()
+            self.hitbox = self.image.get_rect()
             self.update_hitbox()
 
     def crop_image(self, x, y, width, height):
         try:
-            self.Image = self.Image.subsurface(pygame.Rect(x, y, width, height))
-            self.Hitbox = self.Image.get_rect()
+            self.image = self.image.subsurface(pygame.Rect(x, y, width, height))
+            self.hitbox = self.image.get_rect()
             self.update_hitbox()
         except Exception:
             return False
 
     @property
-    def AlignMode(self):
+    def alignMode(self):
         return self._alignMode
 
     def align_to_center(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w / 2
-            self.get_offset_y = lambda: -self.Hitbox.h / 2
+            self.get_offset_x = lambda: -self.hitbox.w / 2
+            self.get_offset_y = lambda: -self.hitbox.h / 2
             self.update_hitbox()
             self._alignMode = "Center"
 
     def align_to_top_left(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w
-            self.get_offset_y = lambda: -self.Hitbox.h
+            self.get_offset_x = lambda: -self.hitbox.w
+            self.get_offset_y = lambda: -self.hitbox.h
             self.update_hitbox()
             self._alignMode = "TopLeft"
 
     def align_to_top_middle(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w / 2
-            self.get_offset_y = lambda: -self.Hitbox.h
+            self.get_offset_x = lambda: -self.hitbox.w / 2
+            self.get_offset_y = lambda: -self.hitbox.h
             self.update_hitbox()
             self._alignMode = "TopMiddle"
 
     def align_to_top_right(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
             self.get_offset_x = lambda: 0
-            self.get_offset_y = lambda: -self.Hitbox.h
+            self.get_offset_y = lambda: -self.hitbox.h
             self.update_hitbox()
             self._alignMode = "TopRight"
 
     def align_to_middle_right(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
             self.get_offset_x = lambda: 0
-            self.get_offset_y = lambda: -self.Hitbox.h / 2
+            self.get_offset_y = lambda: -self.hitbox.h / 2
             self.update_hitbox()
             self._alignMode = "MiddleRight"
 
     def align_to_middle_left(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w
-            self.get_offset_y = lambda: -self.Hitbox.h / 2
+            self.get_offset_x = lambda: -self.hitbox.w
+            self.get_offset_y = lambda: -self.hitbox.h / 2
             self.update_hitbox()
             self._alignMode = "MiddleLeft"
 
     def align_to_bottom_left(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w
+            self.get_offset_x = lambda: -self.hitbox.w
             self.get_offset_y = lambda: 0
             self.update_hitbox()
             self._alignMode = "BottomLeft"
 
     def align_to_bottom_middle(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
-            self.get_offset_x = lambda: -self.Hitbox.w / 2
+            self.get_offset_x = lambda: -self.hitbox.w / 2
             self.get_offset_y = lambda: 0
             self.update_hitbox()
             self._alignMode = "BottomMiddle"
 
     def align_to_bottom_right(self):
-        if type(self.Hitbox) == pygame.Rect:
-            self.Hitbox: pygame.Rect
+        if type(self.hitbox) == pygame.Rect:
+            self.hitbox: pygame.Rect
 
             self.get_offset_x = lambda: 0
             self.get_offset_y = lambda: 0
@@ -238,24 +238,24 @@ class Element:
         self.draw(screen, *args, **kwargs)
 
     def move_forwards(self, amount):
-        if self.Parent != None and self in self.Parent.Elements:
-            index = self.Parent.Elements.index(self)
+        if self.parent != None and self in self.parent.elements:
+            index = self.parent.elements.index(self)
 
-            self.Parent.insertElement(self, max(index + amount, 0))
+            self.parent.insert_element(self, max(index + amount, 0))
 
     def move_backwards(self, amount):
-        if self.Parent != None and self in self.Parent.Elements:
-            index = self.Parent.Elements.index(self)
+        if self.parent != None and self in self.parent.elements:
+            index = self.parent.elements.index(self)
 
-            self.Parent.insertElement(self, max(index - amount, 0))
+            self.parent.insert_element(self, max(index - amount, 0))
     
     def bring_to_front(self):
-        if self.Parent != None and self in self.Parent.Elements:
-            self.Parent.insertElement(self, len(self.Parent.Elements))
+        if self.parent != None and self in self.parent.elements:
+            self.parent.insert_element(self, len(self.parent.elements))
     
     def send_to_back(self):
-        if self.Parent != None and self in self.Parent.Elements:
-            self.Parent.insertElement(self, 0)
+        if self.parent != None and self in self.parent.elements:
+            self.parent.insert_element(self, 0)
             
             
             
@@ -274,9 +274,9 @@ class Element:
         return copy
     
     
-class elementList(list):
+class ElementList(list):
     def copy(self):
-        newList = elementList()
+        newList = ElementList()
         for element in self:
             if "copy" in dir(element):
                 newList.append(element.copy())
@@ -287,9 +287,9 @@ class elementList(list):
     
                 
                 
-class elementDict(dict):        
+class ElementDict(dict):        
     def copy(self):
-        newDict = elementDict()
+        newDict = ElementDict()
         for key in self:
             if "copy" in dir(self[key]):
                 newDict[key] = self[key].copy()
