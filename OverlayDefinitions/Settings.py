@@ -2,21 +2,16 @@ from InteractiveOverlays import *
 from OverlayDefinitions.ExtraElements import *
 import pygame
 
+
 settingsMenu = Overlay(
     ("SettingsMenu"), (1060, 600), (0, 0), None, [pygame.SRCALPHA], []
 )
 
-settingsControls = Overlay(
-    ("SettingsControls"), (1060, 300), (0, 300), None, [pygame.SRCALPHA], [],
-)
+settingsControls = Group("SettingsControl", (0,300), settingsMenu, [], True)
 
-settingsVideo = Overlay(
-    ("SettingsVideo"), (1060, 300), (0, 300), None, [pygame.SRCALPHA], []
-)
+settingsVideo =  Group("SettingsVideo", (0,300), settingsMenu, [], False)
 
-settingsAudio = Overlay(
-    ("SettingsAudio"), (1060, 300), (0, 300), None, [pygame.SRCALPHA], []
-)
+settingsAudio =  Group("SettingsAudio", (0,300), settingsMenu, [], False)
 
 SettingOptions = {"Controls":settingsControls, "Video":settingsVideo, "Audio":settingsAudio}
 
