@@ -95,10 +95,10 @@ def preUpdate(overlayManager, *args, **kwargs):
                         "SettingsMenu",
                         "NewGameMenu",
                     ]:
-                        for overlay in visibleOverlays:
-                            overlayManager.SetOverlayVisible(overlay, False)
-                        overlayManager.SetOverlayVisible(mainMenu, True)
-                        break
+                        
+                        overlayManager.SetOverlayVisible(overlay, False)
+                overlayManager.SetOverlayVisible(mainMenu, True)
+
         elif not keysPressed[pygame.K_ESCAPE]:
             overlayManager.setStateEvent("k_escape", False)
 
@@ -106,7 +106,7 @@ def preUpdate(overlayManager, *args, **kwargs):
 overlayManager.preDraw = preDraw
 overlayManager.preUpdate = preUpdate
 
-
+overlayManager.appendOverlay(gameScreen)
 overlayManager.appendOverlay(mainMenu)
 overlayManager.appendOverlay(newGameMenu)
 overlayManager.appendOverlay(settingsMenu)
@@ -119,7 +119,7 @@ screen = pygame.display.set_mode((1060, 600))
 screen.fill((255, 255, 255))
 
 overlayManager.SetOverlayVisible(mainMenu)
-
+overlayManager.SetOverlayVisible(gameScreen)
 while True:
     events = pygame.event.get()
     for event in events:
@@ -142,6 +142,6 @@ while True:
 
     screen.blit(brightnessLayer, (0, 0))
     
-    #print(settingsMenu.ElementsByName.get("t1").pointerIndex)
+    
     
     pygame.display.update() 

@@ -136,9 +136,7 @@ MainMenuLabel = Text(
 MainMenuLabel.align_to_center()
 MainMenuLabel.set_underline(True)
 
-Background = StillImage("background", pygame.image.load("Background.png"), (0,0), mainMenu)
-Background.crop_image(0,150, 1060, 600)
-Background.move_backwards(100)
+
 
 BestDungeonRunsFrame = StillImage("BestDungeonRunsFrame", pygame.image.load("button.png"), (20,20), mainMenu, image_name="button.png")
 BestDungeonRunsFrame.resize_image(180,60)

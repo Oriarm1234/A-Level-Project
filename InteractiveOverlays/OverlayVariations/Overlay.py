@@ -251,6 +251,7 @@ class Overlay:
         pass
 
     def update(self, *args, **kwargs):
+        self._screen.fill((0, 0, 0, 0))
         self.preUpdate(self, *args, **kwargs)
         for element in self._elements["allElements"]:
             self.elementPreUpdate(self, element, *args, **kwargs)

@@ -7,9 +7,7 @@ newGameMenu = Overlay(("NewGameMenu"),
                       [pygame.SRCALPHA],
                       [])
 
-Background = StillImage("background", pygame.image.load("Background.png"), (0,0), newGameMenu)
-Background.crop_image(0,150, 1060, 600)
-Background.move_backwards(100)
+
 
 NewGameLabel = Text(
     "New Game", 

@@ -182,6 +182,8 @@ class OverlayManager:
         Returns: 
         None
         """
+        self._screen.fill((0, 0, 0, 0))
+        
         overlays = self.getVisibleOverlays()
 
         self.preUpdate(self, *args, **kwargs)  #

@@ -6,11 +6,6 @@ settingsMenu = Overlay(
     ("SettingsMenu"), (1060, 600), (0, 0), None, [pygame.SRCALPHA], []
 )
 
-Background = StillImage(
-    "background", pygame.image.load("Background.png"), (0, 0), settingsMenu
-)
-Background.crop_image(0, 150, 1060, 600)
-Background.move_backwards(100)
 
 SettingsLabel = Text(
     "Settings",
