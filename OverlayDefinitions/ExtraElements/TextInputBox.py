@@ -31,8 +31,9 @@ shiftKeys = {
 
 
 def TextInputBoxPressed(self, *args, **kwargs):
-    self.selected = not self.selected
-    self.lastPressed = time.time()
+    if self.canSelect:
+        self.selected = not self.selected
+        self.lastPressed = time.time()
 
 def TextInputBoxPreUpdate(self, *args, **kwargs):
     events:list[pygame.event.Event]
@@ -208,7 +209,7 @@ def TextInputBox(Pos, BackgroundSize, BorderSize, TextSize, Font, Name, Parent, 
     self.keyAllowedTimer = time.time()
     self.keyAllowedTime = 0.05
     self.keyHeldDelay = 0.25
-
+    self.canSelect = True
     
     self.Value = DefaultText
     self.HoloText = HoloText
@@ -225,3 +226,4 @@ def TextInputBox(Pos, BackgroundSize, BorderSize, TextSize, Font, Name, Parent, 
     self.other_element_pressed = otherElementPressed
     
     return self
+
