@@ -36,13 +36,13 @@ SettingsLabel.set_underline(True)
 
 spacingForTitleOptions = 8
 OptionBoxesPadding = 8
-OptionBoxY = SettingsLabel.y+SettingsLabel.Hitbox.h+spacingForTitleOptions
+OptionBoxY = SettingsLabel.y+SettingsLabel.hitbox.h+spacingForTitleOptions
 
 OptionBoxControlsText = Text("Controls", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Controls-Text", settingsMenu)
 OptionBoxAudioText = Text("Audio", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Audio-Text", settingsMenu)
 OptionBoxVideoText = Text("Video", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Video-Text", settingsMenu)
 
-boxWidth = max(max(OptionBoxAudioText.Hitbox.w, OptionBoxControlsText.Hitbox.w), OptionBoxVideoText.Hitbox.w) + OptionBoxesPadding
+boxWidth = max(max(OptionBoxAudioText.hitbox.w, OptionBoxControlsText.hitbox.w), OptionBoxVideoText.hitbox.w) + OptionBoxesPadding
 
 OptionBoxControlsRect = Rectangle("OptionBox-Controls-Rect", 
                                   (530-boxWidth,OptionBoxY), 
@@ -88,7 +88,7 @@ OptionBoxCollision = Group("OptionBoxCollision", (530-boxWidth,OptionBoxY), sett
                                                                                            OptionBoxAudioText,
                                                                                            OptionBoxVideoText), True)
 
-OptionBoxCollision.Interactive = True
+OptionBoxCollision.interactive = True
 
 AllNames = ["Controls", "Video", "Audio"]
 
@@ -132,8 +132,8 @@ def OptionBoxPressed(self:Group, *args, **kwargs):
             elementTextPressed.set_underline(elementNamePressed != name)
             
             
-            if SettingOptions[name].Parent is not None:
-                SettingOptions[name].Parent.SetOverlayVisible(
+            if SettingOptions[name].parent is not None:
+                SettingOptions[name].parent.SetOverlayVisible(
                     SettingOptions[name], 
                     elementNamePressed == name)
         

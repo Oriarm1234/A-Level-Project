@@ -11,7 +11,7 @@ class Text(Element):
         text="",
         font="",
         size=8,
-        color=(0, 0, 0),
+        colour=(0, 0, 0),
         pos=(1, 1),
         name="TextBox",
         parent=None,
@@ -19,8 +19,8 @@ class Text(Element):
         self._text = text
         self._font = font
         self.fontObject = pygame.font.SysFont(font, size)
-        self.renderedText = self.fontObject.render(text, True, color)
-        self._color = color
+        self.renderedText = self.fontObject.render(text, True, colour)
+        self._color = colour
         self._size = size
         self.get_bold = self.fontObject.get_bold
         self.set_bold = self._update_wrapper(self.fontObject.set_bold)
@@ -44,13 +44,13 @@ class Text(Element):
         return self.fontObject.render(text, True, self._color)
 
     @property
-    def color(self):
+    def colour(self):
         return self._color
 
-    @color.setter
-    def color(self, color):
-        if color != self.color:
-            self._color = color
+    @colour.setter
+    def colour(self, colour):
+        if colour != self.colour:
+            self._color = colour
             self.update_text()
 
     @property

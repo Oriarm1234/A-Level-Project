@@ -43,8 +43,8 @@ def TextInputBoxPreUpdate(self, *args, **kwargs):
         
         
         
-        if self.pointerIndex >= len(self.Value):
-            self.pointerIndex = len(self.Value)
+        if self.pointerIndex >= len(self.value):
+            self.pointerIndex = len(self.value)
         
         
         
@@ -93,17 +93,17 @@ def TextInputBoxPreUpdate(self, *args, **kwargs):
                                         
                                         
                                         
-                        if len(self.Value) < self.maxCharacterLimit:       
+                        if len(self.value) < self.maxCharacterLimit:       
                         
                         
-                            self.Value = self.Value[:self.pointerIndex] + chr(key + o) + self.Value[self.pointerIndex:]
+                            self.value = self.value[:self.pointerIndex] + chr(key + o) + self.value[self.pointerIndex:]
 
                             if self.pointerMoves:
                                 self.pointerIndex +=1
                     
                     elif key == 8: #BACKSPACE
                         if self.pointerIndex != 0:
-                            self.Value = self.Value[:self.pointerIndex-1] + self.Value[self.pointerIndex:]
+                            self.value = self.value[:self.pointerIndex-1] + self.value[self.pointerIndex:]
                         
                             if self.pointerMoves:
                                 self.pointerIndex -=1
@@ -118,7 +118,7 @@ def TextInputBoxPreUpdate(self, *args, **kwargs):
                         self.setPointerIndex(self, max(self.pointerIndex-1, 0)) #LEFT ARROW 
                     
                     elif key == 1073741903:
-                        self.setPointerIndex(self, min(self.pointerIndex+1,len(self.Value))) #RIGHT ARROW 
+                        self.setPointerIndex(self, min(self.pointerIndex+1,len(self.value))) #RIGHT ARROW 
             
         
         
@@ -141,32 +141,32 @@ def TextInputBoxPreUpdate(self, *args, **kwargs):
     if self.pointerIndex > self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit:
         self.visibleCharacterIndexBeginning += self.pointerIndex - (self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit)
     
-    if len(self.Value)<(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit) and self.visibleCharacterIndexBeginning != 0:
+    if len(self.value)<(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit) and self.visibleCharacterIndexBeginning != 0:
         
-        self.visibleCharacterIndexBeginning = max(0, len(self.Value)-self.maxVisibleCharacterLimit)
+        self.visibleCharacterIndexBeginning = max(0, len(self.value)-self.maxVisibleCharacterLimit)
     
     
-    self.TextBox.Text =  self.Value[self.visibleCharacterIndexBeginning:(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit)]
+    self.textBox.text =  self.value[self.visibleCharacterIndexBeginning:(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit)]
     
 
     if self.pointerVisible and not self.pointerForcedInvisible:
         pass
     
-    self.TextBox.Text = " " *max(0,3- self.visibleCharacterIndexBeginning)+"." *min(3, self.visibleCharacterIndexBeginning) + self.TextBox.Text
-    self.TextBox.Text += "."*min(3,max(0, len(self.Value)-(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit)))
+    self.textBox.text = " " *max(0,3- self.visibleCharacterIndexBeginning)+"." *min(3, self.visibleCharacterIndexBeginning) + self.textBox.text
+    self.textBox.text += "."*min(3,max(0, len(self.value)-(self.visibleCharacterIndexBeginning + self.maxVisibleCharacterLimit)))
     
     
     
-    if self.Value == "":
-        self.HoloTextBox.x = self.TextBox.x
-        self.HoloTextBox.Text = "   " +  " |"[self.pointerVisible] +  self.HoloText
+    if self.value == "":
+        self.HoloTextBox.x = self.textBox.x
+        self.HoloTextBox.text = "   " +  " |"[self.pointerVisible] +  self.HoloText
         self.HoloTextBox.align_to_bottom_right()
         
         
-    elif self.Value != "":
-        textWidth = self.TextBox.renderer(self.TextBox.Text[:self.pointerIndex+3]).get_rect().w
-        self.HoloTextBox.x = self.TextBox.x + textWidth
-        self.HoloTextBox.Text = "|" * (self.pointerVisible and not self.pointerForcedInvisible)
+    elif self.value != "":
+        textWidth = self.textBox.renderer(self.textBox.text[:self.pointerIndex+3]).get_rect().w
+        self.HoloTextBox.x = self.textBox.x + textWidth
+        self.HoloTextBox.text = "|" * (self.pointerVisible and not self.pointerForcedInvisible)
         self.HoloTextBox.align_to_bottom_middle()
     
 
@@ -181,17 +181,17 @@ def otherElementPressed(self, *args, **kwargs):
         self.pressed(self)
         
 
-def TextInputBox(Pos, BackgroundSize, BorderSize, TextSize, Font, Name, Parent, Padding, BackgroundColour, BorderColour, TextColour, HoloTextColour, DefaultText = "", HoloText = "Enter Text Here", maxCharacterLimit = 40, maxVisibleCharacterLimit=40, canMovePointer = True, pointerMoves=True):
+def TextInputBox(Pos, BackgroundSize, BorderSize, TextSize, Font, name, parent, Padding, BackgroundColour, BorderColour, TextColour, HoloTextColour, DefaultText = "", HoloText = "Enter Text Here", maxCharacterLimit = 40, maxVisibleCharacterLimit=40, canMovePointer = True, pointerMoves=True):
     
     
-    Border = Rectangle(Name+"-Border", Pos, (BackgroundSize[0]+BorderSize*2, BackgroundSize[1]+BorderSize*2), Parent, BorderColour, BorderSize)
-    Background = Rectangle(Name+"-Background", (Pos[0]+BorderSize, Pos[1]+BorderSize), BackgroundSize, Parent, BackgroundColour)
-    TextBox = Text(DefaultText, Font, TextSize, TextColour, (Pos[0] + Padding+BorderSize, Pos[1]+Padding+BorderSize), Name+"-Text", Parent)
-    HoloTextBox = Text(HoloText, Font, TextSize, HoloTextColour, (Pos[0] + Padding+BorderSize, Pos[1]+Padding+BorderSize), Name+"-HoloText", Parent)
+    Border = Rectangle(name+"-Border", Pos, (BackgroundSize[0]+BorderSize*2, BackgroundSize[1]+BorderSize*2), parent, BorderColour, BorderSize)
+    Background = Rectangle(name+"-Background", (Pos[0]+BorderSize, Pos[1]+BorderSize), BackgroundSize, parent, BackgroundColour)
+    textBox = Text(DefaultText, Font, TextSize, TextColour, (Pos[0] + Padding+BorderSize, Pos[1]+Padding+BorderSize), name+"-Text", parent)
+    HoloTextBox = Text(HoloText, Font, TextSize, HoloTextColour, (Pos[0] + Padding+BorderSize, Pos[1]+Padding+BorderSize), name+"-HoloText", parent)
     
-    self = Group(Name, Pos, Parent, [Border,Background,TextBox])
+    self = Group(name, Pos, parent, [Border,Background,textBox])
     self.selected = False
-    self.Interactive = True
+    self.interactive = True
     self.lastPressed = time.time()
     self.pointerVisible = False
     self.pointerIndex = len(DefaultText) * pointerMoves
@@ -211,12 +211,12 @@ def TextInputBox(Pos, BackgroundSize, BorderSize, TextSize, Font, Name, Parent, 
     self.keyHeldDelay = 0.25
     self.canSelect = True
     
-    self.Value = DefaultText
+    self.value = DefaultText
     self.HoloText = HoloText
     
     
     
-    self.TextBox = TextBox
+    self.textBox = textBox
     self.HoloTextBox = HoloTextBox
     
     

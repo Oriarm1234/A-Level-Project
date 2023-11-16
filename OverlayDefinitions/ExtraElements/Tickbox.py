@@ -1,23 +1,23 @@
 from InteractiveOverlays import *
 
 def pressed(self, *args, **kwargs):
-    self.tick.Visible = not self.tick.Visible
-    self.Value = self.tick.Visible
+    self.tick.visible = not self.tick.visible
+    self.value = self.tick.visible
 
-def Tickbox(Pos, Size, Name, CircleRadius, Parent, BorderSize, BorderColour, BGColour, CircleColour, CircleBorderSize, tickImage, default):
-    bg = Rectangle(Name+"-background#Tickbox", Pos, Size, Parent, BGColour)
-    border = Rectangle(Name+"-border#Tickbox", Pos, Size, Parent, BorderColour, BorderSize)
-    circle = Circle(Name+"-circle#Tickbox", (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), Parent, CircleColour, CircleBorderSize, CircleRadius)
+def Tickbox(Pos, Size, name, CircleRadius, parent, BorderSize, BorderColour, BGColour, CircleColour, CircleBorderSize, tickImage, default):
+    bg = Rectangle(name+"-background#Tickbox", Pos, Size, parent, BGColour)
+    border = Rectangle(name+"-border#Tickbox", Pos, Size, parent, BorderColour, BorderSize)
+    circle = Circle(name+"-circle#Tickbox", (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), parent, CircleColour, CircleBorderSize, CircleRadius)
     circle.align_to_center()
-    tick = StillImage(Name+"-tickImage#Tickbox", tickImage, (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), Parent)
+    tick = StillImage(name+"-tickImage#Tickbox", tickImage, (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), parent)
     tick.align_to_center()
     
-    tick.Visible = default
+    tick.visible = default
     
-    NewTickbox = Group(Name, Pos, Parent, (bg,border,circle,tick))
-    NewTickbox.Value = default
+    NewTickbox = Group(name, Pos, parent, (bg,border,circle,tick))
+    NewTickbox.value = default
     NewTickbox.tick = tick
     NewTickbox.pressed = pressed
-    NewTickbox.Interactive = True
+    NewTickbox.interactive = True
     return NewTickbox
     

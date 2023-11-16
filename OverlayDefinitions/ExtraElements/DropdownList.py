@@ -3,14 +3,14 @@ import pygame
 
 
 
-def OptionPressed(self, optionElements):
+def option_pressed(self, optionElements):
     
-    currentText = self.CurrentOptionText.Text
-    self.Value = optionElements[1].Text
-    self.CurrentOptionText.Text = optionElements[1].Text
-    optionElements[1].Text = currentText
+    currentText = self.currentOptionText.text
+    self.value = optionElements[1].text
+    self.currentOptionText.text = optionElements[1].text
+    optionElements[1].text = currentText
     
-    self.CurrentOptionText.update_text()
+    self.currentOptionText.update_text()
     optionElements[1].update_text()
     
     
@@ -18,67 +18,65 @@ def OptionPressed(self, optionElements):
 
 
 
-
-
-def SetOpen(self, value):
+def set_open(self, value):
         if self._open != value:
-            arrow = self._elements.get(self.Name + "-DropdownArrow", None)
+            arrow = self._elements.get(self.name + "-dropdownArrow", None)
             if arrow:
-                arrow.BaseImage = pygame.transform.rotate(arrow.BaseImage, 180) if arrow.BaseImage else None
-                arrow.Image = arrow.BaseImage
+                arrow.baseImage = pygame.transform.rotate(arrow.baseImage, 180) if arrow.baseImage else None
+                arrow.image = arrow.baseImage
             self._open = value
         
-        for optionName in self.Options:
-            optionElements = self.Options[optionName]
+        for optionName in self.options:
+            optionElements = self.options[optionName]
             optionElements.sort(key = lambda element: type(element) == Text)
             
             for optionElement in optionElements:
-                optionElement.Visible = value
-                optionElement.Interactive = value
+                optionElement.visible = value
+                optionElement.interactive = value
                 optionElement.bring_to_front()
                 
 
 
 
-def DropdownList(name, ArrowImage:pygame.Surface, pos, Parent, ArrowImageName, options, textFont, textSize, TextColor, allowNothing, borderColor, backgroundColor, padding, borderSize):
+def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, options, textFont, textSize, textColor, allowNothing, borderColor, backgroundColor, padding, borderSize):
     x,y = pos
     options = list(options)
         
     currentOption = max(options, key=lambda string: len(string)) if len(options) > 0 else ""
-    currentOptionText = Text(currentOption, textFont, textSize, TextColor, (x,y),name+"-DropdownCurrentOptionText", Parent)
+    currentOptionText = Text(currentOption, textFont, textSize, textColor, (x,y),name+"-dropdownCurrentOptionText", parent)
     
     currentOptionText.set_bold(True)
-    ArrowImage = pygame.transform.scale(ArrowImage, (
-        ArrowImage.get_width() * (currentOptionText.Hitbox.h/ArrowImage.get_height()), 
-        currentOptionText.Hitbox.h
+    arrowImage = pygame.transform.scale(arrowImage, (
+        arrowImage.get_width() * (currentOptionText.hitbox.h/arrowImage.get_height()), 
+        currentOptionText.hitbox.h
     ))
     
-    DropdownArrow = StillImage(name+"-DropdownArrow", ArrowImage, (x,y), Parent, ArrowImageName)
+    dropdownArrow = StillImage(name+"-dropdownArrow", arrowImage, (x,y), parent, arrowImageName)
     
-    width = currentOptionText.Hitbox.width + DropdownArrow.Hitbox.width
-    height = max(currentOptionText.Hitbox.height, DropdownArrow.Hitbox.height)
+    width = currentOptionText.hitbox.width + dropdownArrow.hitbox.width
+    height = max(currentOptionText.hitbox.height, dropdownArrow.hitbox.height)
     
 
-    border = Rectangle(name + "-Border", (x,y), (width + borderSize * 2+padding*2,height + borderSize*2 + padding*2), Parent, borderColor, borderSize)
-    BackgroundDropdown = Rectangle(name+"-Background", (x+borderSize,y+borderSize), (width + padding*2,height + padding*2), Parent, backgroundColor)
+    border = Rectangle(name + "-border", (x,y), (width + borderSize * 2+padding*2,height + borderSize*2 + padding*2), parent, borderColor, borderSize)
+    backgroundDropdown = Rectangle(name+"-background", (x+borderSize,y+borderSize), (width + padding*2,height + padding*2), parent, backgroundColor)
     
     currentOptionText.move_forwards(3) 
-    DropdownArrow.move_forwards(2)
+    dropdownArrow.move_forwards(2)
     currentOptionText._x = x+borderSize+padding
     currentOptionText._y = y+borderSize+padding
     
     
-    DropdownArrow.x = x+borderSize+padding+currentOptionText.Hitbox.width
-    DropdownArrow.y = y+borderSize+padding
+    dropdownArrow.x = x+borderSize+padding+currentOptionText.hitbox.width
+    dropdownArrow.y = y+borderSize+padding
     
-    Dropdown = Group(name, pos, Parent, (border,BackgroundDropdown, DropdownArrow, currentOptionText))
-    Dropdown.Interactive = True
-    Dropdown.CurrentOptionText = currentOptionText
-    Dropdown.Value = currentOptionText.Text
-    Dropdown._open = False
-    Dropdown.Options = {}
-    textOY = y + border.Hitbox.h + padding
-    backgroundOY = y + border.Hitbox.h
+    self = Group(name, pos, parent, (border,backgroundDropdown, dropdownArrow, currentOptionText))
+    self.interactive = True
+    self.currentOptionText = currentOptionText
+    self.value = currentOptionText.text
+    self._open = False
+    self.options = {}
+    textOY = y + border.hitbox.h + padding
+    backgroundOY = y + border.hitbox.h
     i = 0
     for option in options:
         text = option
@@ -89,22 +87,22 @@ def DropdownList(name, ArrowImage:pygame.Surface, pos, Parent, ArrowImageName, o
                 continue
         
         
-        optionBackground = Rectangle(name+"-optionBackground{}".format(option), (x, backgroundOY), (width + padding*2+borderSize*2 , height+padding*2), Parent, backgroundColor)
-        optionText = Text(text, textFont, textSize, TextColor, (x+padding+borderSize, textOY), name+"-option{}".format(option), Parent)
-        Dropdown.Options["option"+str(i)] = [optionBackground, optionText]
+        optionBackground = Rectangle(name+"-optionBackground{}".format(option), (x, backgroundOY), (width + padding*2+borderSize*2 , height+padding*2), parent, backgroundColor)
+        optionText = Text(text, textFont, textSize, textColor, (x+padding+borderSize, textOY), name+"-option{}".format(option), parent)
+        self.options["option"+str(i)] = [optionBackground, optionText]
          
-        pressedMaker = lambda index: (lambda self, *args, **kwargs: OptionPressed(Dropdown, Dropdown.Options["option"+str(index)]))
-        released = lambda self, *args, **kwargs: SetOpen(Dropdown, False)
+        pressedMaker = lambda index: (lambda self, *args, **kwargs: option_pressed(self, self.options["option"+str(index)]))
+        released = lambda self, *args, **kwargs: set_open(self, False)
         optionText.pressed =  pressedMaker(i)
         optionBackground.pressed = pressedMaker(i)
         
         optionText.released = released
         optionBackground.released = released
         
-        optionBackground.Visible = False
-        optionBackground.Interactive = False
-        optionText.Visible = False
-        optionText.Interactive = False
+        optionBackground.visible = False
+        optionBackground.interactive = False
+        optionText.visible = False
+        optionText.interactive = False
         
         
         
@@ -116,38 +114,38 @@ def DropdownList(name, ArrowImage:pygame.Surface, pos, Parent, ArrowImageName, o
     
     #Resize box to fit all elements - width
     largestTextBox = currentOptionText
-    for option in Dropdown.Options:
-        TextBox = Dropdown.Options[option][1]
+    for option in self.options:
+        textBox = self.options[option][1]
 
-        if TextBox.Hitbox.w > largestTextBox.Hitbox.w:
-            largestTextBox = TextBox
+        if textBox.hitbox.w > largestTextBox.hitbox.w:
+            largestTextBox = textBox
     
-    newWidth = largestTextBox.Hitbox.w
+    newWidth = largestTextBox.hitbox.w
     
-    if newWidth > currentOptionText.Hitbox.w:
-        for option in Dropdown.Options:
-            bg, txt = Dropdown.Options[option]
-            bg.Hitbox.w = newWidth + DropdownArrow.Hitbox.w+ padding*2 + borderSize*2 
+    if newWidth > currentOptionText.hitbox.w:
+        for option in self.options:
+            bg, txt = self.options[option]
+            bg.hitbox.w = newWidth + dropdownArrow.hitbox.w+ padding*2 + borderSize*2 
             
-        BackgroundDropdown.Hitbox.w = newWidth + padding*2 + DropdownArrow.Hitbox.w
-        border.Hitbox.w = newWidth + borderSize*2 + padding*2 + DropdownArrow.Hitbox.w
-        DropdownArrow.x = x+borderSize+padding*2+newWidth
+        backgroundDropdown.hitbox.w = newWidth + padding*2 + dropdownArrow.hitbox.w
+        border.hitbox.w = newWidth + borderSize*2 + padding*2 + dropdownArrow.hitbox.w
+        dropdownArrow.x = x+borderSize+padding*2+newWidth
 
     
     
     
     
     
-    Dropdown.GetOpen = lambda self : self._open
+    self.get_open = lambda self : self._open
     
             
     
     
-    Dropdown.SetOpen = SetOpen
-    Dropdown.other_element_pressed = lambda self, *args, **kwargs: SetOpen(self, False)
+    self.set_open = set_open
+    self.other_element_pressed = lambda self, *args, **kwargs: set_open(self, False)
     
-    Dropdown.pressed = lambda self, *args, **kwargs: SetOpen(self, not self._open)
+    self.pressed = lambda self, *args, **kwargs: set_open(self, not self._open)
     
-    Dropdown.Value = currentOptionText.Text
+    self.value = currentOptionText.text
     
-    return Dropdown
+    return self

@@ -46,12 +46,12 @@ for i in range(5):
     SaveSlotButton.align_to_center()
     SaveSlotLabel.align_to_center()
 
-    SaveSlotButton.resize_image(*SaveSlotLabel.Hitbox.size)
+    SaveSlotButton.resize_image(*SaveSlotLabel.hitbox.size)
     SaveSlotButton.resize_image_by_amount(40,20)
     Spacing = 16
 
-    SaveSlotButton.Interactive = True
+    SaveSlotButton.interactive = True
 
     if i>0:
-        SaveSlotButton.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0]._y + Spacing
-        SaveSlotLabel.y = SaveSlots[i-1][0].Hitbox.h + SaveSlots[i-1][0]._y + Spacing
+        SaveSlotButton.y = SaveSlots[i-1][0].hitbox.h + SaveSlots[i-1][0]._y + Spacing
+        SaveSlotLabel.y = SaveSlots[i-1][0].hitbox.h + SaveSlots[i-1][0]._y + Spacing

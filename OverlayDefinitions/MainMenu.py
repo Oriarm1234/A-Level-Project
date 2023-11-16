@@ -100,14 +100,14 @@ QuitButton.align_to_center()
 QuitLabel.align_to_center()
 
 
-LoadGameButton.resize_image(*LoadGameLabel.Hitbox.size)
+LoadGameButton.resize_image(*LoadGameLabel.hitbox.size)
 LoadGameButton.resize_image_by_amount(40,20)
 
 
-NewGameButton.resize_image(*LoadGameLabel.Hitbox.size)
-SettingsButton.resize_image(*LoadGameLabel.Hitbox.size)
-HelpButton.resize_image(*LoadGameLabel.Hitbox.size)
-QuitButton.resize_image(*LoadGameLabel.Hitbox.size)
+NewGameButton.resize_image(*LoadGameLabel.hitbox.size)
+SettingsButton.resize_image(*LoadGameLabel.hitbox.size)
+HelpButton.resize_image(*LoadGameLabel.hitbox.size)
+QuitButton.resize_image(*LoadGameLabel.hitbox.size)
 NewGameButton.resize_image_by_amount(40,20)
 SettingsButton.resize_image_by_amount(40,20)
 HelpButton.resize_image_by_amount(40,20)
@@ -115,14 +115,14 @@ QuitButton.resize_image_by_amount(40,20)
 
 Spacing = 16
 
-LoadGameLabel.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
-LoadGameButton.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
-SettingsLabel.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
-SettingsButton.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
-HelpLabel.y =  SettingsButton.Hitbox.h + SettingsButton._y + Spacing
-HelpButton.y = SettingsButton.Hitbox.h + SettingsButton._y + Spacing
-QuitLabel.y =  HelpButton.Hitbox.h + HelpButton._y + Spacing
-QuitButton.y = HelpButton.Hitbox.h + HelpButton._y + Spacing
+LoadGameLabel.y = NewGameButton.hitbox.h + NewGameButton._y + Spacing
+LoadGameButton.y = NewGameButton.hitbox.h + NewGameButton._y + Spacing
+SettingsLabel.y = LoadGameButton.hitbox.h + LoadGameButton._y + Spacing
+SettingsButton.y = LoadGameButton.hitbox.h + LoadGameButton._y + Spacing
+HelpLabel.y =  SettingsButton.hitbox.h + SettingsButton._y + Spacing
+HelpButton.y = SettingsButton.hitbox.h + SettingsButton._y + Spacing
+QuitLabel.y =  HelpButton.hitbox.h + HelpButton._y + Spacing
+QuitButton.y = HelpButton.hitbox.h + HelpButton._y + Spacing
 
 MainMenuLabel = Text(
     "Main Menu", 
@@ -172,7 +172,7 @@ def ButtonPressedWrapper(function):
     def ButtonPressed(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
         self.tempIm = self.Image
-        self.BaseImage = pressedButtonImage
+        self.baseImage = pressedButtonImage
         self.resize_image(*self.tempIm.get_size())
         return result
     return ButtonPressed
@@ -180,7 +180,7 @@ def ButtonPressedWrapper(function):
 def ButtonReleasedWrapper(function):
     def ButtonReleased(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        self.BaseImage = self.tempIm
+        self.baseImage = self.tempIm
         self.resize_image(*self.tempIm.get_size())
         return result
     return ButtonReleased
@@ -248,11 +248,11 @@ HelpButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
 QuitButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
 SettingsButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
 
-NewGameButton.Interactive = True
-LoadGameButton.Interactive = True
-SettingsButton.Interactive = True
-HelpButton.Interactive = True
-QuitButton.Interactive = True
+NewGameButton.interactive = True
+LoadGameButton.interactive = True
+SettingsButton.interactive = True
+HelpButton.interactive = True
+QuitButton.interactive = True
 
-BestDungeonRunsFrame.Interactive = True
-AchievementsFrame.Interactive = True
+BestDungeonRunsFrame.interactive = True
+AchievementsFrame.interactive = True
