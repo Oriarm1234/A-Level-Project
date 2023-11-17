@@ -1,13 +1,13 @@
 from InteractiveOverlays import *
 import pygame
-helpMenu = Overlay(("HelpMenu"),
+helpMenu = Overlay(("helpMenu"),
                       (1060,600),
                       [0,0],
                       None,
                       [pygame.SRCALPHA],
                       [])
 
-HelpLabel = Text(
+helpLabel = Text(
     "Help", 
     "copperplategothic", 
     64, 
@@ -16,10 +16,10 @@ HelpLabel = Text(
     "MainMenuLabel",
     helpMenu)
 
-HelpLabel.align_to_center()
-HelpLabel.set_underline(True)
+helpLabel.align_to_center()
+helpLabel.set_underline(True)
 
-HelpLabel = Text(
+helpLabel = Text(
     ":,(", 
     "copperplategothic", 
     64, 
@@ -28,4 +28,4 @@ HelpLabel = Text(
     "MainMenuLabel",
     helpMenu)
 
-HelpLabel.align_to_center()
+helpLabel.align_to_center()

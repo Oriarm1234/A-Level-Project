@@ -1,112 +1,112 @@
 import pygame
 
 from ..ElementVariations.ElementSubclasses import Text
-from ..ElementVariations.ElementBaseClass import elementDict, elementList
+from ..ElementVariations.ElementBaseClass import ElementDict, ElementList
 
 class Overlay:
     __ClassName__ = "Overlay"
     def __init__(
         self,
-        Name: str,
-        Size: tuple[int, int],
-        Pos: tuple[int, int],
-        Parent,
-        ScreenFlags: list[int] = [],
-        Elements: list = elementList(),
-        Visible: bool = False,
-        ScreenFill: tuple[int, int, int, int] = (0, 0, 0, 0),
+        name: str,
+        size: tuple[int, int],
+        pos: tuple[int, int],
+        parent,
+        screenFlags: list[int] = [],
+        elements: list = ElementList(),
+        visible: bool = False,
+        screenFill: tuple[int, int, int, int] = (0, 0, 0, 0),
     ):
-        self._elements = {"allElements": Elements, "interactive": elementList()}
-        self._screen = pygame.Surface(Size, *ScreenFlags)
-        self._screen.fill(ScreenFill)
+        self._elements = {"allElements": elements, "interactive": ElementList()}
+        self._screen = pygame.Surface(size, *screenFlags)
+        self._screen.fill(screenFill)
 
         self._hitbox = self._screen.get_rect()
-        self._name = Name
-        self._screen_flags = ScreenFlags
-        self._pos = Pos
-        self._size = Size
-        self._parent = Parent
-        self._visible = Visible
+        self._name = name
+        self._screenFlags = screenFlags
+        self._pos = pos
+        self._size = size
+        self._parent = parent
+        self._visible = visible
         self.get_offset_x = lambda: 0
         self.get_offset_y = lambda: 0
 
-        self.Highlighted = None
+        self.highlighted =None
 
     @property
-    def Size(self):
+    def size(self):
         return self._size
 
     @property
-    def Visible(self):
+    def visible(self):
         return self._visible
 
     @property
-    def Pos(self):
+    def pos(self):
         return self._pos[0] + self.get_offset_x(), self._pos[1] + self.get_offset_y()
 
     @property
-    def Parent(self):
+    def parent(self):
         return self._parent
 
     @property
-    def ScreenFlags(self):
-        return self._screen_flags
+    def screenFlags(self):
+        return self._screenFlags
 
     @property
-    def Name(self):
+    def name(self):
         return self._name
 
     @property
-    def Elements(self):
+    def elements(self):
         return self._elements["allElements"]
 
     @property
-    def InteractiveElements(self):
+    def interactiveElements(self):
         return self._elements["interactive"]
     
     @property
-    def ElementsByName(self):
+    def elementsByName(self):
         return dict(
             map(
-            lambda element: [element.Name, element],
+            lambda element: [element.name, element],
             self._elements["allElements"]
         )
         )
 
     @property
-    def Screen(self):
+    def screen(self):
         return self._screen
 
     def update_hitbox(self):
-        self._hitbox.x = self._pos[0] + self.get_offset_x() # type: ignore
-        self._hitbox.y = self._pos[1] + self.get_offset_y() # type: ignore
+        self._hitbox.x = int(self._pos[0] + self.get_offset_x())
+        self._hitbox.y = int(self._pos[1] + self.get_offset_y())
 
-    @Size.setter
-    def Size(self, value):
-        old_size = self._size
-        self._screen = pygame.Surface(value, *self._screen_flags)
+    @size.setter
+    def size(self, value):
+        oldSize = self._size
+        self._screen = pygame.Surface(value, *self._screenFlags)
         self._size = value
         self._hitbox = self._screen.get_rect()
         self.update_hitbox()
 
         for element in self._elements["allElements"]:
-            x_percent = element.x / old_size[0]
-            y_percent = element.y / old_size[1]
-            element.x = x_percent * value[0]
-            element.y = y_percent * value[1]
+            xPercent = element.x / oldSize[0]
+            yPercent = element.y / oldSize[1]
+            element.x = xPercent * value[0]
+            element.y = yPercent * value[1]
 
-            width_percent = element.Hitbox.width / old_size[0]
-            height_percent = element.Hitbox.height / old_size[1]
+            widthPercent = element.hitbox.width / oldSize[0]
+            heightPercent = element.hitbox.height / oldSize[1]
 
             if type(element) == Text:
-                element.Size = element.Size / old_size[0] * value[0]
+                element.size = element.size / oldSize[0] * value[0]
 
-            element.resize_image(width_percent * value[0], height_percent * value[1])
+            element.resize_image(widthPercent * value[0], heightPercent * value[1])
 
         self.update()
 
-    @Pos.setter
-    def Pos(self, value):
+    @pos.setter
+    def pos(self, value):
         self._pos = value
         self.update_hitbox()
 
@@ -155,30 +155,30 @@ class Overlay:
         self.get_offset_y = lambda: 0
         self.update_hitbox()
 
-    def appendElement(self, element):
+    def append_element(self, element):
         if element._parent is not None:
-            element._parent.removeElement(element)
+            element._parent.remove_element(element)
         if element not in self._elements["allElements"]:
             self._elements["allElements"].append(element)
-        if element.Interactive:
+        if element.interactive:
             self._elements["interactive"].append(element)
         element._parent = self
 
-    def removeElement(self, element):
+    def remove_element(self, element):
         if element in self._elements["allElements"]:
             self._elements["allElements"].remove(element)
         if element in self._elements["interactive"]:
             self._elements["interactive"].remove(element)
         element._parent = None
 
-    def insertElement(self, element, index):
-        self.removeElement(element)
+    def insert_element(self, element, index):
+        self.remove_element(element)
         self._elements["allElements"].insert(index, element)
-        if element.Interactive:
+        if element.interactive:
             self._elements["interactive"].insert(index, element)
         element._parent = self
 
-    def setElementInteractive(self, element, isInteractive):
+    def set_element_interactive(self, element, isInteractive):
         if element is not None and element in self._elements["allElements"]:
             element._interactive = isInteractive
             if isInteractive:
@@ -186,79 +186,79 @@ class Overlay:
             elif element in self._elements["interactive"]:
                 self._elements["interactive"].remove(element)
 
-    def moveElementForward(self, element, amount):
+    def move_element_forward(self, element, amount):
         if element in self._elements["allElements"]:
             index = self._elements["allElements"].index(element)
 
-            self.insertElement(element, max(index + amount, 0))
+            self.insert_element(element, max(index + amount, 0))
 
-    def moveElementBackward(self, element, amount):
+    def move_element_backward(self, element, amount):
         if element in self._elements["allElements"]:
             index = self._elements["allElements"].index(element)
 
-            self.insertElement(element, max(index - amount, 0))
+            self.insert_element(element, max(index - amount, 0))
             
     def collidepoint(self, element, x, y):
-        if element.Hitbox is not None:
-            return element.Hitbox.collidepoint(x, y)
+        if element.hitbox is not None:
+            return element.hitbox.collidepoint(x, y)
         
         elif element.__ClassName__ == "Group":
             return pygame.Rect(element.x, element.y, element.width, element.height).collidepoint(x, y)
         
         return False
 
-    def IsElementAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
-        SortedElements = sorted(
+    def is_element_at_pos(self, x, y, onlyInteractive=False, onlyVisible=False):
+        sortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: self.collidepoints(Element, x, y) and (Element.Visible or onlyVisible),
+            key=lambda element: self.collidepoint(element, x, y) and (element.visible or onlyVisible),
         )
 
-        if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
+        if sortedElements != [] and sortedElements[0].hitbox.collidepoint(x, y):
             return True
         return False
     
     
 
-    def GetElementAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
+    def get_element_at_pos(self, x, y, onlyInteractive=False, onlyVisible=False):
          
-        SortedElements = sorted(
+        sortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda Element: self.collidepoint(Element, x, y) and (Element.Visible or onlyVisible),
+            key=lambda element: self.collidepoint(element, x, y) and (element.visible or onlyVisible),
         )
 
-        if SortedElements != [] and SortedElements[0].Hitbox.collidepoint(x, y):
-            return SortedElements[0]
+        if sortedElements != [] and sortedElements[0].hitbox.collidepoint(x, y):
+            return sortedElements[0]
         return None
 
-    def GetElementsAtPos(self, x, y, onlyInteractive=False, onlyVisible=False):
+    def get_elements_at_pos(self, x, y, onlyInteractive=False, onlyVisible=False):
         return list(
             filter(
-                lambda Element: self.collidepoint(Element, x, y) and (Element.Visible or onlyVisible),
+                lambda element: self.collidepoint(element, x, y) and (element.visible or onlyVisible),
                 self._elements[["allElements", "interactive"][onlyInteractive]],
             )
         )
 
-    def preUpdate(self, *args, **kwargs):
+    def pre_update(self, *args, **kwargs):
         pass
 
-    def postUpdate(self, *args, **kwargs):
+    def post_update(self, *args, **kwargs):
         pass
 
-    def elementPreUpdate(self, element, *args, **kwargs):
+    def element_pre_update(self, element, *args, **kwargs):
         pass
 
-    def elementPostUpdate(self, element, *args, **kwargs):
+    def element_post_update(self, element, *args, **kwargs):
         pass
 
     def update(self, *args, **kwargs):
         self._screen.fill((0, 0, 0, 0))
-        self.preUpdate(self, *args, **kwargs)
+        self.pre_update(self, *args, **kwargs)
         for element in self._elements["allElements"]:
-            self.elementPreUpdate(self, element, *args, **kwargs)
+            self.element_pre_update(self, element, *args, **kwargs)
             element.update(screen=self._screen, *args, **kwargs)
-            self.elementPostUpdate(self, element, *args, **kwargs)
+            self.element_post_update(self, element, *args, **kwargs)
 
-        self.postUpdate(self, *args, **kwargs)
+        self.post_update(self, *args, **kwargs)
 
     def draw(self, screen=None):
         if screen != None:

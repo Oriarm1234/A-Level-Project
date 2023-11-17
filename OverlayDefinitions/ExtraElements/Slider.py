@@ -1,15 +1,15 @@
 from InteractiveOverlays import *
 from pygame.image import load as loadImage
 
-def Slider(Pos, Name, Parent, MinVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
+def Slider(Pos, name, parent, minVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
     r = Rectangle("background", (530,300), (420,21), None, (100,100,100))
     l = Line("line", (330, 299), (730, 299), None, (0,0,0), 4)
     c = Circle("circle", (330,300), None, (80,80,80),4, 8)
-    t = Text(str(MinVal), "Calibri", 16, (0,0,0), (950, 300), "sliderText", None)
+    t = Text(str(minVal), "Calibri", 16, (0,0,0), (950, 300), "sliderText", None)
     r.align_to_center()
     c.align_to_center()
     t.align_to_middle_right()
-    t.x = r.x + r.Hitbox.w
+    t.x = r.x + r.hitbox.w
     slider = Group("Slider", (0,0), None, (r,l,c,t))
     slider.percent = 0
     slider.roundNDigits = roundNDigits
@@ -26,14 +26,14 @@ def Slider(Pos, Name, Parent, MinVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
 
             if text is not None:
                 
-                text.Text = str(self.get_value(self))
-                slider.Value = self.get_value(self)
+                text.text = str(self.get_value(self))
+                slider.value = self.get_value(self)
                 
     def get_value(self, *args, **kwargs):
-        return round(MinVal + self.percent * (MaxVal-MinVal),self.roundNDigits)
+        return round(minVal + self.percent * (MaxVal-minVal),self.roundNDigits)
     
     def set_value(self, value, *args, **kwargs):
-        percent = round((value-MinVal) / (MaxVal-MinVal),self.roundNDigits)
+        percent = round((value-minVal) / (MaxVal-minVal),self.roundNDigits)
         self.set_percent(self, percent)
         
     def get_percent(self, *args, **kwargs):
@@ -51,8 +51,8 @@ def Slider(Pos, Name, Parent, MinVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
 
             if text is not None:
                 
-                text.Text = str(self.get_value(self))
-                slider.Value = self.get_value(self)
+                text.text = str(self.get_value(self))
+                slider.value = self.get_value(self)
             
 
         
@@ -64,9 +64,9 @@ def Slider(Pos, Name, Parent, MinVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
     slider.get_value = get_value
     slider.set_value = set_value
     slider.x, slider.y = Pos
-    slider.Name = Name
-    slider.Parent = Parent
-    slider.Value = slider.get_value(slider)
+    slider.name = name
+    slider.parent = parent
+    slider.value = slider.get_value(slider)
     
     return slider
     

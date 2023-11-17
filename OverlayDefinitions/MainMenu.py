@@ -8,14 +8,14 @@ mainMenu = Overlay("MainMenu",
                      [])
 
 
-NewGameButton = StillImage(
-    "NewGameButton",
+newGameButton = StillImage(
+    "newGameButton",
     pygame.image.load("button.png"),
     (530,200),
     mainMenu,
-    image_name="button.png")
+    imageName="button.png")
 
-NewGameLabel = Text(
+newGameLabel = Text(
     "New Run", 
     "copperplategothic", 
     32, 
@@ -24,211 +24,211 @@ NewGameLabel = Text(
     "NewGameLabel",
     mainMenu)
 
-LoadGameButton = StillImage(
-    "LoadGameButton",
+loadGameButton = StillImage(
+    "loadGameButton",
     pygame.image.load("button.png"),
     (530,200),
     mainMenu,
-    image_name="button.png")
+    imageName="button.png")
 
-LoadGameLabel = Text(
+loadGameLabel = Text(
     "Load Run", 
     "copperplategothic", 
     32, 
     (0,0,0), 
     (530,200), 
-    "LoadGameLabel",
+    "loadGameLabel",
     mainMenu)
 
-SettingsButton = StillImage(
-    "SettingsButton",
+settingsButton = StillImage(
+    "settingsButton",
     pygame.image.load("button.png"),
     (530,200),
     mainMenu,
-    image_name="button.png")
+    imageName="button.png")
 
-SettingsLabel = Text(
+settingsLabel = Text(
     "Settings", 
     "copperplategothic", 
     32, 
     (0,0,0), 
     (530,200), 
-    "SettingsLabel",
+    "settingsLabel",
     mainMenu)
 
-HelpButton = StillImage(
-    "HelpButton",
+helpButton = StillImage(
+    "helpButton",
     pygame.image.load("button.png"),
     (530,200),
     mainMenu,
-    image_name="button.png")
+    imageName="button.png")
 
-HelpLabel = Text(
+helpLabel = Text(
     "Help", 
     "copperplategothic", 
     32, 
     (0,0,0), 
     (530,200), 
-    "HelpLabel",
+    "helpLabel",
     mainMenu)
 
-QuitButton = StillImage(
-    "QuitButton",
+quitButton = StillImage(
+    "quitButton",
     pygame.image.load("button.png"),
     (530,200),
     mainMenu,
-    image_name="button.png")
+    imageName="button.png")
 
-QuitLabel = Text(
+quitLabel = Text(
     "Quit", 
     "copperplategothic", 
     32, 
     (0,0,0), 
     (530,200), 
-    "QuitLabel",
+    "quitLabel",
     mainMenu)
 
-NewGameButton.align_to_center()
-NewGameLabel.align_to_center()
-LoadGameButton.align_to_center()
-LoadGameLabel.align_to_center()
-SettingsButton.align_to_center()
-SettingsLabel.align_to_center()
-HelpButton.align_to_center()
-HelpLabel.align_to_center()
-QuitButton.align_to_center()
-QuitLabel.align_to_center()
+newGameButton.align_to_center()
+newGameLabel.align_to_center()
+loadGameButton.align_to_center()
+loadGameLabel.align_to_center()
+settingsButton.align_to_center()
+settingsLabel.align_to_center()
+helpButton.align_to_center()
+helpLabel.align_to_center()
+quitButton.align_to_center()
+quitLabel.align_to_center()
 
 
-LoadGameButton.resize_image(*LoadGameLabel.Hitbox.size)
-LoadGameButton.resize_image_by_amount(40,20)
+loadGameButton.resize_image(*loadGameLabel.hitbox.size)
+loadGameButton.resize_image_by_amount(40,20)
 
 
-NewGameButton.resize_image(*LoadGameLabel.Hitbox.size)
-SettingsButton.resize_image(*LoadGameLabel.Hitbox.size)
-HelpButton.resize_image(*LoadGameLabel.Hitbox.size)
-QuitButton.resize_image(*LoadGameLabel.Hitbox.size)
-NewGameButton.resize_image_by_amount(40,20)
-SettingsButton.resize_image_by_amount(40,20)
-HelpButton.resize_image_by_amount(40,20)
-QuitButton.resize_image_by_amount(40,20)
+newGameButton.resize_image(*loadGameLabel.hitbox.size)
+settingsButton.resize_image(*loadGameLabel.hitbox.size)
+helpButton.resize_image(*loadGameLabel.hitbox.size)
+quitButton.resize_image(*loadGameLabel.hitbox.size)
+newGameButton.resize_image_by_amount(40,20)
+settingsButton.resize_image_by_amount(40,20)
+helpButton.resize_image_by_amount(40,20)
+quitButton.resize_image_by_amount(40,20)
 
-Spacing = 16
+spacing = 16
 
-LoadGameLabel.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
-LoadGameButton.y = NewGameButton.Hitbox.h + NewGameButton._y + Spacing
-SettingsLabel.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
-SettingsButton.y = LoadGameButton.Hitbox.h + LoadGameButton._y + Spacing
-HelpLabel.y =  SettingsButton.Hitbox.h + SettingsButton._y + Spacing
-HelpButton.y = SettingsButton.Hitbox.h + SettingsButton._y + Spacing
-QuitLabel.y =  HelpButton.Hitbox.h + HelpButton._y + Spacing
-QuitButton.y = HelpButton.Hitbox.h + HelpButton._y + Spacing
+loadGameLabel.y = newGameButton.hitbox.h + newGameButton._y + spacing
+loadGameButton.y = newGameButton.hitbox.h + newGameButton._y + spacing
+settingsLabel.y = loadGameButton.hitbox.h + loadGameButton._y + spacing
+settingsButton.y = loadGameButton.hitbox.h + loadGameButton._y + spacing
+helpLabel.y =  settingsButton.hitbox.h + settingsButton._y + spacing
+helpButton.y = settingsButton.hitbox.h + settingsButton._y + spacing
+quitLabel.y =  helpButton.hitbox.h + helpButton._y + spacing
+quitButton.y = helpButton.hitbox.h + helpButton._y + spacing
 
-MainMenuLabel = Text(
+mainMenuLabel = Text(
     "Main Menu", 
     "copperplategothic", 
     64, 
     (20,20,20), 
     (530,100), 
-    "MainMenuLabel",
+    "mainMenuLabel",
     mainMenu)
 
-MainMenuLabel.align_to_center()
-MainMenuLabel.set_underline(True)
+mainMenuLabel.align_to_center()
+mainMenuLabel.set_underline(True)
 
 
 
-BestDungeonRunsFrame = StillImage("BestDungeonRunsFrame", pygame.image.load("button.png"), (20,20), mainMenu, image_name="button.png")
-BestDungeonRunsFrame.resize_image(180,60)
+bestDungeonRunsFrame = StillImage("bestDungeonRunsFrame", pygame.image.load("button.png"), (20,20), mainMenu, imageName="button.png")
+bestDungeonRunsFrame.resize_image(180,60)
 
-BestDungeonRunsLabel = Text(
+bestDungeonRunsLabel = Text(
     "Best Dungeon Runs", 
     "copperplategothic", 
     16, 
     (20,20,20), 
     (110,50), 
-    "BestDungeonRunsLabel",
+    "bestDungeonRunsLabel",
     mainMenu)
-BestDungeonRunsLabel.align_to_center()
-BestDungeonRunsLabel.set_underline(True)
+bestDungeonRunsLabel.align_to_center()
+bestDungeonRunsLabel.set_underline(True)
 
-AchievementsFrame = StillImage("AchievementsFrame", pygame.image.load("button.png"), (1040,20), mainMenu, image_name="button.png")
-AchievementsFrame.resize_image(180,60)
-AchievementsFrame.align_to_bottom_left()
+achievementsFrame = StillImage("achievementsFrame", pygame.image.load("button.png"), (1040,20), mainMenu, imageName="button.png")
+achievementsFrame.resize_image(180,60)
+achievementsFrame.align_to_bottom_left()
 
-AchievementsLabel = Text(
-    "Achievements",  
+achievementsLabel = Text(
+    "achievements",  
     "copperplategothic", 
     16, 
     (20,20,20), 
     (950,50), 
-    "AchievementsLabel",
+    "achievementsLabel",
     mainMenu)
-AchievementsLabel.align_to_center()
-AchievementsLabel.set_underline(True)
+achievementsLabel.align_to_center()
+achievementsLabel.set_underline(True)
 
 
-def ButtonPressedWrapper(function):
-    def ButtonPressed(self, *args, **kwargs):
+def button_pressed_wrapper(function):
+    def button_pressed(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        self.tempIm = self.Image
-        self.BaseImage = pressedButtonImage
+        self.tempIm = self.image
+        self.baseImage = pressedButtonImage
         self.resize_image(*self.tempIm.get_size())
         return result
-    return ButtonPressed
+    return button_pressed
 
-def ButtonReleasedWrapper(function):
-    def ButtonReleased(self, *args, **kwargs):
+def button_released_wrapper(function):
+    def button_released(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        self.BaseImage = self.tempIm
+        self.baseImage = self.tempIm
         self.resize_image(*self.tempIm.get_size())
         return result
-    return ButtonReleased
+    return button_released
 
 
 
-@ButtonReleasedWrapper
-def NewGameButtonReleased(self, *args, **kwargs):
+@button_released_wrapper
+def new_game_button_released(self, *args, **kwargs):
    
-    NewGameMenu = mainMenu._parent.getOverlayByName("NewGameMenu")
+    newGameMenu = mainMenu._parent.get_overlay_by_name("newGameMenu")
     
-    if NewGameMenu != None:
+    if newGameMenu != None:
         
-        mainMenu._parent.SetOverlayVisible(mainMenu, False)
-        mainMenu._parent.SetOverlayVisible(NewGameMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(newGameMenu, True)
 
-@ButtonReleasedWrapper
-def LoadGameButtonReleased(self, *args, **kwargs):
+@button_released_wrapper
+def load_game_button_released(self, *args, **kwargs):
    
-    LoadGameMenu = mainMenu._parent.getOverlayByName("LoadGameMenu")
+    loadGameMenu = mainMenu._parent.get_overlay_by_name("loadGameMenu")
     
-    if LoadGameMenu != None:
+    if loadGameMenu != None:
         
-        mainMenu._parent.SetOverlayVisible(mainMenu, False)
-        mainMenu._parent.SetOverlayVisible(LoadGameMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(loadGameMenu, True)
 
-@ButtonReleasedWrapper
-def SettingsButtonReleased(self, *args, **kwargs):
+@button_released_wrapper
+def settings_button_released(self, *args, **kwargs):
    
-    SettingsMenu = mainMenu._parent.getOverlayByName("SettingsMenu")
+    settingsMenu = mainMenu._parent.get_overlay_by_name("settingsMenu")
     
-    if SettingsMenu != None:
+    if settingsMenu != None:
         
-        mainMenu._parent.SetOverlayVisible(mainMenu, False)
-        mainMenu._parent.SetOverlayVisible(SettingsMenu, True) 
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(settingsMenu, True) 
 
-@ButtonReleasedWrapper
-def HelpButtonReleased(self, *args, **kwargs):
+@button_released_wrapper
+def help_button_released(self, *args, **kwargs):
    
-    HelpMenu = mainMenu._parent.getOverlayByName("HelpMenu")
+    helpMenu = mainMenu._parent.get_overlay_by_name("helpMenu")
     
-    if HelpMenu != None:
+    if helpMenu != None:
         
-        mainMenu._parent.SetOverlayVisible(mainMenu, False)
-        mainMenu._parent.SetOverlayVisible(HelpMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(helpMenu, True)
 
-@ButtonReleasedWrapper
-def QuitButtonReleased(self, *args, **kwargs):
+@button_released_wrapper
+def quit_button_released(self, *args, **kwargs):
     pygame.quit()
     quit()
 
@@ -236,23 +236,23 @@ pressedButtonImage = pygame.image.load("pressed_button.png")
 
 
 
-NewGameButton.released = NewGameButtonReleased
-LoadGameButton.released = LoadGameButtonReleased
-SettingsButton.released = SettingsButtonReleased
-HelpButton.released = HelpButtonReleased
-QuitButton.released = QuitButtonReleased
+newGameButton.released = new_game_button_released
+loadGameButton.released = load_game_button_released
+settingsButton.released = settings_button_released
+helpButton.released = help_button_released
+quitButton.released = quit_button_released
 
-NewGameButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
-LoadGameButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
-HelpButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
-QuitButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
-SettingsButton.pressed = ButtonPressedWrapper(lambda self,*args,**kwargs:None)
+newGameButton.pressed = button_pressed_wrapper(lambda self,*args,**kwargs:None)
+loadGameButton.pressed = button_pressed_wrapper(lambda self,*args,**kwargs:None)
+helpButton.pressed = button_pressed_wrapper(lambda self,*args,**kwargs:None)
+quitButton.pressed = button_pressed_wrapper(lambda self,*args,**kwargs:None)
+settingsButton.pressed = button_pressed_wrapper(lambda self,*args,**kwargs:None)
 
-NewGameButton.Interactive = True
-LoadGameButton.Interactive = True
-SettingsButton.Interactive = True
-HelpButton.Interactive = True
-QuitButton.Interactive = True
+newGameButton.interactive = True
+loadGameButton.interactive = True
+settingsButton.interactive = True
+helpButton.interactive = True
+quitButton.interactive = True
 
-BestDungeonRunsFrame.Interactive = True
-AchievementsFrame.Interactive = True
+bestDungeonRunsFrame.interactive = True
+achievementsFrame.interactive = True

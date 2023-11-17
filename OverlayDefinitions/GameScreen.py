@@ -9,6 +9,6 @@ gameScreen = Overlay("gameScreen",
                      [])
 
 
-Background = StillImage("background", pygame.image.load("Background.png"), (0,0), gameScreen)
-Background.crop_image(0,150, 1060, 600)
-Background.move_backwards(100)
+background = StillImage("background", pygame.image.load("Background.png"), (0,0), gameScreen)
+background.crop_image(0,150, 1060, 600)
+background.move_backwards(100)
