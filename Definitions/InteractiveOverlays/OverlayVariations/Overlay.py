@@ -1,5 +1,4 @@
 import pygame
-
 from ..ElementVariations.ElementSubclasses import Text
 from ..ElementVariations.ElementBaseClass import ElementDict, ElementList
 

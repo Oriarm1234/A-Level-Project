@@ -1,5 +1,21 @@
-from InteractiveOverlays import *
-from pygame.image import load as loadImage
+from ..InteractiveOverlays import (Element, 
+                                   ElementDict, 
+                                   ElementList, 
+                                   StillImage,
+                                   Text,
+                                   Rectangle,
+                                   Circle,
+                                   Line,
+                                   Group,
+                                   Overlay,
+                                   OverlayManager)
+
+images = {}
+
+def init(imageObjects = {}):
+    global images
+    images = imageObjects
+    
 
 def Slider(Pos, name, parent, minVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
     r = Rectangle("background", (530,300), (420,21), None, (100,100,100))
@@ -71,5 +87,3 @@ def Slider(Pos, name, parent, minVal = 0.0, MaxVal = 1.0, roundNDigits = 2):
     return slider
     
     #for elementName in slider._elements:
-
-arrowImage = loadImage("Images\\dropdownarrow.png")

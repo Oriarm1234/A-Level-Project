@@ -1,4 +1,21 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (Element, 
+                                   ElementDict, 
+                                   ElementList, 
+                                   StillImage,
+                                   Text,
+                                   Rectangle,
+                                   Circle,
+                                   Line,
+                                   Group,
+                                   Overlay,
+                                   OverlayManager)
+
+images = {}
+
+def init(imageObjects = {}):
+
+    global images
+    images = imageObjects
 
 def pressed(self, *args, **kwargs):
     self.tick.visible = not self.tick.visible

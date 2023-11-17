@@ -1,5 +1,5 @@
 import pygame
-from .ElementBaseClass import *
+from .ElementBaseClass import (Element, ElementDict, ElementList)
 
 pygame.init()
 
