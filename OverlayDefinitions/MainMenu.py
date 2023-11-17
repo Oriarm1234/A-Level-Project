@@ -169,13 +169,13 @@ achievementsLabel.set_underline(True)
 
 
 def button_pressed_wrapper(function):
-    def buttonPressed(self, *args, **kwargs):
+    def button_pressed(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        self.tempIm = self.Image
+        self.tempIm = self.image
         self.baseImage = pressedButtonImage
         self.resize_image(*self.tempIm.get_size())
         return result
-    return buttonPressed
+    return button_pressed
 
 def button_released_wrapper(function):
     def button_released(self, *args, **kwargs):
@@ -190,42 +190,42 @@ def button_released_wrapper(function):
 @button_released_wrapper
 def new_game_button_released(self, *args, **kwargs):
    
-    newGameMenu = mainMenu._parent.getOverlayByName("newGameMenu")
+    newGameMenu = mainMenu._parent.get_overlay_by_name("newGameMenu")
     
     if newGameMenu != None:
         
-        mainMenu._parent.setOverlayVisible(mainMenu, False)
-        mainMenu._parent.setOverlayVisible(newGameMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(newGameMenu, True)
 
 @button_released_wrapper
 def load_game_button_released(self, *args, **kwargs):
    
-    loadGameMenu = mainMenu._parent.getOverlayByName("loadGameMenu")
+    loadGameMenu = mainMenu._parent.get_overlay_by_name("loadGameMenu")
     
     if loadGameMenu != None:
         
-        mainMenu._parent.setOverlayVisible(mainMenu, False)
-        mainMenu._parent.setOverlayVisible(loadGameMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(loadGameMenu, True)
 
 @button_released_wrapper
 def settings_button_released(self, *args, **kwargs):
    
-    settingsMenu = mainMenu._parent.getOverlayByName("settingsMenu")
+    settingsMenu = mainMenu._parent.get_overlay_by_name("settingsMenu")
     
     if settingsMenu != None:
         
-        mainMenu._parent.setOverlayVisible(mainMenu, False)
-        mainMenu._parent.setOverlayVisible(settingsMenu, True) 
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(settingsMenu, True) 
 
 @button_released_wrapper
 def help_button_released(self, *args, **kwargs):
    
-    HelpMenu = mainMenu._parent.getOverlayByName("HelpMenu")
+    helpMenu = mainMenu._parent.get_overlay_by_name("helpMenu")
     
-    if HelpMenu != None:
+    if helpMenu != None:
         
-        mainMenu._parent.setOverlayVisible(mainMenu, False)
-        mainMenu._parent.setOverlayVisible(HelpMenu, True)
+        mainMenu._parent.set_overlay_visible(mainMenu, False)
+        mainMenu._parent.set_overlay_visible(helpMenu, True)
 
 @button_released_wrapper
 def quit_button_released(self, *args, **kwargs):

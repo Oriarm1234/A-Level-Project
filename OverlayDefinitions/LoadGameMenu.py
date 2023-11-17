@@ -1,57 +1,57 @@
 from InteractiveOverlays import *
 import pygame
-loadGameMenu = Overlay(("LoadGameMenu"),
+loadGameMenu = Overlay(("loadGameMenu"),
                       (1060,600),
                       (0,0),
                       None,
                       [pygame.SRCALPHA],
                       [])
 
-LoadGameLabel = Text(
+loadGameLabel = Text(
     "Load Game", 
     "copperplategothic", 
     64, 
     (20,20,20), 
     (530,100), 
-    "MainMenuLabel",
+    "mainMenuLabel",
     loadGameMenu)
 
-LoadGameLabel.align_to_center()
-LoadGameLabel.set_underline(True)
+loadGameLabel.align_to_center()
+loadGameLabel.set_underline(True)
 
 
-SaveSlots = []
+saveSlots = []
 
 for i in range(5):
-    SaveSlotButton = StillImage(
-        f"SaveSlotButton-{str(i + 1)}",
+    saveSlotButton = StillImage(
+        f"saveSlotButton-{str(i + 1)}",
         pygame.image.load("button.png"),
         (530, 200),
         loadGameMenu,
-        image_name="button.png",
+        imageName="button.png",
     )
 
-    SaveSlotLabel = Text(
+    saveSlotLabel = Text(
         f"Save Slot {str(i + 1)}",
         "copperplategothic",
         32,
         (0, 0, 0),
         (530, 200),
-        f"SaveSlotLabel-{str(i + 1)}",
+        f"saveSlotLabel-{str(i + 1)}",
         loadGameMenu,
     )
 
-    SaveSlots.append((SaveSlotButton, SaveSlotLabel))
+    saveSlots.append((saveSlotButton, saveSlotLabel))
 
-    SaveSlotButton.align_to_center()
-    SaveSlotLabel.align_to_center()
+    saveSlotButton.align_to_center()
+    saveSlotLabel.align_to_center()
 
-    SaveSlotButton.resize_image(*SaveSlotLabel.hitbox.size)
-    SaveSlotButton.resize_image_by_amount(40,20)
-    Spacing = 16
+    saveSlotButton.resize_image(*saveSlotLabel.hitbox.size)
+    saveSlotButton.resize_image_by_amount(40,20)
+    spacing = 16
 
-    SaveSlotButton.interactive = True
+    saveSlotButton.interactive = True
 
     if i>0:
-        SaveSlotButton.y = SaveSlots[i-1][0].hitbox.h + SaveSlots[i-1][0]._y + Spacing
-        SaveSlotLabel.y = SaveSlots[i-1][0].hitbox.h + SaveSlots[i-1][0]._y + Spacing
+        saveSlotButton.y = saveSlots[i-1][0].hitbox.h + saveSlots[i-1][0]._y + spacing
+        saveSlotLabel.y = saveSlots[i-1][0].hitbox.h + saveSlots[i-1][0]._y + spacing

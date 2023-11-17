@@ -78,13 +78,13 @@ class Overlay:
         return self._screen
 
     def update_hitbox(self):
-        self._hitbox.x = self._pos[0] + self.get_offset_x()
-        self._hitbox.y = self._pos[1] + self.get_offset_y()
+        self._hitbox.x = int(self._pos[0] + self.get_offset_x())
+        self._hitbox.y = int(self._pos[1] + self.get_offset_y())
 
     @size.setter
     def size(self, value):
         oldSize = self._size
-        self._screen = pygame.surface(value, *self._screenFlags)
+        self._screen = pygame.Surface(value, *self._screenFlags)
         self._size = value
         self._hitbox = self._screen.get_rect()
         self.update_hitbox()
@@ -210,7 +210,7 @@ class Overlay:
     def is_element_at_pos(self, x, y, onlyInteractive=False, onlyVisible=False):
         sortedElements = sorted(
             self._elements[["allElements", "interactive"][onlyInteractive]],
-            key=lambda element: self.collidepoints(element, x, y) and (element.visible or onlyVisible),
+            key=lambda element: self.collidepoint(element, x, y) and (element.visible or onlyVisible),
         )
 
         if sortedElements != [] and sortedElements[0].hitbox.collidepoint(x, y):

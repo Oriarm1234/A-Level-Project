@@ -19,21 +19,21 @@ def option_pressed(self, optionElements):
 
 
 def set_open(self, value):
-        if self._open != value:
-            arrow = self._elements.get(self.name + "-dropdownArrow", None)
-            if arrow:
-                arrow.baseImage = pygame.transform.rotate(arrow.baseImage, 180) if arrow.baseImage else None
-                arrow.image = arrow.baseImage
-            self._open = value
+    if self.open != value:
+        arrow = self._elements.get(self.name + "-dropdownArrow", None)
+        if arrow:
+            arrow.baseImage = pygame.transform.rotate(arrow.baseImage, 180) if arrow.baseImage else None
+            arrow.image = arrow.baseImage
+        self.open = value
+    
+    for optionName in self.options:
+        optionElements = self.options[optionName]
+        optionElements.sort(key = lambda element: type(element) == Text)
         
-        for optionName in self.options:
-            optionElements = self.options[optionName]
-            optionElements.sort(key = lambda element: type(element) == Text)
-            
-            for optionElement in optionElements:
-                optionElement.visible = value
-                optionElement.interactive = value
-                optionElement.bring_to_front()
+        for optionElement in optionElements:
+            optionElement.visible = value
+            optionElement.interactive = value
+            optionElement.bring_to_front()
                 
 
 
@@ -73,7 +73,7 @@ def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, o
     self.interactive = True
     self.currentOptionText = currentOptionText
     self.value = currentOptionText.text
-    self._open = False
+    self.open = False
     self.options = {}
     textOY = y + border.hitbox.h + padding
     backgroundOY = y + border.hitbox.h
@@ -136,7 +136,7 @@ def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, o
     
     
     
-    self.get_open = lambda self : self._open
+    self.get_open = lambda self : self.open
     
             
     
@@ -144,7 +144,7 @@ def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, o
     self.set_open = set_open
     self.other_element_pressed = lambda self, *args, **kwargs: set_open(self, False)
     
-    self.pressed = lambda self, *args, **kwargs: set_open(self, not self._open)
+    self.pressed = lambda self, *args, **kwargs: set_open(self, not self.open)
     
     self.value = currentOptionText.text
     

@@ -133,9 +133,7 @@ def option_box_pressed(self:Group, *args, **kwargs):
             
             
             if settingOptions[name].parent is not None:
-                settingOptions[name].parent.set_overlay_visible(
-                    settingOptions[name], 
-                    elementNamePressed == name)
+                settingOptions[name].visible = elementNamePressed == name
         
 
         

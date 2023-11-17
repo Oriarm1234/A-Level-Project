@@ -26,8 +26,8 @@ class Element:
         self.get_offset_x = lambda: 0
         self.get_offset_y = lambda: 0
 
-        self._parent = parent
-        self.parent = parent
+        
+        
 
         self.pressed = None
         self.released = None
@@ -47,6 +47,9 @@ class Element:
 
         self._x, self._y = pos
         self.x, self.y = pos
+        
+        self._parent = parent
+        self.parent = parent
         
     @property
     def visible(self):
