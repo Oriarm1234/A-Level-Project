@@ -4,20 +4,20 @@ def pressed(self, *args, **kwargs):
     self.tick.visible = not self.tick.visible
     self.value = self.tick.visible
 
-def Tickbox(Pos, Size, name, CircleRadius, parent, BorderSize, BorderColour, BGColour, CircleColour, CircleBorderSize, tickImage, default):
-    bg = Rectangle(name+"-background#Tickbox", Pos, Size, parent, BGColour)
-    border = Rectangle(name+"-border#Tickbox", Pos, Size, parent, BorderColour, BorderSize)
-    circle = Circle(name+"-circle#Tickbox", (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), parent, CircleColour, CircleBorderSize, CircleRadius)
+def Tickbox(pos, size, name, circleRadius, parent, borderSize, borderColour, bgColour, circleColour, circleBorderSize, tickImage, default):
+    bg = Rectangle(name+"-tickbox-background", pos, size, parent, bgColour)
+    border = Rectangle(name+"-tickbox-border", pos, size, parent, borderColour, borderSize)
+    circle = Circle(name+"-tickbox-circle", (pos[0]+size[0]/2, pos[1]+size[1]/2), parent, circleColour, circleBorderSize, circleRadius)
     circle.align_to_center()
-    tick = StillImage(name+"-tickImage#Tickbox", tickImage, (Pos[0]+Size[0]/2, Pos[1]+Size[1]/2), parent)
+    tick = StillImage(name+"-tickbox-tickImage", tickImage, (pos[0]+size[0]/2, pos[1]+size[1]/2), parent)
     tick.align_to_center()
     
     tick.visible = default
     
-    NewTickbox = Group(name, Pos, parent, (bg,border,circle,tick))
-    NewTickbox.value = default
-    NewTickbox.tick = tick
-    NewTickbox.pressed = pressed
-    NewTickbox.interactive = True
-    return NewTickbox
+    newTickbox = Group(name, pos, parent, (bg,border,circle,tick))
+    newTickbox.value = default
+    newTickbox.tick = tick
+    newTickbox.pressed = pressed
+    newTickbox.interactive = True
+    return newTickbox
     

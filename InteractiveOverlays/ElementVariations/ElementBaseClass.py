@@ -90,16 +90,16 @@ class Element:
     @interactive.setter
     def interactive(self, value):
         if self._parent is not None:
-            self._parent.set_element_nteractive(self, value)
+            self._parent.set_element_interactive(self, value)
 
         return value
 
     @parent.setter
     def parent(self, newParent):
         if self._parent is not None:
-            self._parent.removeElement(self)
+            self._parent.remove_element(self)
         if newParent is not None:
-            newParent.appendElement(self)
+            newParent.append_element(self)
         
 
     def update_hitbox(self):

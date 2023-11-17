@@ -15,11 +15,11 @@ overlayManager = OverlayManager(
 )
 
 
-def preDraw(self, *args, **kwargs):
+def pre_draw(self, *args, **kwargs):
     self._screen.fill((0, 0, 0, 0))
 
 
-def preUpdate(overlayManager, *args, **kwargs):
+def pre_update(overlayManager, *args, **kwargs):
     mousePressed = kwargs.get("mousePressed", [False, False, False, False, False])
     keysPressed = kwargs.get("keysPressed", [])
 
@@ -103,8 +103,8 @@ def preUpdate(overlayManager, *args, **kwargs):
             overlayManager.setStateEvent("k_escape", False)
 
 
-overlayManager.preDraw = preDraw
-overlayManager.preUpdate = preUpdate
+overlayManager.pre_draw = pre_draw
+overlayManager.pre_update = pre_update
 
 overlayManager.appendOverlay(gameScreen)
 overlayManager.appendOverlay(mainMenu)

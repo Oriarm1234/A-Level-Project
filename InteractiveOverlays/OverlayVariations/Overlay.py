@@ -17,12 +17,12 @@ class Overlay:
         screenFill: tuple[int, int, int, int] = (0, 0, 0, 0),
     ):
         self._elements = {"allElements": elements, "interactive": ElementList()}
-        self._screen = pygame.surface(size, *screenFlags)
+        self._screen = pygame.Surface(size, *screenFlags)
         self._screen.fill(screenFill)
 
         self._hitbox = self._screen.get_rect()
         self._name = name
-        self._screen_flags = screenFlags
+        self._screenFlags = screenFlags
         self._pos = pos
         self._size = size
         self._parent = parent
@@ -50,7 +50,7 @@ class Overlay:
 
     @property
     def screenFlags(self):
-        return self._screen_flags
+        return self._screenFlags
 
     @property
     def name(self):
@@ -84,7 +84,7 @@ class Overlay:
     @size.setter
     def size(self, value):
         oldSize = self._size
-        self._screen = pygame.surface(value, *self._screen_flags)
+        self._screen = pygame.surface(value, *self._screenFlags)
         self._size = value
         self._hitbox = self._screen.get_rect()
         self.update_hitbox()

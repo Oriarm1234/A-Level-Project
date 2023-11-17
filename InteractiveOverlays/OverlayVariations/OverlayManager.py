@@ -34,7 +34,7 @@ class OverlayManager:
 
         self._hitbox = self._screen.get_rect()
         self._name = name
-        self._screen_flags = screenFlags
+        self._screenFlags = screenFlags
         self._size = size
         self._colour = colour
         self._visibleOverlay = None
@@ -48,7 +48,7 @@ class OverlayManager:
 
     @property
     def screenFlags(self):
-        return self._screen_flags
+        return self._screenFlags
 
     @property
     def name(self):
@@ -110,13 +110,13 @@ class OverlayManager:
         return False
 
     def get_overlay_at_pos(self, x, y): #TODO: What the fuck is this code?
-        return next(
-            (
+        return (result[0] if len(result:=
+            list(
                 overlay
                 for overlay in self._overlays[::-1]
                 if overlay._hitbox.collidepoint(x, y)
-            ),
-            None,
+            )) else\
+            None
         )
 
     def get_overlays_at_pos(self, x, y, shouldBeVisible=False):
@@ -128,8 +128,10 @@ class OverlayManager:
         ]
 
     def get_overlay_by_name(self, name):
-        return next(
-            (overlay for overlay in self._overlays if overlay._name == name), None
+        return (result[0] if
+                len(result := list(overlay for overlay in self._overlays if overlay._name == name))\
+                > 0 else\
+                None
         )
 
     def get_visible_overlays(self):

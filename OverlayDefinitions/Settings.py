@@ -4,110 +4,110 @@ import pygame
 
 
 settingsMenu = Overlay(
-    ("SettingsMenu"), (1060, 600), (0, 0), None, [pygame.SRCALPHA], []
+    ("settingsMenu"), (1060, 600), (0, 0), None, [pygame.SRCALPHA], []
 )
 
-settingsControls = Group("SettingsControl", (0,300), settingsMenu, [], True)
+settingsControls = Group("settingsControl", (0,300), settingsMenu, [], True)
 
-settingsVideo =  Group("SettingsVideo", (0,300), settingsMenu, [], False)
+settingsVideo =  Group("settingsVideo", (0,300), settingsMenu, [], False)
 
-settingsAudio =  Group("SettingsAudio", (0,300), settingsMenu, [], False)
+settingsAudio =  Group("settingsAudio", (0,300), settingsMenu, [], False)
 
-SettingOptions = {"Controls":settingsControls, "Video":settingsVideo, "Audio":settingsAudio}
+settingOptions = {"controls":settingsControls, "video":settingsVideo, "audio":settingsAudio}
 
 # ---------------------------------------------------------------------------- #
-#                                 Settings Menu                                #
+#                                 settings Menu                                #
 # ---------------------------------------------------------------------------- #
-SettingsLabel = Text(
-    "Settings",
+settingsLabel = Text(
+    "settings",
     "copperplategothic",
     64,
     (20, 20, 20),
     (530, 100),
-    "MainMenuLabel",
+    "mainMenuLabel",
     settingsMenu,
 )
 
 LIGHT_BLUE = (92, 225, 230)
 DARK_BLUE  = (82, 113, 255)
 
-SettingsLabel.align_to_center()
-SettingsLabel.set_underline(True)
+settingsLabel.align_to_center()
+settingsLabel.set_underline(True)
 
 spacingForTitleOptions = 8
-OptionBoxesPadding = 8
-OptionBoxY = SettingsLabel.y+SettingsLabel.hitbox.h+spacingForTitleOptions
+optionBoxesPadding = 8
+optionBoxY = settingsLabel.y+settingsLabel.hitbox.h+spacingForTitleOptions
 
-OptionBoxControlsText = Text("Controls", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Controls-Text", settingsMenu)
-OptionBoxAudioText = Text("Audio", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Audio-Text", settingsMenu)
-OptionBoxVideoText = Text("Video", "copperplategothic", 32, (20,20,20), (530, OptionBoxY+OptionBoxesPadding/2), "OptionBox-Video-Text", settingsMenu)
+optionBoxControlsText = Text("controls", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-controls-text", settingsMenu)
+optionBoxAudioText = Text("audio", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-audio-text", settingsMenu)
+optionBoxVideoText = Text("video", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-video-text", settingsMenu)
 
-boxWidth = max(max(OptionBoxAudioText.hitbox.w, OptionBoxControlsText.hitbox.w), OptionBoxVideoText.hitbox.w) + OptionBoxesPadding
+boxWidth = max(max(optionBoxAudioText.hitbox.w, optionBoxControlsText.hitbox.w), optionBoxVideoText.hitbox.w) + optionBoxesPadding
 
-OptionBoxControlsRect = Rectangle("OptionBox-Controls-Rect", 
-                                  (530-boxWidth,OptionBoxY), 
-                                  (boxWidth, 32+OptionBoxesPadding), 
+optionBoxControlsRect = Rectangle("optionBox-controls-rect", 
+                                  (530-boxWidth,optionBoxY), 
+                                  (boxWidth, 32+optionBoxesPadding), 
                                   settingsMenu, 
                                   (92, 225, 230))
 
 
-OptionBoxAudioRect = Rectangle("OptionBox-Audio-Rect", 
-                                  (530+boxWidth,OptionBoxY), 
-                                  (boxWidth, 32+OptionBoxesPadding), 
+optionBoxAudioRect = Rectangle("optionBox-audio-rect", 
+                                  (530+boxWidth,optionBoxY), 
+                                  (boxWidth, 32+optionBoxesPadding), 
                                   settingsMenu, 
                                   (92, 225, 230))
 
 
-OptionBoxVideoRect = Rectangle("OptionBox-Video-Rect", 
-                                  (530,OptionBoxY), 
-                                  (boxWidth, 32+OptionBoxesPadding), 
+optionBoxVideoRect = Rectangle("optionBox-video-rect", 
+                                  (530,optionBoxY), 
+                                  (boxWidth, 32+optionBoxesPadding), 
                                   settingsMenu, 
                                   (92, 225, 230))
 
 
-OptionBoxControlsRect.align_to_bottom_middle()
-OptionBoxAudioRect.align_to_bottom_middle()
-OptionBoxVideoRect.align_to_bottom_middle()
+optionBoxControlsRect.align_to_bottom_middle()
+optionBoxAudioRect.align_to_bottom_middle()
+optionBoxVideoRect.align_to_bottom_middle()
 
-OptionBoxControlsText.align_to_bottom_middle()
-OptionBoxAudioText.align_to_bottom_middle()
-OptionBoxVideoText.align_to_bottom_middle()
+optionBoxControlsText.align_to_bottom_middle()
+optionBoxAudioText.align_to_bottom_middle()
+optionBoxVideoText.align_to_bottom_middle()
 
-OptionBoxControlsText.bring_to_front()
-OptionBoxAudioText.bring_to_front()
-OptionBoxVideoText.bring_to_front()
+optionBoxControlsText.bring_to_front()
+optionBoxAudioText.bring_to_front()
+optionBoxVideoText.bring_to_front()
 
-OptionBoxControlsText._x -= boxWidth
-OptionBoxAudioText._x += boxWidth
+optionBoxControlsText._x -= boxWidth
+optionBoxAudioText._x += boxWidth
 
 
-OptionBoxCollision = Group("OptionBoxCollision", (530-boxWidth,OptionBoxY), settingsMenu, (OptionBoxControlsRect,
-                                                                                           OptionBoxAudioRect,
-                                                                                           OptionBoxVideoRect,
-                                                                                           OptionBoxControlsText,
-                                                                                           OptionBoxAudioText,
-                                                                                           OptionBoxVideoText), True)
+optionBoxCollision = Group("optionBoxCollision", (530-boxWidth,optionBoxY), settingsMenu, (optionBoxControlsRect,
+                                                                                           optionBoxAudioRect,
+                                                                                           optionBoxVideoRect,
+                                                                                           optionBoxControlsText,
+                                                                                           optionBoxAudioText,
+                                                                                           optionBoxVideoText), True)
 
-OptionBoxCollision.interactive = True
+optionBoxCollision.interactive = True
 
-AllNames = ["Controls", "Video", "Audio"]
+allNames = ["controls", "video", "audio"]
 
 
 #Setting Default Colours
 
-for name in AllNames:
-    elementRectPressed:Rectangle = OptionBoxCollision._elements.get(f"OptionBox-{name}-Rect", None)
-    elementTextPressed:Text      = OptionBoxCollision._elements.get(f"OptionBox-{name}-Text", None)
+for name in allNames:
+    elementRectPressed:Rectangle = optionBoxCollision._elements.get(f"optionBox-{name}-rect", None)
+    elementTextPressed:Text      = optionBoxCollision._elements.get(f"optionBox-{name}-text", None)
     
     if elementRectPressed != None and elementTextPressed is not None:
-        elementRectPressed.Colour = DARK_BLUE  if "Controls" != name else LIGHT_BLUE
-        elementTextPressed.set_underline("Controls" != name)
+        elementRectPressed.colour = DARK_BLUE  if "controls" != name else LIGHT_BLUE
+        elementTextPressed.set_underline("controls" != name)
         
         
 #-----------------------------------------------------------------
         
 
-def OptionBoxPressed(self:Group, *args, **kwargs):
+def option_box_pressed(self:Group, *args, **kwargs):
     mx,my = args[0]
     rx    = mx - self.x #relative X position to object
     px    = rx / self.width #percent x relative to object
@@ -117,40 +117,40 @@ def OptionBoxPressed(self:Group, *args, **kwargs):
     
     
     if 1/3 > px > 0:
-        elementNamePressed = AllNames[0]
+        elementNamePressed = allNames[0]
     elif 2/3 > px > 1/3:
-        elementNamePressed = AllNames[1]
+        elementNamePressed = allNames[1]
     elif 1 > px > 2/3:
-        elementNamePressed = AllNames[2]
+        elementNamePressed = allNames[2]
     
-    for name in AllNames:
-        elementRectPressed:Rectangle = self._elements.get(f"OptionBox-{name}-Rect", None)
-        elementTextPressed:Text      = self._elements.get(f"OptionBox-{name}-Text", None)
+    for name in allNames:
+        elementRectPressed:Rectangle = self._elements.get(f"optionBox-{name}-rect", None)
+        elementTextPressed:Text      = self._elements.get(f"optionBox-{name}-text", None)
         
         if elementRectPressed != None and elementTextPressed is not None:
-            elementRectPressed.Colour = DARK_BLUE  if elementNamePressed != name else LIGHT_BLUE
+            elementRectPressed.colour = DARK_BLUE  if elementNamePressed != name else LIGHT_BLUE
             elementTextPressed.set_underline(elementNamePressed != name)
             
             
-            if SettingOptions[name].parent is not None:
-                SettingOptions[name].parent.SetOverlayVisible(
-                    SettingOptions[name], 
+            if settingOptions[name].parent is not None:
+                settingOptions[name].parent.set_overlay_visible(
+                    settingOptions[name], 
                     elementNamePressed == name)
         
 
         
-OptionBoxCollision.pressed = OptionBoxPressed    
+optionBoxCollision.pressed = option_box_pressed    
 
 
 
-OptionBoxAudioRect = Rectangle("OptionBox-Audio-Rect", 
+optionBoxAudioRect = Rectangle("optionBox-audio-rect", 
                                   (0,0), 
-                                  (boxWidth, 32+OptionBoxesPadding), 
+                                  (boxWidth, 32+optionBoxesPadding), 
                                   settingsControls, 
                                   (92, 225, 230))
 
-OptionBoxAudioRect = Rectangle("OptionBox-Audio-Rect", 
+optionBoxAudioRect = Rectangle("optionBox-audio-rect", 
                                   (530+boxWidth,0), 
-                                  (boxWidth, 32+OptionBoxesPadding), 
+                                  (boxWidth, 32+optionBoxesPadding), 
                                   settingsVideo, 
                                   (92, 225, 10))
