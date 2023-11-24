@@ -1,5 +1,4 @@
 import pygame
-
 from ..ElementVariations.ElementSubclasses import Text
 from ..ElementVariations.ElementBaseClass import ElementDict, ElementList
 
@@ -23,7 +22,8 @@ class Overlay:
         self._hitbox = self._screen.get_rect()
         self._name = name
         self._screenFlags = screenFlags
-        self._pos = pos
+        self._pos = list(pos)
+        
         self._size = size
         self._parent = parent
         self._visible = visible
@@ -72,6 +72,10 @@ class Overlay:
             self._elements["allElements"]
         )
         )
+        
+        
+
+        
 
     @property
     def screen(self):
@@ -90,18 +94,19 @@ class Overlay:
         self.update_hitbox()
 
         for element in self._elements["allElements"]:
-            xPercent = element.x / oldSize[0]
-            yPercent = element.y / oldSize[1]
-            element.x = xPercent * value[0]
-            element.y = yPercent * value[1]
+            if element.hitbox:
+                xPercent = element.x / oldSize[0]
+                yPercent = element.y / oldSize[1]
+                element.x = xPercent * value[0]
+                element.y = yPercent * value[1]
 
-            widthPercent = element.hitbox.width / oldSize[0]
-            heightPercent = element.hitbox.height / oldSize[1]
+                widthPercent = element.hitbox.width / oldSize[0]
+                heightPercent = element.hitbox.height / oldSize[1]
 
-            if type(element) == Text:
-                element.size = element.size / oldSize[0] * value[0]
+                if type(element) == Text:
+                    element.size = element.size / oldSize[0] * value[0]
 
-            element.resize_image(widthPercent * value[0], heightPercent * value[1])
+                element.resize_image(widthPercent * value[0], heightPercent * value[1])
 
         self.update()
 
@@ -109,7 +114,11 @@ class Overlay:
     def pos(self, value):
         self._pos = value
         self.update_hitbox()
-
+        
+    @visible.setter
+    def visible(self, value):
+        self._visible = value
+    
     def align_to_center(self):
         self.get_offset_x = lambda: -self._hitbox.w / 2
         self.get_offset_y = lambda: -self._hitbox.h / 2

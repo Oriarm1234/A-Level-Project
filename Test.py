@@ -7,12 +7,12 @@ imageFileNames = glob.glob("Images\\*.png")
 images = dict(
     [fileName.split("\\")[-1].split(".")[0], pygame.image.load(fileName)] for fileName in imageFileNames
 )
-print(images)
+
 screenSize = (1060, 600)
 screen = pygame.display.set_mode(screenSize)
 
 
-
+Definitions.GameScreen.init(images)
 gameScreen = Definitions.GameScreen.gameScreen((1060, 600))
 
 

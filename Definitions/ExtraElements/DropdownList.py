@@ -1,7 +1,23 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (Element, 
+                                   ElementDict, 
+                                   ElementList, 
+                                   StillImage,
+                                   Text,
+                                   Rectangle,
+                                   Circle,
+                                   Line,
+                                   Group,
+                                   Overlay,
+                                   OverlayManager)
 import pygame
 
+images = {}
 
+def init(imageObjects = {}):
+
+    global images
+    images = imageObjects
+    
 
 def option_pressed(self, optionElements):
     
@@ -34,11 +50,11 @@ def set_open(self, value):
             optionElement.visible = value
             optionElement.interactive = value
             optionElement.bring_to_front()
-                
+                    
 
 
 
-def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, options, textFont, textSize, textColor, allowNothing, borderColor, backgroundColor, padding, borderSize):
+def DropdownList(name, pos, parent, options, textFont, textSize, textColor, allowNothing, borderColor, backgroundColor, padding, borderSize):
     x,y = pos
     options = list(options)
         
@@ -46,12 +62,17 @@ def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, o
     currentOptionText = Text(currentOption, textFont, textSize, textColor, (x,y),name+"-dropdownCurrentOptionText", parent)
     
     currentOptionText.set_bold(True)
-    arrowImage = pygame.transform.scale(arrowImage, (
-        arrowImage.get_width() * (currentOptionText.hitbox.h/arrowImage.get_height()), 
-        currentOptionText.hitbox.h
-    ))
     
-    dropdownArrow = StillImage(name+"-dropdownArrow", arrowImage, (x,y), parent, arrowImageName)
+    arrowImage = images.get("dropdownarrow",None)
+    
+    if arrowImage:
+    
+        arrowImage = pygame.transform.scale(arrowImage, (
+            arrowImage.get_width() * (currentOptionText.hitbox.h/arrowImage.get_height()), 
+            currentOptionText.hitbox.h
+        ))
+    
+    dropdownArrow = StillImage(name+"-dropdownArrow", arrowImage, (x,y), parent, "dropdownarrow")
     
     width = currentOptionText.hitbox.width + dropdownArrow.hitbox.width
     height = max(currentOptionText.hitbox.height, dropdownArrow.hitbox.height)
@@ -90,7 +111,7 @@ def DropdownList(name, arrowImage:pygame.Surface, pos, parent, arrowImageName, o
         optionBackground = Rectangle(name+"-optionBackground{}".format(option), (x, backgroundOY), (width + padding*2+borderSize*2 , height+padding*2), parent, backgroundColor)
         optionText = Text(text, textFont, textSize, textColor, (x+padding+borderSize, textOY), name+"-option{}".format(option), parent)
         self.options["option"+str(i)] = [optionBackground, optionText]
-         
+        
         pressedMaker = lambda index: (lambda self, *args, **kwargs: option_pressed(self, self.options["option"+str(index)]))
         released = lambda self, *args, **kwargs: set_open(self, False)
         optionText.pressed =  pressedMaker(i)

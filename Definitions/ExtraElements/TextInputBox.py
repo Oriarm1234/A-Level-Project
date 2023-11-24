@@ -1,7 +1,23 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (Element, 
+                                   ElementDict, 
+                                   ElementList, 
+                                   StillImage,
+                                   Text,
+                                   Rectangle,
+                                   Circle,
+                                   Line,
+                                   Group,
+                                   Overlay,
+                                   OverlayManager)
 import time
 import pygame
 
+images = {}
+
+def init(imageObjects = {}):
+
+    global images
+    images = imageObjects
 
 shiftKeys = {
     "1":"!",
@@ -175,7 +191,7 @@ def set_pointer_index(self, newIndex):
         
         self.pointerIndex = newIndex
     
-         
+        
 def other_element_pressed(self, *args, **kwargs):
     if self.selected:
         self.pressed(self)
