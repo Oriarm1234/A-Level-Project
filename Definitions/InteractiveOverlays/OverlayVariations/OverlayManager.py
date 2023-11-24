@@ -1,5 +1,5 @@
 import pygame
-
+from ...InteractiveOverlays import Text, Overlay
 
 class OverlayManager:
     __ClassName__ = "OverlayManager"
@@ -37,8 +37,9 @@ class OverlayManager:
         self._screenFlags = screenFlags
         self._size = size
         self._colour = colour
-        self._visibleOverlay = None
-        self._pos = pos
+
+        self._x, self._y = pos
+        self.x, self.y = pos
 
         self.held_down = {}
 
@@ -61,6 +62,24 @@ class OverlayManager:
     @property
     def screen(self):
         return self._screen
+    
+    def update_hitbox(self):
+        self._hitbox.x = self.x
+        self._hitbox.y = self.y
+    
+    @size.setter
+    def size(self, value):
+        oldSize = self._size
+        self._screen = pygame.Surface(value, *self._screenFlags)
+        self._size = value
+        self._hitbox = self._screen.get_rect()
+        self.update_hitbox()
+
+        for overlay in self._overlays:
+            xPercent = overlay.pos[0] / oldSize[0]
+            yPercent = overlay.pos[1] / oldSize[1]
+            overlay.pos = xPercent * value[0], yPercent * value[1]
+
 
     def get_state_event(self, event):
         return self.held_down.get(event, False)
@@ -109,7 +128,7 @@ class OverlayManager:
             return True
         return False
 
-    def get_overlay_at_pos(self, x, y): #TODO: What the fuck is this code?
+    def get_overlay_at_pos(self, x, y): 
         return (result[0] if len(result:=
             list(
                 overlay
@@ -120,26 +139,33 @@ class OverlayManager:
         )
 
     def get_overlays_at_pos(self, x, y, shouldBeVisible=False):
-        return [
-            overlay
-            for overlay in self._overlays
-            if (overlay._visible or not shouldBeVisible)
-            and overlay._hitbox.collidepoint(x, y)
-        ]
-
+        overlays = []
+        
+        for overlay in self._overlays:
+            if (overlay._visible or not shouldBeVisible) and overlay.collidepoint(x, y):
+                overlays.append(overlay)
+        
+        
+        return overlays
+    
     def get_overlay_by_name(self, name):
-        return (result[0] if
-                len(result := list(overlay for overlay in self._overlays if overlay._name == name))\
-                > 0 else\
-                None
-        )
+        
+        overlays = []
+        
+        for overlay in self._overlays:
+            if overlay.name == name:
+                overlays.append(overlay)
+        
+        
+        return overlays[0] if len(overlays) != 0 else None
 
     def get_visible_overlays(self):
         return list(filter(lambda x: x._visible, self._overlays))
 
     def set_overlay_visible(self, overlay, visible=True):
+        assert type(overlay) == Overlay, f"overlay needs to be of type Overlay, not {type(overlay)}"
         overlay._visible = visible
-        self._visibleOverlay = overlay
+
 
     @staticmethod
     def pre_update(overlayManager, *args, **kwargs):

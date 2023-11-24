@@ -1,14 +1,6 @@
-from ..InteractiveOverlays import (Element, 
-                                   ElementDict, 
-                                   ElementList, 
+from ..InteractiveOverlays import (
                                    StillImage,
-                                   Text,
-                                   Rectangle,
-                                   Circle,
-                                   Line,
-                                   Group,
-                                   Overlay,
-                                   OverlayManager)
+                                   Overlay)
 import pygame
 
 images = {}
@@ -20,16 +12,15 @@ def init(imageObjects = {}):
 
 def gameScreen(screenSize):
 
-    gameScreen = Overlay("gameScreen",
+    self = Overlay("gameScreen",
                         screenSize,
                         [0,0],
                         None,
                         [pygame.SRCALPHA],
                         [])
 
-
-    background = StillImage("background", images.get("Background", None), (0,0), gameScreen)
-    background.crop_image(0,150, 1060, 600)
+    background = StillImage("background", images.get("Background", None), (0,0), self)
+    background.crop_image(0,150, screenSize[0], screenSize[1])
     background.move_backwards(100)
     
-    return gameScreen
+    return self

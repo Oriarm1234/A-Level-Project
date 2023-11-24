@@ -1,20 +1,33 @@
-from InteractiveOverlays import *
-from OverlayDefinitions.ExtraElements import *
+from ..InteractiveOverlays import (Text,
+                                   Rectangle,
+                                   Group,
+                                   Overlay)
+
+from ..ExtraElements import (DropdownList,
+                             Slider,
+                             Tickbox,
+                             TextInputBox)
+
 import pygame
 
-def init(images):
+images = {}
 
-    global settingsMenu
+def init(imageObjects = {}):
 
-    settingsMenu = Overlay(
-        ("settingsMenu"), (1060, 600), (0, 0), None, [pygame.SRCALPHA], []
+    global images
+    images = imageObjects
+    
+def settingsMenu(screenSize):
+
+    self = Overlay(
+        ("settingsMenu"), screenSize, (0, 0), None, [pygame.SRCALPHA], []
     )
 
-    settingsControls = Group("settingsControl", (0,300), settingsMenu, [], True)
+    settingsControls = Group("settingsControl", (0,300), self, [], True)
 
-    settingsVideo =  Group("settingsVideo", (0,300), settingsMenu, [], False)
+    settingsVideo =  Group("settingsVideo", (0,300), self, [], False)
 
-    settingsAudio =  Group("settingsAudio", (0,300), settingsMenu, [], False)
+    settingsAudio =  Group("settingsAudio", (0,300), self, [], False)
 
     settingOptions = {"controls":settingsControls, "video":settingsVideo, "audio":settingsAudio}
 
@@ -28,7 +41,7 @@ def init(images):
         (20, 20, 20),
         (530, 100),
         "mainMenuLabel",
-        settingsMenu,
+        self,
     )
 
     LIGHT_BLUE = (92, 225, 230)
@@ -41,30 +54,30 @@ def init(images):
     optionBoxesPadding = 8
     optionBoxY = settingsLabel.y+settingsLabel.hitbox.h+spacingForTitleOptions
 
-    optionBoxControlsText = Text("controls", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-controls-text", settingsMenu)
-    optionBoxAudioText = Text("audio", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-audio-text", settingsMenu)
-    optionBoxVideoText = Text("video", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-video-text", settingsMenu)
+    optionBoxControlsText = Text("controls", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-controls-text", self)
+    optionBoxAudioText = Text("audio", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-audio-text", self)
+    optionBoxVideoText = Text("video", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-video-text", self)
 
     boxWidth = max(max(optionBoxAudioText.hitbox.w, optionBoxControlsText.hitbox.w), optionBoxVideoText.hitbox.w) + optionBoxesPadding
 
     optionBoxControlsRect = Rectangle("optionBox-controls-rect", 
                                     (530-boxWidth,optionBoxY), 
                                     (boxWidth, 32+optionBoxesPadding), 
-                                    settingsMenu, 
+                                    self, 
                                     (92, 225, 230))
 
 
     optionBoxAudioRect = Rectangle("optionBox-audio-rect", 
                                     (530+boxWidth,optionBoxY), 
                                     (boxWidth, 32+optionBoxesPadding), 
-                                    settingsMenu, 
+                                    self, 
                                     (92, 225, 230))
 
 
     optionBoxVideoRect = Rectangle("optionBox-video-rect", 
                                     (530,optionBoxY), 
                                     (boxWidth, 32+optionBoxesPadding), 
-                                    settingsMenu, 
+                                    self, 
                                     (92, 225, 230))
 
 
@@ -84,7 +97,7 @@ def init(images):
     optionBoxAudioText._x += boxWidth
 
 
-    optionBoxCollision = Group("optionBoxCollision", (530-boxWidth,optionBoxY), settingsMenu, (optionBoxControlsRect,
+    optionBoxCollision = Group("optionBoxCollision", (530-boxWidth,optionBoxY), self, (optionBoxControlsRect,
                                                                                             optionBoxAudioRect,
                                                                                             optionBoxVideoRect,
                                                                                             optionBoxControlsText,
@@ -155,3 +168,5 @@ def init(images):
                                     (boxWidth, 32+optionBoxesPadding), 
                                     settingsVideo, 
                                     (92, 225, 10))
+    
+    return self

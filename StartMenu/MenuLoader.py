@@ -1,11 +1,16 @@
 import pygame
-import InteractiveOverlays
-import OverlayDefinitions
-import ExtraElements
+from Definitions import *
 import json
 
-def init(images):
-    global overlayManager
+overlayManager = None
+
+def init(images, gameScreen, screenSize):
+    global  overlayManager  ,\
+            mainMenu        ,\
+            newGameMenu     ,\
+            settingsMenu    ,\
+            helpMenu        ,\
+            loadGameMenu    
 
     
 
@@ -82,7 +87,7 @@ def init(images):
             ):
                 overlayManager.set_state_event("k_escape", True)
                 visibleOverlays = overlayManager.get_visible_overlays()
-                mainMenu = overlayManager.get_overlay_by_name("MainMenu")
+                mainMenu = overlayManager.get_overlay_by_name("mainMenu")
                 if mainMenu in visibleOverlays:
                     pygame.quit()
                     quit()
@@ -104,17 +109,35 @@ def init(images):
 
     overlayManager.pre_draw = pre_draw
     overlayManager.pre_update = pre_update
+    
+    MainMenu.init(images)
+    NewGameMenu.init(images)
+    LoadGameMenu.init(images)
+    Settings.init(images)
+    Help.init(images)
+    
 
+    mainMenu = MainMenu.mainMenu(screenSize)
+    newGameMenu = NewGameMenu.newGameMenu(screenSize)
+    settingsMenu = Settings.settingsMenu(screenSize)
+    helpMenu = Help.helpMenu(screenSize)
+    loadGameMenu = LoadGameMenu.loadGameMenu(screenSize)
+    
+    overlayManager.set_overlay_visible(gameScreen)
     overlayManager.append_overlay(gameScreen)
     overlayManager.append_overlay(mainMenu)
     overlayManager.append_overlay(newGameMenu)
     overlayManager.append_overlay(settingsMenu)
     overlayManager.append_overlay(helpMenu)
     overlayManager.append_overlay(loadGameMenu)
+    
+    
 
 
 
 def StartMenu(screen, screenSize = (1060, 600), settings={}):
+    
+    assert overlayManager, "OverlayManager doesn't exist, have you initialised the menu? (MenuLoader.init(*))"
     
     overlayManager.size = screenSize
     
@@ -126,13 +149,19 @@ def StartMenu(screen, screenSize = (1060, 600), settings={}):
     brightnessLayer.fill((0, 0, 0, 200 - brightness * 2))
     
     
-    
+    visibleOverlays = overlayManager.get_visible_overlays()
+    mainMenu = overlayManager.get_overlay_by_name("mainMenu")
 
-    for overlay in overlayManager.get_visible_overlays():
-        overlayManager.set_overlay_visible(overlay, False)
+    for overlay in visibleOverlays:
+                        if overlay.name not in [
+                            "mainMenu",
+                            "gameScreen"
+                        ]:
+                            
+                            overlayManager.set_overlay_visible(overlay, False)
 
     overlayManager.set_overlay_visible(mainMenu)
-    overlayManager.set_overlay_visible(gameScreen)
+    
     
     
     

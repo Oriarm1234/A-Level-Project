@@ -1,12 +1,19 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (StillImage,
+                                   Text,
+                                   Overlay)
 import pygame
 
-def init(images):
+images = {}
+
+def init(imageObjects = {}):
+
+    global images
+    images = imageObjects
+
+def mainMenu(screenSize):
     
-    global mainMenu
-    
-    mainMenu = Overlay("MainMenu",
-                        (1060,600),
+    self = Overlay("mainMenu",
+                        screenSize,
                         [0,0],
                         None,
                         [pygame.SRCALPHA],
@@ -17,7 +24,7 @@ def init(images):
         "newGameButton",
         images.get("button",None),
         (530,200),
-        mainMenu,
+        self,
         imageName="button")
 
     newGameLabel = Text(
@@ -27,13 +34,13 @@ def init(images):
         (0,0,0), 
         (530,200), 
         "NewGameLabel",
-        mainMenu)
+        self)
 
     loadGameButton = StillImage(
         "loadGameButton",
         images.get("button",None),
         (530,200),
-        mainMenu,
+        self,
         imageName="button")
 
     loadGameLabel = Text(
@@ -43,13 +50,13 @@ def init(images):
         (0,0,0), 
         (530,200), 
         "loadGameLabel",
-        mainMenu)
+        self)
 
     settingsButton = StillImage(
         "settingsButton",
         images.get("button",None),
         (530,200),
-        mainMenu,
+        self,
         imageName="button")
 
     settingsLabel = Text(
@@ -59,13 +66,13 @@ def init(images):
         (0,0,0), 
         (530,200), 
         "settingsLabel",
-        mainMenu)
+        self)
 
     helpButton = StillImage(
         "helpButton",
         images.get("button",None),
         (530,200),
-        mainMenu,
+        self,
         imageName="button")
 
     helpLabel = Text(
@@ -75,13 +82,13 @@ def init(images):
         (0,0,0), 
         (530,200), 
         "helpLabel",
-        mainMenu)
+        self)
 
     quitButton = StillImage(
         "quitButton",
         images.get("button",None),
         (530,200),
-        mainMenu,
+        self,
         imageName="button")
 
     quitLabel = Text(
@@ -91,7 +98,7 @@ def init(images):
         (0,0,0), 
         (530,200), 
         "quitLabel",
-        mainMenu)
+        self)
 
     newGameButton.align_to_center()
     newGameLabel.align_to_center()
@@ -129,21 +136,21 @@ def init(images):
     quitLabel.y =  helpButton.hitbox.h + helpButton._y + spacing
     quitButton.y = helpButton.hitbox.h + helpButton._y + spacing
 
-    mainMenuLabel = Text(
+    selfLabel = Text(
         "Main Menu", 
         "copperplategothic", 
         64, 
         (20,20,20), 
         (530,100), 
-        "mainMenuLabel",
-        mainMenu)
+        "selfLabel",
+        self)
 
-    mainMenuLabel.align_to_center()
-    mainMenuLabel.set_underline(True)
+    selfLabel.align_to_center()
+    selfLabel.set_underline(True)
 
 
 
-    bestDungeonRunsFrame = StillImage("bestDungeonRunsFrame", images.get("button",None), (20,20), mainMenu, imageName="button")
+    bestDungeonRunsFrame = StillImage("bestDungeonRunsFrame", images.get("button",None), (20,20), self, imageName="button")
     bestDungeonRunsFrame.resize_image(180,60)
 
     bestDungeonRunsLabel = Text(
@@ -153,11 +160,11 @@ def init(images):
         (20,20,20), 
         (110,50), 
         "bestDungeonRunsLabel",
-        mainMenu)
+        self)
     bestDungeonRunsLabel.align_to_center()
     bestDungeonRunsLabel.set_underline(True)
 
-    achievementsFrame = StillImage("achievementsFrame", images.get("button",None), (1040,20), mainMenu, imageName="button")
+    achievementsFrame = StillImage("achievementsFrame", images.get("button",None), (1040,20), self, imageName="button")
     achievementsFrame.resize_image(180,60)
     achievementsFrame.align_to_bottom_left()
 
@@ -168,7 +175,7 @@ def init(images):
         (20,20,20), 
         (950,50), 
         "achievementsLabel",
-        mainMenu)
+        self)
     achievementsLabel.align_to_center()
     achievementsLabel.set_underline(True)
 
@@ -195,42 +202,46 @@ def init(images):
     @button_released_wrapper
     def new_game_button_released(self, *args, **kwargs):
     
-        newGameMenu = mainMenu._parent.get_overlay_by_name("newGameMenu")
+        overlayManager = self._parent._parent
+        newGameMenu = overlayManager.get_overlay_by_name("newGameMenu")
         
         if newGameMenu != None:
             
-            mainMenu._parent.set_overlay_visible(mainMenu, False)
-            mainMenu._parent.set_overlay_visible(newGameMenu, True)
+            overlayManager.set_overlay_visible(self._parent, False)
+            overlayManager.set_overlay_visible(newGameMenu, True)
 
     @button_released_wrapper
     def load_game_button_released(self, *args, **kwargs):
     
-        loadGameMenu = mainMenu._parent.get_overlay_by_name("loadGameMenu")
+        overlayManager = self._parent._parent
+        loadGameMenu = overlayManager.get_overlay_by_name("loadGameMenu")
         
         if loadGameMenu != None:
             
-            mainMenu._parent.set_overlay_visible(mainMenu, False)
-            mainMenu._parent.set_overlay_visible(loadGameMenu, True)
+            overlayManager.set_overlay_visible(self._parent, False)
+            overlayManager.set_overlay_visible(loadGameMenu, True)
 
     @button_released_wrapper
     def settings_button_released(self, *args, **kwargs):
-    
-        settingsMenu = mainMenu._parent.get_overlay_by_name("settingsMenu")
+        
+        overlayManager = self._parent._parent
+        settingsMenu = overlayManager.get_overlay_by_name("settingsMenu")
         
         if settingsMenu != None:
             
-            mainMenu._parent.set_overlay_visible(mainMenu, False)
-            mainMenu._parent.set_overlay_visible(settingsMenu, True) 
+            overlayManager.set_overlay_visible(self._parent, False)
+            overlayManager.set_overlay_visible(settingsMenu, True) 
 
     @button_released_wrapper
     def help_button_released(self, *args, **kwargs):
     
-        helpMenu = mainMenu._parent.get_overlay_by_name("helpMenu")
+        overlayManager = self._parent._parent
+        helpMenu = overlayManager.get_overlay_by_name("helpMenu")
         
         if helpMenu != None:
             
-            mainMenu._parent.set_overlay_visible(mainMenu, False)
-            mainMenu._parent.set_overlay_visible(helpMenu, True)
+            overlayManager.set_overlay_visible(self._parent, False)
+            overlayManager.set_overlay_visible(helpMenu, True)
 
     @button_released_wrapper
     def quit_button_released(self, *args, **kwargs):
@@ -261,3 +272,5 @@ def init(images):
 
     bestDungeonRunsFrame.interactive = True
     achievementsFrame.interactive = True
+    
+    return self

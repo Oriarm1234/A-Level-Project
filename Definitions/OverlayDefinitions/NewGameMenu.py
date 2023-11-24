@@ -1,12 +1,19 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (StillImage,
+                                   Text,
+                                   Overlay)
 import pygame
 
-def init(images):
+images = {}
 
-    global newGameMenu
+def init(imageObjects = {}):
 
-    newGameMenu = Overlay(("newGameMenu"),
-                        (1060,600),
+    global images
+    images = imageObjects
+
+def newGameMenu(screenSize):
+
+    self = Overlay(("newGameMenu"),
+                        screenSize,
                         (0,0),
                         None,
                         [pygame.SRCALPHA],
@@ -21,7 +28,7 @@ def init(images):
         (20,20,20), 
         (530,100), 
         "mainMenuLabel",
-        newGameMenu)
+        self)
 
     newGameLabel.align_to_center()
     newGameLabel.set_underline(True)
@@ -34,7 +41,7 @@ def init(images):
             f"saveSlotButton-{str(i + 1)}",
             images.get("button", None),
             (530, 200),
-            newGameMenu,
+            self,
             imageName="button",
         )
 
@@ -45,7 +52,7 @@ def init(images):
             (0, 0, 0),
             (530, 200),
             f"saveSlotLabel-{str(i + 1)}",
-            newGameMenu,
+            self,
         )
 
         saveSlots.append((saveSlotButton, saveSlotLabel))
@@ -62,3 +69,5 @@ def init(images):
         if i>0:
             saveSlotButton.y = saveSlots[i-1][0].hitbox.h + saveSlots[i-1][0]._y + spacing
             saveSlotLabel.y = saveSlots[i-1][0].hitbox.h + saveSlots[i-1][0]._y + spacing
+            
+    return self

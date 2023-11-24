@@ -1,12 +1,19 @@
-from InteractiveOverlays import *
+from ..InteractiveOverlays import (
+                                   Text,
+                                   Overlay)
 import pygame
 
-def init(images):
+images = {}
 
-    global helpMenu
+def init(imageObjects = {}):
 
-    helpMenu = Overlay(("helpMenu"),
-                        (1060,600),
+    global images
+    images = imageObjects
+    
+def helpMenu(screenSize):
+
+    self = Overlay(("helpMenu"),
+                        screenSize,
                         [0,0],
                         None,
                         [pygame.SRCALPHA],
@@ -19,7 +26,7 @@ def init(images):
         (20,20,20), 
         (530,100), 
         "MainMenuLabel",
-        helpMenu)
+        self)
 
     helpLabel.align_to_center()
     helpLabel.set_underline(True)
@@ -31,6 +38,8 @@ def init(images):
         (20,20,20), 
         (530,200), 
         "MainMenuLabel",
-        helpMenu)
+        self)
 
     helpLabel.align_to_center()
+    
+    return self

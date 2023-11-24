@@ -1,14 +1,3 @@
-from .ExtraElements import(Slider,
-                          DropdownList
-                          )
-from .InteractiveOverlays import(Element, 
-                                ElementDict, 
-                                ElementList, 
-                                StillImage,
-                                Text,
-                                Rectangle,
-                                Circle,
-                                Line,
-                                Group,
-                                Overlay,
-                                OverlayManager)
+from .ExtraElements import *
+from .InteractiveOverlays import *
+from .OverlayDefinitions import *
