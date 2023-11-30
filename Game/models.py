@@ -5,27 +5,37 @@ import DungeonTiles
 def loadModels(models = {}):
     files = glob.glob("Images\\**\\*.png", recursive=True)
 
-    allModels = {}
-
     for fileName in files:
         
         dictionaryLocation = fileName.split("\\")[1:][:-1]
+        imageLayer = fileName.split("\\")[-1].split(".")[0]
         variation = dictionaryLocation.pop()
-        name = dictionaryLocation.pop()
-        
-        model = DungeonTiles.Model({})
+        modelName = dictionaryLocation.pop()
+        if modelName not in models:
+            models[modelName] = DungeonTiles.Model(modelName,variation, {})
+            
         
         try:
+            
+            imageLayer = int(imageLayer)
+            variation = int(variation)
+            
             img = pygame.image.load(fileName)
             
-            model.images[variation] = model.images.get(variation, [])
+            models[modelName].images[variation] = models[modelName].images.get(variation, {})
+            
+            models[modelName].images[variation][imageLayer] = img
             
             
             
             
             
         except:
-            currentLevel[loc].append(None)
+            input("Bad Image, BURN " + fileName)
+            
+    for modelName, model in models.items():
+        for varationKey, variation in model.images.items():
+            
+            model.images[varationKey] = dict([imgKey, variation[imgKey]] for imgKey in sorted(variation))
             
     return models
-            

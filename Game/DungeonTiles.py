@@ -1,15 +1,18 @@
 import glob
 import pygame
-import Definitions
 
 class Model:
-    def __init__(self, images:dict):
+    def __init__(self, name, variation, images:dict):
         self.images = images
+        self.name = name
+        self.variation = variation
 
 class Tile:
-    def __init__(self, x, y):
+    def __init__(self, x, y, model = {}, variation = 0):
         self.x = x
         self.y = y
 
-        self.model = {}
-        self.variation = '0'
+        self.model = model
+        self.variation = variation
+        
+    
