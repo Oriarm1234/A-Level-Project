@@ -18,7 +18,7 @@ def loadModels(models = {}):
         try:
             
             imageLayer = int(imageLayer)
-            variation = int(variation)
+            variation = int(variation) if variation.isnumeric() else variation
             
             img = pygame.image.load(fileName)
             

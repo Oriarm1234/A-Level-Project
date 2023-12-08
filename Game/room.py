@@ -8,52 +8,28 @@ MODELS = Definitions.MODELS
 
 class Room:
     roomType = "None"
-    def __init__(self, x,y, parent, type = "puzzle", size = Definitions.MEDIUM_ROOM, sides = {}):
+    def __init__(self, x,y, parent, type = "puzzle", shape = ("Name", ((0,0,0),(0,0,0),(0,0,0))), sides = {}, id = 0,locked = False):
         self.x = x
         self.y = y
         self.parent = parent
         self.type = type
         self.roomLayout = {}
-        self.size = size
+        self.shapeType = shape[0]
+        self.shape = list(dict(((x*Definitions.ROOM_SIZE[0]+i,y*Definitions.ROOM_SIZE[1]+j),tileType) for i,tileType in enumerate(row)) for j,row in enumerate(shape[1]))  # convert to list of dicts
+        shape = {}
+        for Dict in self.shape:
+            shape.update(Dict)
+        self.shape = shape
         self.sides = sides
-        self.screenRoomSize = (self.size[0] * Definitions.GRID_SQUARE_WIDTH, self.size[1] * Definitions.GRID_SQUARE_HEIGHT)
+        self.sideRooms = {}
+        self.locked = locked
+        self.id = id
+        
+        minPointX = min(self.shape, key = lambda coord: coord[0])[0]
+        maxPointX = max(self.shape, key = lambda coord: coord[0])[0] + 1
+        
+        minPointY = min(self.shape, key = lambda coord: coord[1])[1]
+        maxPointY = max(self.shape, key = lambda coord: coord[1])[1] + 1
+        self.screenRoomSize = (abs(maxPointX-minPointX) * Definitions.GRID_SQUARE_WIDTH+2, abs(maxPointY-minPointY) * Definitions.GRID_SQUARE_HEIGHT+2)
 
-    def generate(self):
-        self.roomLayout = {}
-        layer0 = {}
-        layer1 = {}
-        layer2 = {}
         
-        for i in range(self.size[0]):
-            for j in range(self.size[1]):
-                    
-                variation2 = MODELS["Brick"].images[random.randint(0,1)]
-                for layer in variation2:
-                    layer0[layer] = layer0.get(layer, {})
-                    layer0[layer][(i,j)] = variation2[layer]
-                
-                
-                    
-        self.roomLayout[0] = layer0
-        self.roomLayout[max(layer0)] = layer1   
-                
-    def draw(self):
-        
-        layers = {}
-        
-        for layerIndex in self.roomLayout:
-            layer = self.roomLayout[layerIndex]
-            layers[layerIndex] = {}
-            for index in layer:
-                layers[layerIndex][index] = pygame.Surface(self.screenRoomSize, pygame.SRCALPHA)
-                layers[layerIndex][index].fill((0,0,0,0))
-                for coord in layer[index]:
-                    x,y = coord
-                    
-                    x = (x+.5) * Definitions.GRID_SQUARE_WIDTH
-                    y = (y+.5) * Definitions.GRID_SQUARE_HEIGHT
-                    
-                    img = layer[index][coord]
-                    layers[layerIndex][index].blit(img, (x-img.get_width()/2,y-img.get_height()/2))
-                
-        return layers
