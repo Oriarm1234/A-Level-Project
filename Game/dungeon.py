@@ -59,7 +59,7 @@ def get_suitable_room_shape(
         
     
     if len(suitableShapes) == 0:
-        input("NO ROOM FOR SIDES: " + str(sides)) # MESSAGE BEFORE ERROR IN CASE A SITUATION HASNT BEEN ACCOUNTED FOR
+        input("NO ROOM FOR SIDES: " + str(sides)) #* MESSAGE BEFORE ERROR IN CASE A SITUATION HASNT BEEN ACCOUNTED FOR
     
     shape = random.choice(suitableShapes)
     
@@ -153,9 +153,19 @@ class Dungeon:
             
             sidesTaken = rooms[tuple(currentRoom)]
             
-            if len(sidesTaken) == 4 or random.randint(0,10)/10 <= changeFocusChance:
+            
+            if (len(sidesTaken) >= 2 and genData[tuple(currentRoom)]["locked"]):
+                currentRoom = list(random.choice(list(rooms)))
+                continue
+            
+            
+            
+            if (len(sidesTaken) == 4 or random.randint(0,10)/10 <= changeFocusChance):
                 chosenSide = random.choice(list(sides))
                 
+                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
+                    currentRoom = list(random.choice(list(rooms)))
+                    continue
                 
                 rooms[tuple(currentRoom)].add(chosenSide)
                 
@@ -187,6 +197,10 @@ class Dungeon:
             else:
                 newSides = [side for side in sides if side not in sidesTaken]
                 chosenSide = random.choice(newSides)
+                
+                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
+                    currentRoom = list(random.choice(list(rooms)))
+                    continue
                 
                 rooms[tuple(currentRoom)].add(chosenSide)
                 newRoom = [0,0]
