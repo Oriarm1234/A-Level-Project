@@ -65,7 +65,8 @@ def get_suitable_room_shape(
     
     
     return shape, Definitions.ROOMS[shape][0]
-    
+
+
 
 class Dungeon:
     def __init__(self,
@@ -110,7 +111,6 @@ class Dungeon:
         self.starterRoom = [0,0]
         self.tiles = {}
         self.dungeonLayout = {} # Will hold the pygame surfaces to draw on screen
-        self.reachableRooms = set()
         self.generate()
         
     def unlock_room(self, roomCoord):
@@ -123,11 +123,12 @@ class Dungeon:
         
     
     def generate_tiles(self):
+        global maxZoneId
         self.rooms = {}
         self.tiles = {}
         
-        self.reachableRooms = {0:{(0,0)}}
         
+        lockedRooms = {}
         self.roomAmount = random.randint(self.minRooms, self.maxRooms)
         self.bossAmount = math.log2(self.roomAmount)
         
@@ -146,7 +147,8 @@ class Dungeon:
         
         genData = {tuple(currentRoom):{
             "id":0,
-            "locked":False
+            "locked":False,
+            "zoneId":0
         }}
         
         while generatedAmount < self.roomAmount:
@@ -158,34 +160,52 @@ class Dungeon:
                 currentRoom = list(random.choice(list(rooms)))
                 continue
             
+            maxZoneId = max(maxZoneId, genData[tuple(currentRoom)]["zoneId"])
             
+            if genData[tuple(currentRoom)]["locked"] and currentRoom not in lockedRooms.get(genData[tuple(currentRoom)]["zoneId"], []):
+                
+                lockedLevel = lockedRooms.get(genData[tuple(currentRoom)]["zoneId"], [])
+                lockedLevel.append(currentRoom)
+                
+                lockedRooms[genData[tuple(currentRoom)]["zoneId"]] = lockedLevel
+                
             
             if (len(sidesTaken) == 4 or random.randint(0,10)/10 <= changeFocusChance):
                 chosenSide = random.choice(list(sides))
                 
-                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
-                    currentRoom = list(random.choice(list(rooms)))
-                    continue
+                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData:
+                    newSide = genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]
+                    
+                    if newSide["locked"] or newSide["zoneId"] != genData[tuple(currentRoom)]["zoneId"]:
+                        
+                        currentRoom = list(random.choice(list(rooms)))
+                        continue
                 
                 rooms[tuple(currentRoom)].add(chosenSide)
                 
+                newRoom = [0,0]
+                newRoom[0] = currentRoom[0] + sides[chosenSide][0]
+                newRoom[1] = currentRoom[1] + sides[chosenSide][1]
                 
-                currentRoom[0] += sides[chosenSide][0]
-                currentRoom[1] += sides[chosenSide][1]
-                
-                if tuple(currentRoom) not in genData:
-                    locked = random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False
-                    genData[tuple(currentRoom)] = {"id":generatedAmount,
+                if tuple(newRoom) not in genData:
+                    if genData[tuple(currentRoom)]["locked"]:
+                        locked = False
+                    else:
+                        locked =  random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False
+
+                    genData[tuple(newRoom)] = {"id":generatedAmount,
                                                    
-                                                   "locked": locked}
+                                                   "locked": locked,
+                                                   "zoneId":  genData[tuple(currentRoom)]["zoneId"] + (locked if not genData[tuple(currentRoom)]["locked"] else 0)}
                     generatedAmount += 1
                     
                 
 
 
-                rooms[tuple(currentRoom)] = rooms.get(tuple(currentRoom), set())
-                rooms[tuple(currentRoom)].add(oppositeSide[chosenSide])
+                rooms[tuple(newRoom)] = rooms.get(tuple(newRoom), set())
+                rooms[tuple(newRoom)].add(oppositeSide[chosenSide])
                 
+                currentRoom = newRoom
                 
                 
                 continue
@@ -209,10 +229,18 @@ class Dungeon:
         
                 
                 if tuple(newRoom) not in genData:
+                    if genData[tuple(currentRoom)]["locked"]:
+                        locked = False
+                    else:
+                        locked =  random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False
+                    
+                    
                     
                     genData[tuple(newRoom)] = {"id":generatedAmount,
                                                    
-                                                   "locked": random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False}
+                                                   "locked":locked,
+                                                   "zoneId":  genData[tuple(currentRoom)]["zoneId"] + locked}
+
                     generatedAmount += 1
                 rooms[tuple(newRoom)] = rooms.get(tuple(newRoom), set())
                 rooms[tuple(newRoom)].add(oppositeSide[chosenSide])
@@ -229,9 +257,10 @@ class Dungeon:
                 
             room:tuple[int, int]
             
-            data = genData.get(room, {"id":-1,"locked":False})
+            data = genData.get(room, {"id":-1,"locked":False, "zoneId":0})
             id = data["id"]
             locked = data["locked"]
+            zoneId = data["zoneId"]
             roomSides = rooms[room]
             
             
@@ -241,7 +270,7 @@ class Dungeon:
             if room == (0,0):
                 bannedRooms.append("OPEN_ROOM")
             
-            self.rooms[room] = Room(*room, self, sides = rooms[room], shape = get_suitable_room_shape(rooms[room], bannedRooms), id = id, locked = locked)
+            self.rooms[room] = Room(*room, self, sides = rooms[room], shape = get_suitable_room_shape(rooms[room], bannedRooms), id = id, locked = locked, zoneId = zoneId)
 
         for room in self.rooms:
             sideRooms = {}
@@ -250,6 +279,8 @@ class Dungeon:
                 x,y = sides[side]
                 
                 sideRooms[side] = self.rooms.get((x+room[0], y+room[1]))
+                
+                
                 
                 if sideRooms[side]:
                     
@@ -334,14 +365,6 @@ class Dungeon:
             
             if room:
                 
-                inGroup = False
-                for group in self.reachableRooms:
-                    if (roomX,roomY) in self.reachableRooms[group]:
-                        inGroup = True
-                        break
-                
-                
-                
                 if tileName == "FLOOR" or tileType in Definitions.TAGS_TILES["TRANSPARENT"]:
                     
                     for layer in brickFloor[0]:
@@ -409,7 +432,7 @@ class Dungeon:
             
             
             
-        
+maxZoneId = 0
 dung = Dungeon(0,0,150,300,0,0)
 x1,y1 = 1,1
 
@@ -438,6 +461,8 @@ while True:
         if "north" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("north", currentRoom)
             
+            print(currentRoom.zoneId)
+            
             y1+=1
             
             layers = dung.get_layers(screenSize, (x1,y1))
@@ -449,7 +474,7 @@ while True:
         moving = True
         if "east" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("east", currentRoom)
-            
+            print(currentRoom.zoneId)
             x1-=1
             
             layers = dung.get_layers(screenSize, (x1,y1))
@@ -461,7 +486,7 @@ while True:
         moving = True
         if "south" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("south", currentRoom)
-            
+            print(currentRoom.zoneId)
             y1-=1
             
             layers = dung.get_layers(screenSize, (x1,y1))
@@ -473,7 +498,7 @@ while True:
         moving = True
         if "west" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("west", currentRoom)
-            
+            print(currentRoom.zoneId)
             x1+=1
             
             layers = dung.get_layers(screenSize, (x1,y1))
@@ -505,6 +530,7 @@ while True:
             size = currentRoom.screenRoomSize
             modifier = size[1] / screenSize[1]
             layer = layers[layerIndex][index]
+            
             screen.blit(layer, (300-layer.get_width()/2+(-index-layerIndex)/8,300-layer.get_height()/2+(-index-layerIndex)))
             
     for room in dung.rooms:
@@ -514,15 +540,19 @@ while True:
         
         if dung.rooms[room] != currentRoom:
             if dung.rooms[room].locked:
-                colour = (165,42,42)
+                colour = (165,165,165)
             
             else:
                 if dung.rooms[room] not in beenIn:
-                    colour = (255,0,0)
+                    colour = (int(255/maxZoneId*dung.rooms[room].zoneId),0,0)
                 else:
                     colour = (0,0,255)
+            
+            colour = (int(255/maxZoneId*dung.rooms[room].zoneId),0,0)
         else:
             colour = (0,255,0)
+            
+        
         
         
         pygame.draw.circle(screen, colour, (x*10+currentRoom.screenRoomSize[0]//2, y*10+currentRoom.screenRoomSize[1]//2), 5)

@@ -8,7 +8,7 @@ MODELS = Definitions.MODELS
 
 class Room:
     roomType = "None"
-    def __init__(self, x,y, parent, type = "puzzle", shape = ("Name", ((0,0,0),(0,0,0),(0,0,0))), sides = {}, id = 0,locked = False):
+    def __init__(self, x,y, parent, type = "puzzle", shape = ("Name", ((0,0,0),(0,0,0),(0,0,0))), sides = {}, id = 0,locked = False,zoneId=0):
         self.x = x
         self.y = y
         self.parent = parent
@@ -24,6 +24,7 @@ class Room:
         self.sideRooms = {}
         self.locked = locked
         self.id = id
+        self.zoneId = zoneId
         
         minPointX = min(self.shape, key = lambda coord: coord[0])[0]
         maxPointX = max(self.shape, key = lambda coord: coord[0])[0] + 1
