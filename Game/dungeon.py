@@ -3,68 +3,16 @@ import math
 import random
 import pygame
 import Definitions
-sides = {"north":(0,-1),"east":(1,0),"south":(0,1),"west":(-1,0)}
-oppositeSide = {"north":"south",
-                "east":"west",
-                "south":"north",
-                "west":"east"}
+
+from generateImageLayout import generate_image_layout
+from generateTiles import generate_tiles
+
 
 
 screenSize = (600,600)
 
 
-def get_suitable_room_shape(
-        sides: list[str], 
-        bannedRooms: list[str]|tuple[str,...] = []
-        
-    ) -> tuple[str, tuple[tuple[int, ...], ...]]:
-    """
-    Parameters:
-        sides:
-            A list containing strings, these strings can be any of the below:
-                north,
-                south,
-                west,
-                east
-        bannedRooms:
-            A list containing the name of room templates that shouldnt be considered for this spot:
-                For example:
-                    ["OPEN_ROOM", "NE_CORNER"]
-        
-    Function:
-        Will go through the various types of rooms defined in Definitions.py (Definitions.ROOMS)
-        and will get a list of rooms that match the surroundings and arent banned.
-        It will then randomly select a room and return it, this room will be placed in the dungeon
-        
-    Output:
-        Tuple -> (Rooms Name: string,
-                  Rooms Template: tuple[tuple[int]])
-    """
-    
-    suitableShapes = []
-    
-    
-    #Iterate through all room types stored in Defintions.py
-    for roomName in Definitions.ROOMS:
-        
-        room,roomSides,tags = Definitions.ROOMS[roomName] #Info about current room type
-        
-        # Suitable if the current room type has the sides we want it to
-        # But only if it needs those sides ("MUST-CONNECT" will be in tags if it needs those sides)
-        # Otherwise if it doesnt have the tag, it will always be suitable [NOT RECOMMENDED]
-        suitable = sorted(roomSides) == sorted(sides) or "MUST-CONNECT" not in tags
 
-        if suitable and roomName not in bannedRooms: # Check if it is allowed and suitable
-            suitableShapes.append(roomName)
-        
-    
-    if len(suitableShapes) == 0:
-        input("NO ROOM FOR SIDES: " + str(sides)) #* MESSAGE BEFORE ERROR IN CASE A SITUATION HASNT BEEN ACCOUNTED FOR
-    
-    shape = random.choice(suitableShapes)
-    
-    
-    return shape, Definitions.ROOMS[shape][0]
 
 
 
@@ -111,7 +59,9 @@ class Dungeon:
         self.starterRoom = [0,0]
         self.tiles = {}
         self.dungeonLayout = {} # Will hold the pygame surfaces to draw on screen
-        self.generate()
+        self.levels = {}
+        self.maxZoneId = 0
+        self.generate_image_layout()
         
     def unlock_room(self, roomCoord):
         if roomCoord in self.rooms:
@@ -122,281 +72,14 @@ class Dungeon:
             return False
         
     
+    
     def generate_tiles(self):
-        global maxZoneId
-        self.rooms = {}
-        self.tiles = {}
-        
-        
-        lockedRooms = {}
-        self.roomAmount = random.randint(self.minRooms, self.maxRooms)
-        self.bossAmount = math.log2(self.roomAmount)
-        
-        
-
-        rooms = {tuple(self.starterRoom):set()}
-        
-        generatedAmount = 1
-        
-        currentRoom = list(self.starterRoom)
-        
-        changeFocusChance = 1
-        changeFocusEntirelyChance = 0.8
-        isLockedChance = 0.3
-        lockedAmountThreshold = 0.1
-        
-        genData = {tuple(currentRoom):{
-            "id":0,
-            "locked":False,
-            "zoneId":0
-        }}
-        
-        while generatedAmount < self.roomAmount:
-            
-            sidesTaken = rooms[tuple(currentRoom)]
-            
-            
-            if (len(sidesTaken) >= 2 and genData[tuple(currentRoom)]["locked"]):
-                currentRoom = list(random.choice(list(rooms)))
-                continue
-            
-            maxZoneId = max(maxZoneId, genData[tuple(currentRoom)]["zoneId"])
-            
-            if genData[tuple(currentRoom)]["locked"] and currentRoom not in lockedRooms.get(genData[tuple(currentRoom)]["zoneId"], []):
-                
-                lockedLevel = lockedRooms.get(genData[tuple(currentRoom)]["zoneId"], [])
-                lockedLevel.append(currentRoom)
-                
-                lockedRooms[genData[tuple(currentRoom)]["zoneId"]] = lockedLevel
-                
-            
-            if (len(sidesTaken) == 4 or random.randint(0,10)/10 <= changeFocusChance):
-                chosenSide = random.choice(list(sides))
-                
-                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData:
-                    newSide = genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]
-                    
-                    if newSide["locked"] or newSide["zoneId"] != genData[tuple(currentRoom)]["zoneId"]:
-                        
-                        currentRoom = list(random.choice(list(rooms)))
-                        continue
-                
-                rooms[tuple(currentRoom)].add(chosenSide)
-                
-                newRoom = [0,0]
-                newRoom[0] = currentRoom[0] + sides[chosenSide][0]
-                newRoom[1] = currentRoom[1] + sides[chosenSide][1]
-                
-                if tuple(newRoom) not in genData:
-                    if genData[tuple(currentRoom)]["locked"]:
-                        locked = False
-                    else:
-                        locked =  random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False
-
-                    genData[tuple(newRoom)] = {"id":generatedAmount,
-                                                   
-                                                   "locked": locked,
-                                                   "zoneId":  genData[tuple(currentRoom)]["zoneId"] + (locked if not genData[tuple(currentRoom)]["locked"] else 0)}
-                    generatedAmount += 1
-                    
-                
-
-
-                rooms[tuple(newRoom)] = rooms.get(tuple(newRoom), set())
-                rooms[tuple(newRoom)].add(oppositeSide[chosenSide])
-                
-                currentRoom = newRoom
-                
-                
-                continue
-            elif random.randint(0,10)/10 <= changeFocusEntirelyChance and rooms.get(tuple(currentRoom)) is not None:
-                
-                currentRoom = list(random.choice(list(rooms)))
-                continue
-                
-            else:
-                newSides = [side for side in sides if side not in sidesTaken]
-                chosenSide = random.choice(newSides)
-                
-                if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
-                    currentRoom = list(random.choice(list(rooms)))
-                    continue
-                
-                rooms[tuple(currentRoom)].add(chosenSide)
-                newRoom = [0,0]
-                newRoom[0] = sides[chosenSide][0] + currentRoom[0]
-                newRoom[1] = sides[chosenSide][1] + currentRoom[1]
-        
-                
-                if tuple(newRoom) not in genData:
-                    if genData[tuple(currentRoom)]["locked"]:
-                        locked = False
-                    else:
-                        locked =  random.randint(0,10)/10 <= isLockedChance if generatedAmount > self.roomAmount*lockedAmountThreshold else False
-                    
-                    
-                    
-                    genData[tuple(newRoom)] = {"id":generatedAmount,
-                                                   
-                                                   "locked":locked,
-                                                   "zoneId":  genData[tuple(currentRoom)]["zoneId"] + locked}
-
-                    generatedAmount += 1
-                rooms[tuple(newRoom)] = rooms.get(tuple(newRoom), set())
-                rooms[tuple(newRoom)].add(oppositeSide[chosenSide])
-                
-                
-                
-        
-        self.currentLootRooms = 0
-        self.currentBossRooms = 0
-        for room in rooms:
-            
-            
-                
-                
-            room:tuple[int, int]
-            
-            data = genData.get(room, {"id":-1,"locked":False, "zoneId":0})
-            id = data["id"]
-            locked = data["locked"]
-            zoneId = data["zoneId"]
-            roomSides = rooms[room]
-            
-            
-            
-            bannedRooms = []
-            
-            if room == (0,0):
-                bannedRooms.append("OPEN_ROOM")
-            
-            self.rooms[room] = Room(*room, self, sides = rooms[room], shape = get_suitable_room_shape(rooms[room], bannedRooms), id = id, locked = locked, zoneId = zoneId)
-
-        for room in self.rooms:
-            sideRooms = {}
-            
-            for side in self.rooms[room].sides:
-                x,y = sides[side]
-                
-                sideRooms[side] = self.rooms.get((x+room[0], y+room[1]))
-                
-                
-                
-                if sideRooms[side]:
-                    
-                    match side:
-                        case "north":
-                            for tileCoord in self.rooms[room].shape:
-                                if tileCoord[1] - self.rooms[room].y*Definitions.ROOM_SIZE[1] == 0: #adjacent to north room
-                                    tile = self.rooms[room].shape[tileCoord]
-                                    
-                                    if Definitions.TILE_NAMES[tile] == "CONDITIONAL_DOOR":
-                                        self.rooms[room].shape[tileCoord] = Definitions.TILE_TYPES["DOOR"]
-                                        
-                        case "east":
-                            for tileCoord in self.rooms[room].shape:
-                                if tileCoord[0] - self.rooms[room].x*Definitions.ROOM_SIZE[0] == Definitions.ROOM_SIZE[0]-1: #adjacent to north room
-                                    tile = self.rooms[room].shape[tileCoord]
-                                    
-                                    if Definitions.TILE_NAMES[tile] == "CONDITIONAL_DOOR":
-                                        self.rooms[room].shape[tileCoord] = Definitions.TILE_TYPES["DOOR"]
-                        
-                        case "south":
-                            for tileCoord in self.rooms[room].shape:
-                                if tileCoord[1] - self.rooms[room].y*Definitions.ROOM_SIZE[1] == Definitions.ROOM_SIZE[1]-1: #adjacent to north room
-                                    tile = self.rooms[room].shape[tileCoord]
-                                    
-                                    if Definitions.TILE_NAMES[tile] == "CONDITIONAL_DOOR":
-                                        self.rooms[room].shape[tileCoord] = Definitions.TILE_TYPES["DOOR"]
-                        
-                        case "west":
-                            for tileCoord in self.rooms[room].shape:
-                                if tileCoord[0] - self.rooms[room].x*Definitions.ROOM_SIZE[0] == 0: #adjacent to north room
-                                    tile = self.rooms[room].shape[tileCoord]
-                                    
-                                    if Definitions.TILE_NAMES[tile] == "CONDITIONAL_DOOR":
-                                        self.rooms[room].shape[tileCoord] = Definitions.TILE_TYPES["DOOR"]
-                                    
-                                    
-                
-                
-            self.rooms[room].sideRooms = sideRooms
-            
-            self.tiles.update(self.rooms[room].shape)
-        
-        
-        for coord in self.tiles:
-            
-            for neighbourCoord in Definitions.NEIGHBOUR_OFFSETS:
-                
-                i = coord[0] + neighbourCoord[0]
-                j = coord[1] + neighbourCoord[1]
-                
-                if (i,j) not in self.tiles and self.tiles[coord] != Definitions.TILE_TYPES == "VOID":
-                    self.tiles[coord] = Definitions.TILE_TYPES["WALL"]
-        
+        return generate_tiles(self)
                     
         
-        
-                 
-        
-    def generate(self):
-        
-        self.generate_tiles()
-        
-        self.dungeonLayout = {}
-        layer0 = {}
-        layer1 = {}
-        layer2 = {}
-        
-        brickWall = Definitions.MODELS["Brick_Wall"].images
-        border= Definitions.MODELS["Wood_Border"].images
-        brickFloor= Definitions.MODELS["Brick"].images
-        
-        for coord in self.tiles:
-            i,j = coord
-            tileType = self.tiles[coord]
-            tileName = Definitions.TILE_NAMES[tileType]
-            
-            roomX = i // Definitions.ROOM_SIZE[0]
-            roomY = j // Definitions.ROOM_SIZE[1]
-            room = self.rooms.get((roomX, roomY))
-            
-            
-            if room:
-                
-                if tileName == "FLOOR" or tileType in Definitions.TAGS_TILES["TRANSPARENT"]:
-                    
-                    for layer in brickFloor[0]:
-                        layer0[layer] = layer0.get(layer, {})
-                        layer0[layer][(i,j)] = brickFloor[0][layer]
-                        
-                if tileName == "WALL" or tileName == "CONDITIONAL_DOOR": 
-                    for layer in brickWall[0]:
-                        layer1[layer] = layer1.get(layer, {})
-                        layer1[layer][(i,j)] = brickWall[0][layer]
-                
-                elif tileName == "CONDITIONAL_WALL":
-                    
-                    for layer in brickWall[0]:
-                        layer1[layer] = layer1.get(layer, {})
-                        layer1[layer][(i,j)] = brickWall[0][layer]
-                        
-                elif tileName == "DOOR":
-                    if room.locked:
-                        for layer in border[0]:
-                            layer1[layer] = layer1.get(layer, {})
-                            layer1[layer][(i,j)] = border[0][layer]
-                        
-                elif tileName == "CONDITIONAL_DOOR":
-                    if room.locked:
-                        for layer in border[0]:
-                            layer1[layer] = layer1.get(layer, {})
-                            layer1[layer][(i,j)] = border[0][layer]
-                        
-                        
-        self.dungeonLayout[0] = layer0
-        self.dungeonLayout[max(layer0)] = layer1
+    def generate_image_layout(self):
+        return generate_image_layout(self)
+    
         
     def get_layers(self,screenSize, pos):
         layers = {}
@@ -432,8 +115,7 @@ class Dungeon:
             
             
             
-maxZoneId = 0
-dung = Dungeon(0,0,150,300,0,0)
+dung = Dungeon(0,0,15,30,0,0)
 x1,y1 = 1,1
 
 currentRoom = dung.rooms[(0,0)]
@@ -544,11 +226,11 @@ while True:
             
             else:
                 if dung.rooms[room] not in beenIn:
-                    colour = (int(255/maxZoneId*dung.rooms[room].zoneId),0,0)
+                    colour = (int(255/dung.maxZoneId*dung.rooms[room].zoneId),0,0)
                 else:
                     colour = (0,0,255)
             
-            colour = (int(255/maxZoneId*dung.rooms[room].zoneId),0,0)
+            colour = (int(255/dung.maxZoneId*dung.rooms[room].zoneId),0,0)
         else:
             colour = (0,255,0)
             
