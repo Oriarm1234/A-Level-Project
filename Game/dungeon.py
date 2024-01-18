@@ -3,15 +3,14 @@ import math
 import random
 import pygame
 import Definitions
-
+from Entities.Entity import Entity, AI
+from Entities.Player import Player
 from generateImageLayout import generate_image_layout
 from generateTiles import generate_tiles
 
 
 
 screenSize = (600,600)
-
-
 
 
 
@@ -61,6 +60,7 @@ class Dungeon:
         self.dungeonLayout = {} # Will hold the pygame surfaces to draw on screen
         self.levels = {}
         self.maxZoneId = 0
+        self.player = None
         self.generate_image_layout()
         
     def unlock_room(self, roomCoord):
@@ -115,7 +115,16 @@ class Dungeon:
             
             
             
-dung = Dungeon(0,0,15,30,0,0)
+dung = Dungeon(0,0,300,500,0,0)
+
+for i in range(5000):
+    
+    room = random.choice(list(dung.rooms))
+    badGuy = AI(room[0]*7+random.randint(0,6),room[1]*7+random.randint(0,6),0,"kyle",1,10,10,dung,dung.rooms[room],dung.rooms[room].zoneId)
+    badGuy.movementType = 0
+
+    
+
 x1,y1 = 1,1
 
 currentRoom = dung.rooms[(0,0)]
@@ -133,6 +142,10 @@ beenIn = []#
 print(dung.roomAmount)
 
 while True:
+    for ind in AI.All:
+        AI.All[ind].playerX = currentRoom.x*7
+        AI.All[ind].playerY = currentRoom.y*7
+        AI.All[ind].update()
     events=pygame.event.get()
     keys = pygame.key.get_pressed()
     
@@ -205,7 +218,7 @@ while True:
     
     screen.fill((0,0,0))
     
-    angle += clock.tick(60)/10
+    angle += clock.tick(200)/10
     
     for layerIndex in layers:
         for index in layers[layerIndex]:
@@ -238,5 +251,10 @@ while True:
         
         
         pygame.draw.circle(screen, colour, (x*10+currentRoom.screenRoomSize[0]//2, y*10+currentRoom.screenRoomSize[1]//2), 5)
+        
+    for ai in AI.All:
+        ai = AI.All[ai]
+        
+        pygame.draw.circle(screen, (0,255,0), (ai.x//7*10+ai.x%7+currentRoom.screenRoomSize[0]//2-2.5, -2.5+ai.y//7*10+ai.y%7+currentRoom.screenRoomSize[1]//2),1)
         
     pygame.display.update()

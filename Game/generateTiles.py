@@ -214,6 +214,8 @@ def generate_tiles(dungeon):
         
         
         
+        
+        
         bannedRooms = []
         
         if room == (0,0):
@@ -221,6 +223,9 @@ def generate_tiles(dungeon):
         
         dungeon.rooms[room] = Room(*room, dungeon, sides = rooms[room], shape = get_suitable_room_shape(rooms[room], bannedRooms), id = id, locked = locked, zoneId = zoneId)
 
+        dungeon.levels[zoneId] = dungeon.levels.get(zoneId, [])
+        dungeon.levels[zoneId].append(dungeon.rooms[room])
+        
     for room in dungeon.rooms:
         sideRooms = {}
         
