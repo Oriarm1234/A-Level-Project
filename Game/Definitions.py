@@ -1,9 +1,57 @@
 import pygame
 import glob
 import json
-from models import loadModels
-GRID_SQUARE_WIDTH = 31
-GRID_SQUARE_HEIGHT = 31
+import DungeonTiles
+import time
+GRID_SQUARE_WIDTH = 74
+GRID_SQUARE_HEIGHT = 74
+
+
+def loadModels(models = {}):
+    files = glob.glob("Images\\**\\*.png", recursive=True)
+
+    for fileName in files:
+        if "NONMODEL" in fileName:
+            continue
+        dictionaryLocation = fileName.split("\\")[1:][:-1]
+        imageLayer = fileName.split("\\")[-1].split(".")[0]
+        variation = dictionaryLocation.pop()
+        modelName = dictionaryLocation.pop()
+        if modelName not in models:
+            models[modelName] = DungeonTiles.Model(modelName,variation, {})
+            
+        
+        try:
+            
+            imageLayer = int(imageLayer)
+            variation = int(variation) if variation.isnumeric() else variation
+            
+            img = pygame.image.load(fileName)
+            img = pygame.transform.smoothscale(img, (GRID_SQUARE_WIDTH,GRID_SQUARE_HEIGHT))
+            
+            
+            
+            models[modelName].images[variation] = models[modelName].images.get(variation, {})
+            
+            models[modelName].images[variation][imageLayer] = img
+            
+            
+            
+            
+            
+        except:
+            input("Bad Image, BURN " + fileName)
+            
+    for modelName, model in models.items():
+        for varationKey, variation in model.images.items():
+            
+            model.images[varationKey] = dict([imgKey, variation[imgKey]] for imgKey in sorted(variation))
+            
+    return models
+SCREEN_SIZE = (800,800)
+fogOfWarSizeModifier = 1.5
+FOG_OF_WAR_IMAGE = pygame.transform.smoothscale(pygame.image.load("Images\\NONMODEL\\fogOfWar.png"),(SCREEN_SIZE[0]*fogOfWarSizeModifier,
+                                                                                                     SCREEN_SIZE[1]*fogOfWarSizeModifier))
 
 O = 0 # PERMENANT EMPTY AREA - FLOOR
 T = 1 # GENERATIVE AREA
@@ -33,6 +81,26 @@ TILE_NAMES = dict(
 
 
 ROOM_SIZE = (7,7)
+
+EMPTY_ROOM = (
+(O,O,O,O,O,O,O),
+(O,T,T,T,T,T,O),
+(O,T,T,T,T,T,O),
+(O,T,T,T,T,T,O),
+(O,T,T,T,T,T,O),
+(O,T,T,T,T,T,O),
+(O,O,O,O,O,O,O)
+)
+
+EMPTY2_ROOM = (
+(O,O,O,O,O,O,O),
+(O,T,T,O,T,T,O),
+(O,T,T,O,T,T,O),
+(O,O,O,O,O,O,O),
+(O,T,T,O,T,T,O),
+(O,T,T,O,T,T,O),
+(O,O,O,O,O,O,O)
+)
 
 OPEN_TEMPLATE = (
 (W,O,O,O,O,O,W),
@@ -201,11 +269,14 @@ ROOMS = {
     "E_ROOM":(E_ROOM, ["east"], ["MUST-CONNECT"]),
     "S_ROOM":(S_ROOM, ["south"], ["MUST-CONNECT"]),
     "W_ROOM":(W_ROOM, ["west"], ["MUST-CONNECT"]),
+    "EMPTY_ROOM":(EMPTY_ROOM, ["north","south","west","east"],["MUST-CONNECT"]),
+    "EMPTY2_ROOM":(EMPTY2_ROOM, ["north","south","west","east"],["MUST-CONNECT"]),
     
 }
 
 MODELS = loadModels()
-
-
+ENTITY_NAMES = [
+    "Shadow"
+]
 
 
