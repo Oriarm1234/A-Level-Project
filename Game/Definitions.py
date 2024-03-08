@@ -1,14 +1,14 @@
 import pygame
 import glob
 import json
-import DungeonTiles
+from . import DungeonTiles
 import time
 GRID_SQUARE_WIDTH = 74
 GRID_SQUARE_HEIGHT = 74
 
 
 def loadModels(models = {}):
-    files = glob.glob("Images\\**\\*.png", recursive=True)
+    files = glob.glob("Game\\Images\\**\\*.png", recursive=True)
 
     for fileName in files:
         if "NONMODEL" in fileName:
@@ -50,7 +50,7 @@ def loadModels(models = {}):
     return models
 SCREEN_SIZE = (800,800)
 fogOfWarSizeModifier = 1.5
-FOG_OF_WAR_IMAGE = pygame.transform.smoothscale(pygame.image.load("Images\\NONMODEL\\fogOfWar.png"),(SCREEN_SIZE[0]*fogOfWarSizeModifier,
+FOG_OF_WAR_IMAGE = pygame.transform.smoothscale(pygame.image.load("Game\\Images\\NONMODEL\\fogOfWar.png"),(SCREEN_SIZE[0]*fogOfWarSizeModifier,
                                                                                                      SCREEN_SIZE[1]*fogOfWarSizeModifier))
 
 O = 0 # PERMENANT EMPTY AREA - FLOOR
@@ -279,4 +279,6 @@ ENTITY_NAMES = [
     "Shadow"
 ]
 
-
+game_info = {
+    "Level":0
+}

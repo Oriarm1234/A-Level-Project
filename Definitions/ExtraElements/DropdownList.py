@@ -29,13 +29,39 @@ def option_pressed(self, optionElements):
     self.currentOptionText.update_text()
     optionElements[1].update_text()
     
+def set_value(self, value):
+    for option in self.options:
+        if self.options[option][1].text == value:
+            self.options[option][1].text = self.currentOptionText.text
+            self.currentOptionText.text = value
+            
+            self.value = value
+            
+            self.currentOptionText.update_text()
+            self.options[option][1].update_text()
+            
+            return True
     
+    return False
 
-
-
+def get_value(self):
+    return self.currentOptionText.text
 
 def set_open(self, value):
     if self.open != value:
+        if value == True:
+            options = list(map(lambda option: option[1].text,
+                          sorted(list(self.options.values()), 
+                                key=lambda option:float(option[1].text)
+                                if option[1].text.replace(".","").isnumeric() and option[1].text.count(".")<=1
+                                else float("inf"))
+            ))
+
+            for i,optionName in enumerate(self.options):
+                self.options[optionName][1].text = options[i]
+                self.options[optionName][1].update_text()
+                
+                
         arrow = self._elements.get(self.name + "-dropdownArrow", None)
         if arrow:
             arrow.baseImage = pygame.transform.rotate(arrow.baseImage, 180) if arrow.baseImage else None
@@ -44,7 +70,7 @@ def set_open(self, value):
     
     for optionName in self.options:
         optionElements = self.options[optionName]
-        optionElements.sort(key = lambda element: type(element) == Text)
+        optionElements.sort(key = lambda element: type(element) == Text) # orders the list so all the text gets sent to the front last
         
         for optionElement in optionElements:
             optionElement.visible = value
@@ -93,6 +119,7 @@ def DropdownList(name, pos, parent, options, textFont, textSize, textColor, allo
     self = Group(name, pos, parent, (border,backgroundDropdown, dropdownArrow, currentOptionText))
     self.interactive = True
     self.currentOptionText = currentOptionText
+    self.auto_sort = True
     self.value = currentOptionText.text
     self.open = False
     self.options = {}
@@ -112,8 +139,8 @@ def DropdownList(name, pos, parent, options, textFont, textSize, textColor, allo
         optionText = Text(text, textFont, textSize, textColor, (x+padding+borderSize, textOY), name+"-option{}".format(option), parent)
         self.options["option"+str(i)] = [optionBackground, optionText]
         
-        pressedMaker = lambda index: (lambda self, *args, **kwargs: option_pressed(self, self.options["option"+str(index)]))
-        released = lambda self, *args, **kwargs: set_open(self, False)
+        pressedMaker = lambda index: (lambda self_option, *args, **kwargs: option_pressed(self, self.options["option"+str(index)]))
+        released = lambda self_option, *args, **kwargs: set_open(self, False)
         optionText.pressed =  pressedMaker(i)
         optionBackground.pressed = pressedMaker(i)
         
@@ -160,7 +187,8 @@ def DropdownList(name, pos, parent, options, textFont, textSize, textColor, allo
     self.get_open = lambda self : self.open
     
             
-    
+    self.set_value = set_value
+    self.get_value = get_value
     
     self.set_open = set_open
     self.other_element_pressed = lambda self, *args, **kwargs: set_open(self, False)

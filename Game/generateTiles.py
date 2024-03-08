@@ -1,7 +1,7 @@
-from room import Room
+from .room import Room
 import math
 import random
-import Definitions
+from . import Definitions
 
 sides = {"north":(0,-1),"east":(1,0),"south":(0,1),"west":(-1,0)}
 oppositeSide = {"north":"south",

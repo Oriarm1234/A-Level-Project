@@ -1,5 +1,4 @@
-import config
-import dungeon
-import game
-import room
-import Definitions
+from . import dungeon
+from . import game
+from . import room
+from . import Definitions

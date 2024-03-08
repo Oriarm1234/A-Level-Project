@@ -313,6 +313,7 @@ class Group(Element):
         self._visible = value
         for element in self.elements:
             element.visible = value
+            self.parent.set_element_interactive(element, value)
         return value
     
     @property
@@ -341,6 +342,8 @@ class Group(Element):
             self._x = min(element._x, self._x)
             self._y = min(element._y, self._y)
         element._parent = self.parent
+        element.visible = self.visible
+        element.interactive = self.visible
 
     def remove_element(self, element):
         if element.name in self._elements:

@@ -1,11 +1,11 @@
-from room import Room
+from .room import Room
 import math
 import random
 import pygame
-import Definitions
-from Entities.Entity import Entity, AI, Shadow
-from generateImageLayout import generate_image_layout
-from generateTiles import generate_tiles
+from . import Definitions
+from .Entities.Entity import Entity, AI, Shadow
+from .generateImageLayout import generate_image_layout
+from .generateTiles import generate_tiles
 
 for entityName in Definitions.ENTITY_NAMES:
     images = Definitions.MODELS[entityName].images
@@ -116,7 +116,7 @@ class Dungeon:
         return layers
         
       
-            
+"""
             
             
             
@@ -289,4 +289,4 @@ while True:
             
     
     #screen.blit(Definitions.FOG_OF_WAR_IMAGE,fogOfWarCenterPos)
-    pygame.display.update()
+    pygame.display.update()"""

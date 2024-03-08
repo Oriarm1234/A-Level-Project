@@ -1,12 +1,18 @@
 from .DropdownList import (
-    DropdownList
+    DropdownList,init as DLInit
 )
 from .Slider import (
-    Slider
+    Slider, init as SInit
 )
 from .TextInputBox import (
-    TextInputBox
+    TextInputBox, init as TIBInit
 )
 from .Tickbox import (
-    Tickbox
+    Tickbox, init as TInit
 )
+
+def ExtraElementsInit(images):
+    DLInit(images)
+    SInit(images)
+    TIBInit(images)
+    TInit(images)

@@ -1,9 +1,9 @@
 import pygame
 import random
 import time
-import Definitions
+from . import Definitions
 import math
-from DungeonTiles import Tile
+from .DungeonTiles import Tile
 MODELS = Definitions.MODELS
 
 class Room:

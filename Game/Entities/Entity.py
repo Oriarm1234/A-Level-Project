@@ -1,8 +1,8 @@
 import math
 import pygame
 import random
-import Definitions
-import Timer
+from .. import Definitions
+from .. import Timer
 class Entity:
     """
     Walk speed is tile per second
