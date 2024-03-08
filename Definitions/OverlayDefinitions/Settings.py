@@ -31,14 +31,19 @@ def settingsMenu(screenSize):
     self = Overlay(
         ("settingsMenu"), screenSize, (0, 0), None, [pygame.SRCALPHA], []
     )
+    
+    allNames = list(settings.keys())
+    settingOptions = {}
 
-    settingsControls = Group("settingsControl", (0,300), self, [], True)
+    for name in allNames:
 
-    settingsVideo =  Group("settingsVideo", (0,300), self, [], False)
+        settingsGroup = Group("settings"+name[0].upper()+name[1:], (0,300), self, [], False)
 
-    settingsAudio =  Group("settingsAudio", (0,300), self, [], False)
+        settingOptions[name] = settingsGroup
+    
+    settingOptions[allNames[0]].visible = True
 
-    settingOptions = {"controls":settingsControls, "video":settingsVideo, "audio":settingsAudio}
+    
 
     # ---------------------------------------------------------------------------- #
     #                                 settings Menu                                #
@@ -68,6 +73,7 @@ def settingsMenu(screenSize):
     optionBoxesPadding = 8
     optionBoxY = settingsDisclaimer.y + settingsDisclaimer.hitbox.h + spacingForTitleOptions
 
+    """
     optionBoxControlsText = Text("controls", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-controls-text", self)
     optionBoxAudioText = Text("audio", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-audio-text", self)
     optionBoxVideoText = Text("video", "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), "optionBox-video-text", self)
@@ -109,20 +115,47 @@ def settingsMenu(screenSize):
 
     optionBoxControlsText._x -= boxWidth
     optionBoxAudioText._x += boxWidth
+    """
 
 
     optionBoxes = []
-    allNames = ["controls", "video", "audio"]
+    
+    
+    for i in range(len(allNames)):
+        optionBoxText = Text(allNames[i], "copperplategothic", 32, (20,20,20), (530, optionBoxY+optionBoxesPadding/2), f"optionBox-{allNames[i]}-text", self)
+        optionBoxText.align_to_bottom_middle()
+        
+        optionBoxes.append(optionBoxText)
+        
+    boxWidth = max(optionBoxes, key=lambda optionBoxText: optionBoxText.hitbox.w).hitbox.w + optionBoxesPadding
+    
+    for i in range(len(allNames)):
+        shiftAmount = (i-len(allNames)//2) * boxWidth + (boxWidth/2 if len(allNames)%2 == 0 else 0)
+        
+        optionBoxes[i]._x += shiftAmount
+        
+        optionBoxRect = Rectangle(f"optionBox-{allNames[i]}-rect", 
+                                    (530+shiftAmount,optionBoxY), 
+                                    (boxWidth, 32+optionBoxesPadding), 
+                                    self, 
+                                    (92, 225, 230))
+        
+        optionBoxRect.align_to_bottom_middle()
+        
+        optionBoxes[i].bring_to_front()
+        
+        optionBoxes.append(optionBoxRect)        
+        
+        
+    
+        
+    
+        
+        
     
     
     
-    
-    optionBoxCollision = Group("optionBoxCollision", (530-boxWidth,optionBoxY), self, (optionBoxControlsRect,
-                                                                                            optionBoxAudioRect,
-                                                                                            optionBoxVideoRect,
-                                                                                            optionBoxControlsText,
-                                                                                            optionBoxAudioText,
-                                                                                            optionBoxVideoText), True)
+    optionBoxCollision = Group("optionBoxCollision", (530-boxWidth,optionBoxY), self, optionBoxes, True)
     optionBoxCollision.interactive = True
     #Setting Default Colours
 
@@ -191,12 +224,12 @@ def settingsMenu(screenSize):
             settingData = overlaySettings[setting]
             
             
-            settingLabel = Text(setting, "copperplategothic", 32, (20,20,20), (100,optionBoxControlsRect.y+optionBoxControlsRect.hitbox.h+10+iy), setting+"-Label", self)
+            settingLabel = Text(setting, "copperplategothic", 32, (20,20,20), (100,optionBoxes[0].y+optionBoxes[0].hitbox.h+10+iy), setting+"-Label", self)
             settingInteractive = None
             
             if settingData["Type"] == "Slider":
                 settingX = screenSize[1]-100
-                settingY = optionBoxControlsRect.y+optionBoxControlsRect.hitbox.h+10+iy
+                settingY = optionBoxes[0].y+optionBoxes[0].hitbox.h+10+iy
                 settingInteractive = Slider((settingX,settingY), setting+"-Interactive", self, settingData["MinValue"], settingData["MaxValue"], settingData["RoundDigits"])
                 settingInteractive.set_value(settingInteractive,settingData["CurrentValue"])
                 settingInteractive.align_to_bottom_left()
@@ -205,7 +238,7 @@ def settingsMenu(screenSize):
                 
             elif settingData["Type"] == "DropdownList":
                 settingX = screenSize[1]-100
-                settingY = optionBoxControlsRect.y+optionBoxControlsRect.hitbox.h+10+iy
+                settingY = optionBoxes[0].y+optionBoxes[0].hitbox.h+10+iy
                 settingInteractive = DropdownList(setting+"-Interactive", (settingX,settingY), self, settingData["Options"], "copperplategothic", 24, (20,20,20),settingData["allowNothing"],(80,80,80),(140,140,140),3,2)
                 settingInteractive.set_value(settingInteractive,settingData["CurrentValue"])
                 settingInteractive.align_to_bottom_left()

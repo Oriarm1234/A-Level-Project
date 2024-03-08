@@ -1,6 +1,8 @@
 {
+    "general":{},
     "audio": {"Main Volume": {"Type":"Slider", "MinValue":0, "MaxValue":100, "CurrentValue":100, "RoundDigits":0},
               "Enviroment":{"Type":"Slider", "MinValue":0, "MaxValue":100, "CurrentValue":100, "RoundDigits":0},
               "Player":{"Type":"Slider", "MinValue":0, "MaxValue":100, "CurrentValue":100, "RoundDigits":0}},
-    "video": {"Max FPS": {"Type":"DropdownList", "Options":["30","45","60","90","120","unlimited"],"CurrentValue":"60", "allowNothing":false}}
+    "video": {"Max FPS": {"Type":"DropdownList", "Options":["30","45","60","90","120","unlimited"],"CurrentValue":"60", "allowNothing":false}},
+    "controls":{}
 }
