@@ -1,4 +1,5 @@
-import config
-import dungeon
-import game
-import room
+from . import Dungeon
+from . import game
+from . import room
+from . import Definitions
+from . import DungeonRenderer

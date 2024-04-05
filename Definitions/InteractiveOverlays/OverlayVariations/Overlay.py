@@ -72,10 +72,6 @@ class Overlay:
             self._elements["allElements"]
         )
         )
-        
-        
-
-        
 
     @property
     def screen(self):

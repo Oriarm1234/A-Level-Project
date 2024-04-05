@@ -200,7 +200,7 @@ class OverlayManager:
         pass
 
     def update(self, *args, **kwargs):
-        """Updates the OverlayManager by calling various pre/post update hooks and 
+        """Updates the OverlayManager by calling various pre/post update methods and 
         drawing all visible overlays.
 
         Args:

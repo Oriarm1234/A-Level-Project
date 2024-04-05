@@ -153,12 +153,12 @@ def StartMenu(screen, screenSize = (1060, 600), settings={}):
     mainMenu = overlayManager.get_overlay_by_name("mainMenu")
 
     for overlay in visibleOverlays:
-                        if overlay.name not in [
-                            "mainMenu",
-                            "gameScreen"
-                        ]:
-                            
-                            overlayManager.set_overlay_visible(overlay, False)
+                if overlay.name not in [
+                    "mainMenu",
+                    "gameScreen"
+                ]:
+                    
+                    overlayManager.set_overlay_visible(overlay, False)
 
     overlayManager.set_overlay_visible(mainMenu)
     

@@ -21,6 +21,7 @@ def loadModels(models = {}):
             variation = int(variation) if variation.isnumeric() else variation
             
             img = pygame.image.load(fileName)
+            img = pygame.transform.scale()
             
             models[modelName].images[variation] = models[modelName].images.get(variation, {})
             

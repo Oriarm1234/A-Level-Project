@@ -1,17 +1,19 @@
-from room import Room
+from .room import Room
 import math
 import random
 import pygame
-import Definitions
+from . import Definitions
+from .Entities.Entity import Entity, AI, Shadow
+from .generateImageLayout import generate_image_layout
+from .generateTiles import generate_tiles
 
-from generateImageLayout import generate_image_layout
-from generateTiles import generate_tiles
+for entityName in Definitions.ENTITY_NAMES:
+    images = Definitions.MODELS[entityName].images
+    for variationKey in images:
+        Entity.initiate_sprite(entityName+f"-{variationKey}", images[variationKey])
 
-
-
-screenSize = (600,600)
-
-
+fogOfWarCenterPos = ((Definitions.SCREEN_SIZE[0]-Definitions.FOG_OF_WAR_IMAGE.get_width())/2,
+                         (Definitions.SCREEN_SIZE[1]-Definitions.FOG_OF_WAR_IMAGE.get_height())/2)
 
 
 
@@ -61,6 +63,7 @@ class Dungeon:
         self.dungeonLayout = {} # Will hold the pygame surfaces to draw on screen
         self.levels = {}
         self.maxZoneId = 0
+        self.player = None
         self.generate_image_layout()
         
     def unlock_room(self, roomCoord):
@@ -83,45 +86,58 @@ class Dungeon:
         
     def get_layers(self,screenSize, pos):
         layers = {}
+        a=0
         for layerIndex in self.dungeonLayout:
             layer = self.dungeonLayout[layerIndex]
             layers[layerIndex] = {}
+            
             for index in layer:
-                layers[layerIndex][index] = pygame.Surface(screenSize, pygame.SRCALPHA)
+                layers[layerIndex][index] = pygame.Surface((Definitions.SCREEN_SIZE[0],Definitions.SCREEN_SIZE[1]), pygame.SRCALPHA)
                 layers[layerIndex][index].fill((0,0,0,0))
-                for coord in layer[index]:
-                    x,y = coord
+                for ix in range(Definitions.loadArea):
+                    for iy in range(Definitions.loadArea):
+                        coord = (ix-Definitions.loadArea//2-(pos[0]-1)*7+3, iy-Definitions.loadArea//2-(pos[1]-1)*7+3)
+                        if (coord[0]//1, coord[1]//1) in layer[index]:
+                            
+                            
+                            x = (ix-Definitions.loadArea//2-.5)*Definitions.GRID_SQUARE_WIDTH + Definitions.SCREEN_SIZE[0]/2
+                            y = (iy-Definitions.loadArea//2-.5)*Definitions.GRID_SQUARE_HEIGHT + Definitions.SCREEN_SIZE[1]/2
+                            # .
+                            
+                            
+                            img = layer[index][(coord[0]//1, coord[1]//1)]
+                            a+=1
+                            
+                            
+                            layers[layerIndex][index].blit(img, (x,y))
                     
-                    x = (x+.5) * Definitions.GRID_SQUARE_WIDTH + pos[0]*Definitions.GRID_SQUARE_WIDTH*Definitions.ROOM_SIZE[0]
-                    y = (y+.5) * Definitions.GRID_SQUARE_HEIGHT + pos[1]*Definitions.GRID_SQUARE_HEIGHT*Definitions.ROOM_SIZE[1]
-                    
-                    
-                    
-                    img = layer[index][coord]
-                    if x>= screenSize[0] or y>=screenSize[1] or\
-                       x+img.get_width()<=0 or y+img.get_height()<=0:
-                        continue
-                    
-                    
-                    layers[layerIndex][index].blit(img, (x-img.get_width()/2,y-img.get_height()/2))
-                
+        
                     
                 
         return layers
         
-
-            
-            
+      
+"""
             
             
             
 dung = Dungeon(0,0,15,30,0,0)
+
+for i in range(40):
+    
+    room = random.choice(list(dung.rooms))
+    badGuy = Shadow(room[0]*7+random.randint(0,6),room[1]*7+random.randint(0,6),0,"Shadow",1,10,10,dung,dung.rooms[room],"Frame0",dung.rooms[room].zoneId)
+    badGuy.movementType = 0
+
+    
+
 x1,y1 = 1,1
 
 currentRoom = dung.rooms[(0,0)]
+loadArea = 7
 
-layers = dung.get_layers(screenSize, (x1,y1))
-screen = pygame.display.set_mode(screenSize)
+layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1),loadArea)
+screen = pygame.display.set_mode(Definitions.SCREEN_SIZE)
 angle = 0
 clock = pygame.time.Clock()
 
@@ -130,60 +146,58 @@ moving = False
 beenIn = []#
 
 
-print(dung.roomAmount)
+
 
 while True:
+    deltaTime = clock.tick(200)/1000
     events=pygame.event.get()
     keys = pygame.key.get_pressed()
     
     w,d,s,a = keys[pygame.K_w],keys[pygame.K_d],keys[pygame.K_s],keys[pygame.K_a]
     
     if w and not moving:
-        moving = True
-        if "north" in currentRoom.sideRooms:
+        #if "north" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("north", currentRoom)
             
-            print(currentRoom.zoneId)
             
-            y1+=1
             
-            layers = dung.get_layers(screenSize, (x1,y1))
+            y1+=1*deltaTime
+            
+            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1),loadArea)
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
         
     if d and not moving:
-        moving = True
-        if "east" in currentRoom.sideRooms:
+        #if "east" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("east", currentRoom)
-            print(currentRoom.zoneId)
-            x1-=1
             
-            layers = dung.get_layers(screenSize, (x1,y1))
+            x1-=1*deltaTime
+            
+            
+            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1),loadArea)
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
     
     if s and not moving:
-        moving = True
-        if "south" in currentRoom.sideRooms:
+        #if "south" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("south", currentRoom)
-            print(currentRoom.zoneId)
-            y1-=1
             
-            layers = dung.get_layers(screenSize, (x1,y1))
+            y1-=1*deltaTime
+            
+            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1),loadArea)
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
         
     if a and not moving:
-        moving = True
-        if "west" in currentRoom.sideRooms:
+       # if "west" in currentRoom.sideRooms:
             currentRoom = currentRoom.sideRooms.get("west", currentRoom)
-            print(currentRoom.zoneId)
-            x1+=1
             
-            layers = dung.get_layers(screenSize, (x1,y1))
+            x1+=1*deltaTime
+            
+            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1),loadArea)
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
@@ -191,7 +205,24 @@ while True:
     if (not (w or d or s or a)) and moving:
         moving = False
         
+    entityLayers = {}
+    for room in dung.rooms:
+        x,y = room  
         
+        
+        distance = ((x - currentRoom.x)**2 + (y - currentRoom.y)**2)**0.5
+        
+        if distance <= 4:
+            roomObj = dung.rooms[room]
+            for ai in roomObj.entities:
+                ai.playerX = currentRoom.x*7
+                ai.playerY = currentRoom.y*7
+                ai.update()    
+            
+            for layer in roomObj.entityLayers:
+                entityLayers[layer] = entityLayers.get(layer,[])
+                entityLayers[layer].append(roomObj.entityLayers[layer])
+                
     
 
     
@@ -200,23 +231,42 @@ while True:
     
         
     
-    #print(currentRoom.locked)
+    #
     
     
     screen.fill((0,0,0))
     
-    angle += clock.tick(60)/10
-    
-    for layerIndex in layers:
+    for id,layerIndex in enumerate(layers):
+        print(" ")
         for index in layers[layerIndex]:
             size = currentRoom.screenRoomSize
-            modifier = size[1] / screenSize[1]
+            modifier = size[1] / Definitions.SCREEN_SIZE[1]
             layer = layers[layerIndex][index]
             
-            screen.blit(layer, (300-layer.get_width()/2+(-index-layerIndex)/8,300-layer.get_height()/2+(-index-layerIndex)))
+            screen.blit(layer, (Definitions.SCREEN_SIZE[0]//2-layer.get_width()/2+(-index-layerIndex)/8,Definitions.SCREEN_SIZE[1]//2-layer.get_height()/2+(-index-layerIndex)))
+
             
+            Zvalue = index+layerIndex+id
+            
+            if Zvalue in entityLayers:
+                for entitys in entityLayers[Zvalue]:
+                    for entity in entitys:
+                        
+                        x,y = entity.x, entity.y
+                        
+                        drawCoord = (x+.5+int(x1*7))*Definitions.GRID_SQUARE_WIDTH,(y+.5+int(y1*7))*Definitions.GRID_SQUARE_HEIGHT
+                        print((x))
+                        
+                        screen.blit(Definitions.MODELS[entity.spriteName].images[entity.frame][Zvalue-(Definitions.FLOOR_HEIGHT + 1)],drawCoord)
+                        
+                        
+                    
+            
+                    print(" ")
+                    
     for room in dung.rooms:
         x,y = room
+        
         
         colour = (255,255,255)
         
@@ -234,9 +284,10 @@ while True:
         else:
             colour = (0,255,0)
             
-        
-        
-        
         pygame.draw.circle(screen, colour, (x*10+currentRoom.screenRoomSize[0]//2, y*10+currentRoom.screenRoomSize[1]//2), 5)
-        
-    pygame.display.update()
+    
+                
+            
+    
+    #screen.blit(Definitions.FOG_OF_WAR_IMAGE,fogOfWarCenterPos)
+    pygame.display.update()"""

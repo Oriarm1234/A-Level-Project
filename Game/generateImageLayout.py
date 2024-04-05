@@ -1,7 +1,7 @@
-from room import Room
+from .room import Room
 import math
 import random
-import Definitions
+from . import Definitions
 def generate_image_layout(dungeon):
         
         dungeon.generate_tiles()
