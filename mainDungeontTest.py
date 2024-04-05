@@ -1,9 +1,9 @@
 import random
 from Game.Dungeon import *         
-            
+from Game.DungeonRenderer import Renderer
             
 dung = Dungeon(0,0,150,300,0,0)
-
+dungeonRenderer = Renderer(dung, None)
 for i in range(40):
     
     room = random.choice(list(dung.rooms))
