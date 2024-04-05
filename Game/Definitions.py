@@ -81,6 +81,7 @@ TILE_NAMES = dict(
 
 
 ROOM_SIZE = (7,7)
+loadArea = 7
 
 EMPTY_ROOM = (
 (O,O,O,O,O,O,O),

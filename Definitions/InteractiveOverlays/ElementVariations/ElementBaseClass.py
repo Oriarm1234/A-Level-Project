@@ -25,8 +25,6 @@ class Element:
         self.get_offset_x = lambda: 0
         self.get_offset_y = lambda: 0
 
-        
-        
 
         self.pressed = None
         self.released = None
@@ -36,8 +34,6 @@ class Element:
         self._visible = visible
         
         self.update_function = lambda self, screen, *args, **kwargs: False
-
-        
         
         if image != None:
             self.hitbox = self.image.get_rect()
@@ -285,7 +281,7 @@ class ElementList(list):
             else:
                 newList.append(element)
         return newList
-    
+
     
                 
                 

@@ -23,22 +23,15 @@ class Text(Element):
         self._color = colour
         self._size = size
         self.get_bold = self.fontObject.get_bold
-        self.set_bold = self._update_wrapper(self.fontObject.set_bold)
+        self.set_bold = self.fontObject.set_bold
         self.get_italic = self.fontObject.get_italic
-        self.set_italic = self._update_wrapper(self.fontObject.set_italic)
+        self.set_italic = self.fontObject.set_italic
         self.get_underline = self.fontObject.get_underline
-        self.set_underline = self._update_wrapper(self.fontObject.set_underline)
+        self.set_underline = self.fontObject.set_underline
         self.get_strikethrough = self.fontObject.get_strikethrough
-        self.set_strikethrough = self._update_wrapper(self.fontObject.set_strikethrough)
+        self.set_strikethrough = self.fontObject.set_strikethrough
 
         super().__init__(name, self.renderedText, pos, parent=parent)
-
-    def _update_wrapper(self, function):
-        def new_function(*args):
-            function(*args)
-            self.update_text()
-
-        return new_function
     
     def renderer(self, text):
         return self.fontObject.render(text, True, self._color)
@@ -197,8 +190,7 @@ class Line(Element):
         end_pos:tuple[int, int],
         parent=None,
         colour=(0, 0, 0),
-        thickness=1,
-        radius=5,
+        thickness=1
     ):
         self._endX, self._endY = (0,0)
         super().__init__(name, None, pos, parent)
@@ -207,7 +199,6 @@ class Line(Element):
         self.colour = colour
 
         self.thickness = thickness
-        self.radius = radius
         self._endX, self._endY = end_pos
         
         self.update_hitbox()
