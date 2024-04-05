@@ -12,12 +12,15 @@ for i in range(40):
 
     
 
-x1,y1 = 1,1
+x1,y1 = 3,3
+
+dungeonRenderer.xPos = x1
+dungeonRenderer.yPos = y1
 
 currentRoom = dung.rooms[(0,0)]
 
 
-layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1))
+layers = dungeonRenderer.get_layers()
 screen = pygame.display.set_mode(Definitions.SCREEN_SIZE)
 angle = 0
 clock = pygame.time.Clock()
@@ -34,51 +37,57 @@ while True:
     events=pygame.event.get()
     keys = pygame.key.get_pressed()
     
+    dungeonRenderer.xPos = int(x1)
+    dungeonRenderer.yPos = int(y1)
+    
+    layers = dungeonRenderer.get_layers()
+    
     w,d,s,a = keys[pygame.K_w],keys[pygame.K_d],keys[pygame.K_s],keys[pygame.K_a]
     
     if w and not moving:
-        #if "north" in currentRoom.sideRooms:
+            
+        if "north" in currentRoom.sideRooms:
+            moving=True
             currentRoom = currentRoom.sideRooms.get("north", currentRoom)
             
             
             
-            y1+=1*deltaTime
+            y1-=7
             
-            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1))
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
         
     if d and not moving:
-        #if "east" in currentRoom.sideRooms:
+        if "east" in currentRoom.sideRooms:
+            moving=True
             currentRoom = currentRoom.sideRooms.get("east", currentRoom)
             
-            x1-=1*deltaTime
+            x1+=7
             
             
-            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1))
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
     
     if s and not moving:
-        #if "south" in currentRoom.sideRooms:
+        if "south" in currentRoom.sideRooms:
+            moving=True
             currentRoom = currentRoom.sideRooms.get("south", currentRoom)
             
-            y1-=1*deltaTime
+            y1+=7
             
-            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1))
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)
         
     if a and not moving:
-       # if "west" in currentRoom.sideRooms:
+       if "west" in currentRoom.sideRooms:
+            moving=True
             currentRoom = currentRoom.sideRooms.get("west", currentRoom)
             
-            x1+=1*deltaTime
-            
-            layers = dung.get_layers(Definitions.SCREEN_SIZE, (x1,y1))
+            x1-=7
+ 
             
             if currentRoom not in beenIn:
                 beenIn.append(currentRoom)

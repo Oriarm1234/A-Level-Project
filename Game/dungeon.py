@@ -96,7 +96,7 @@ class Dungeon:
                 layers[layerIndex][index].fill((0,0,0,0))
                 for ix in range(Definitions.loadArea):
                     for iy in range(Definitions.loadArea):
-                        coord = (ix-Definitions.loadArea//2-(pos[0]-1)*7+3, iy-Definitions.loadArea//2-(pos[1]-1)*7+3)
+                        coord = (pos[0]+ix-Definitions.loadArea//2, pos[1]+iy-Definitions.loadArea//2)
                         if (coord[0]//1, coord[1]//1) in layer[index]:
                             
                             

@@ -39,8 +39,25 @@ class Renderer: #Using a class object as a container, there should only ever be 
         
         return self._yPos
     
+    @xPos.setter
+    def xPos(self, newValue):
+        self.cameraObject = None
+
+        self._xPos = newValue
             
-    def getScreenPosForTile(self, x,y):
+        return self._xPos
+    
+    @yPos.setter
+    def yPos(self, newValue):
+        self.cameraObject = None
+
+        self._yPos = newValue
+            
+        return self._yPos
+        
+    
+            
+    def get_screen_pos_for_tile(self, x,y):
         
         #Takes in an unadjusted tile coordinate and adjusts it to fit the camera position and place it on the screen
         
@@ -48,7 +65,7 @@ class Renderer: #Using a class object as a container, there should only ever be 
         screenY = (y+self._offsetY-self.yPos)*Definitions.GRID_SQUARE_HEIGHT # adjustment is therefore needed
         return screenX + Definitions.SCREEN_SIZE[0]/2, screenY + Definitions.SCREEN_SIZE[1]/2
     
-    def getScreenPosForRoom(self, x, y):    
+    def get_screen_pos_for_room(self, x, y):    
         
         #Takes in an unadjusted room coordinate and adjusts it to fit the camera position and place it on the screen
 
@@ -56,13 +73,13 @@ class Renderer: #Using a class object as a container, there should only ever be 
         screenY = (y*Definitions.ROOM_SIZE[1]+self._offsetY-self.yPos)*Definitions.GRID_SQUARE_HEIGHT # adjustment is therefore needed
         return screenX + Definitions.SCREEN_SIZE[0]/2, screenY + Definitions.SCREEN_SIZE[1]/2
     
-    def getRenderedScreen(self):
+    def get_layers(self):
     
         xPos = self.xPos
         yPos = self.yPos
         
         if self.lastPos != (xPos,yPos):
-            self.lastPos = xPos,yPos
+            self.lastPos = xPos,yPos 
             
             self.layers = self.dungeon.get_layers(Definitions.SCREEN_SIZE,(self.lastPos))
             
