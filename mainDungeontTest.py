@@ -1,7 +1,6 @@
 import random
 from Game.Dungeon import *         
 from Game.DungeonRenderer import Renderer
-            
 dung = Dungeon(0,0,150,300,0,0)
 dungeonRenderer = Renderer(dung, None)
 for i in range(40):
@@ -33,7 +32,7 @@ beenIn = []#
 
 
 while True:
-    deltaTime = clock.tick(200)/1000
+    deltaTime = clock.tick(500)/1000
     events=pygame.event.get()
     keys = pygame.key.get_pressed()
     
@@ -125,7 +124,6 @@ while True:
     
     
     screen.fill((0,0,0))
-    
     for id,layerIndex in enumerate(layers):
 
         for index in layers[layerIndex]:
@@ -179,5 +177,5 @@ while True:
                 
             
     
-    #screen.blit(Definitions.FOG_OF_WAR_IMAGE,fogOfWarCenterPos)
+    screen.blit(Definitions.FOG_OF_WAR_IMAGE,fogOfWarCenterPos)
     pygame.display.update()

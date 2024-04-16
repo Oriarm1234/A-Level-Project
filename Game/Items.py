@@ -12,8 +12,8 @@ class Key(Item):
 class KeyPiece(Key):
     pass
 
-key1 = keyPiece("key1")
-key2 = keyPiece("key2")
-key3 = keyPiece("key3")
+key1 = KeyPiece("key1")
+key2 = KeyPiece("key2")
+key3 = KeyPiece("key3")
 
 print(key1.ID,key2.ID,key3.ID)

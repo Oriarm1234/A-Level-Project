@@ -15,4 +15,3 @@ class Tile:
         self.model = model
         self.variation = variation
         
-    

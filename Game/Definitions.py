@@ -49,7 +49,7 @@ def loadModels(models = {}):
             
     return models
 SCREEN_SIZE = (800,800)
-fogOfWarSizeModifier = 1.5
+fogOfWarSizeModifier = 2
 FOG_OF_WAR_IMAGE = pygame.transform.smoothscale(pygame.image.load("Game\\Images\\NONMODEL\\fogOfWar.png"),(SCREEN_SIZE[0]*fogOfWarSizeModifier,
                                                                                                      SCREEN_SIZE[1]*fogOfWarSizeModifier))
 

@@ -164,7 +164,8 @@ def generate_tiles(dungeon):
             newSides = [side for side in sides if side not in sidesTaken]
             chosenSide = random.choice(newSides)
             
-            if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
+            if (currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1]) in genData and\
+              genData[(currentRoom[0] + sides[chosenSide][0], currentRoom[1] + sides[chosenSide][1])]["locked"]:
                 currentRoom = list(random.choice(list(rooms)))
                 continue
             
@@ -200,9 +201,6 @@ def generate_tiles(dungeon):
     dungeon.currentLootRooms = 0
     dungeon.currentBossRooms = 0
     for room in rooms:
-        
-        
-            
             
         room:tuple[int, int]
         
@@ -212,16 +210,14 @@ def generate_tiles(dungeon):
         zoneId = data["zoneId"]
         roomSides = rooms[room]
         
-        
-        
-        
-        
         bannedRooms = []
         
         if room == (0,0):
             bannedRooms.append("OPEN_ROOM")
         
-        dungeon.rooms[room] = Room(*room, dungeon, sides = rooms[room], shape = get_suitable_room_shape(rooms[room], bannedRooms), id = id, locked = locked, zoneId = zoneId)
+        dungeon.rooms[room] = Room(*room, dungeon, sides = rooms[room], 
+                                   shape = get_suitable_room_shape(rooms[room], bannedRooms), 
+                                   id = id, locked = locked, zoneId = zoneId)
 
         dungeon.levels[zoneId] = dungeon.levels.get(zoneId, [])
         dungeon.levels[zoneId].append(dungeon.rooms[room])
@@ -233,8 +229,6 @@ def generate_tiles(dungeon):
             x,y = sides[side]
             
             sideRooms[side] = dungeon.rooms.get((x+room[0], y+room[1]))
-            
-            
             
             if sideRooms[side]:
                 

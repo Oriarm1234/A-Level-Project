@@ -56,7 +56,8 @@ class AI(Entity):
     Moving = {}
     currentId = 0
     
-    def __init__(self, x, y, currentAngleStep, spriteName, walkSpeed, maxHealth, health, dungeon, spawnRoom, frame,  dungeonLevel=0,z=Definitions.FLOOR_HEIGHT + 1):
+    def __init__(self, x, y, currentAngleStep, spriteName, walkSpeed, 
+                 maxHealth, health, dungeon, spawnRoom, frame,  dungeonLevel=0,z=Definitions.FLOOR_HEIGHT + 1):
         super().__init__(x, y, currentAngleStep, spriteName, walkSpeed,maxHealth,health,z)
         self.frame = frame
         self.id = AI.currentId
@@ -74,10 +75,13 @@ class AI(Entity):
         self.playerY = 0
         self.staticPeriod = [7,16] # static period, how long to stay still after teleporting # random -> [min,max]
         self._movementType =0
-        self.movementType = 0 # movementType: -1=stay in spawn room never been visible, 0=shift between connected rooms randomly, 1=VisibleToPlayer wander around room, 2=attacking player, 3=scared, run away from player
+        self.movementType = 0 # movementType: -1=stay in spawn room never been visible, 
+                              #0=shift between connected rooms randomly, 1=VisibleToPlayer wander around room,
+                              #2=attacking player, 3=scared, run away from player
         for layerNum in Definitions.MODELS[spriteName].images[self.frame]:
             if self.room is not None:
-                spawnRoom.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1] = self.room.entityLayers.get(layerNum + Definitions.FLOOR_HEIGHT + 1,[])
+                spawnRoom.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1] = self.room.entityLayers.get(
+                    layerNum + Definitions.FLOOR_HEIGHT + 1,[])
                 spawnRoom.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1].append(self)
     @property
     def room(self):
@@ -86,8 +90,9 @@ class AI(Entity):
     @room.setter
     def room(self,value):
         for layerNum in Definitions.MODELS[self.spriteName].images[self.frame]:
-            if layerNum + Definitions.FLOOR_HEIGHT + 1 in self._room.entityLayers and self in self._room.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1]:
-                self._room.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1].remove(self)
+            if layerNum + Definitions.FLOOR_HEIGHT + 1 in self._room.entityLayers and\
+                self in self._room.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1]:
+                  self._room.entityLayers[layerNum + Definitions.FLOOR_HEIGHT + 1].remove(self)
                 
             if value is not None:
                 
@@ -227,7 +232,8 @@ class AI(Entity):
             
             
 class Shadow(AI):
-    def __init__(self, x, y, currentAngleStep, spriteName, walkSpeed, maxHealth, health, dungeon, spawnRoom, frame="Frame0", dungeonLevel=0,z=Definitions.FLOOR_HEIGHT + 1):
+    def __init__(self, x, y, currentAngleStep, spriteName, walkSpeed, maxHealth, health, dungeon, spawnRoom, frame="Frame0", 
+                 dungeonLevel=0,z=Definitions.FLOOR_HEIGHT + 1):
         super().__init__(x, y, currentAngleStep, spriteName, walkSpeed, maxHealth, health, dungeon, spawnRoom, frame, dungeonLevel,z)
         
         
